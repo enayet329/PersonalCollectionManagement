@@ -21,7 +21,7 @@ namespace PersonalCollectionManager.Infrastructure.Services
             _mapper = mapper;
             _logger = loger;
         }
-        public async Task<OperationResult> AddCollectionAsync(CreateCollectionDto collection)
+        public async Task<OperationResult> AddCollectionAsync(CollectionRequestDto collection)
         {
             try
             {
@@ -81,7 +81,7 @@ namespace PersonalCollectionManager.Infrastructure.Services
             }
         }
 
-        public async Task<OperationResult> UpdateCollectionAsync(CreateCollectionDto collectionDTO)
+        public async Task<OperationResult> UpdateCollectionAsync(CollectionRequestDto collectionDTO)
         {
             try
             {

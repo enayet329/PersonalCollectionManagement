@@ -28,15 +28,20 @@ namespace PersonalCollectionManager.Infrastructure.Services
             try
             {
                 //TODO Validate userDTO
-                var users = _mapper.Map<User>(userDTO);
-                var user =  GetUserByIdAsync(users.Id);
-                if(user.Result == null)
+                var userName = await IsUsernameAvailableAsync(userDTO.Username);
+                var email = await IsEmailAvailableAsync(userDTO.Email);
+                if (userName == false && email == false)
                 {
+                    var users = _mapper.Map<User>(userDTO);
                     users.PasswordHash = BCrypt.Net.BCrypt.HashPassword(userDTO.PasswordHash);
                     await _userRepository.AddAsync(users);
                     return new OperationResult(true, "User registered successfully.");
                 }
-                return new OperationResult(false, "User already exists.");
+                else if (userName == true)
+                {
+                    return new OperationResult(false, "Username already taken.");
+                }
+                return new OperationResult(false, "Useremail already taken.");
             }
             catch (Exception ex)
             {
@@ -44,6 +49,7 @@ namespace PersonalCollectionManager.Infrastructure.Services
                 throw;
             }
         }
+
 
         //TODO Implement login logic
         public async Task<OperationResult> Login(LoginRequestDTO loginRequestDTO)
