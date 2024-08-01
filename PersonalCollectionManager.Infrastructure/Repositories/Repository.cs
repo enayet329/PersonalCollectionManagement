@@ -131,10 +131,5 @@ namespace PersonalCollectionManager.Infrastructure.Repositories
         {
             return await _context.Set<T>().FirstOrDefaultAsync(predicate);
         }
-
-        public Task<T?> FirstOrDefaultAsync(Expression<Func<T, bool>> predicate)
-        {
-            return _context.Set<T>().FirstOrDefaultAsync(predicate);
-        }
     }
 }
