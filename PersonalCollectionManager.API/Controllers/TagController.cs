@@ -28,6 +28,10 @@ namespace PersonalCollectionManager.API.Controllers
         public async Task<ActionResult<TagDTO>> GetTagAsync(Guid id)
         {
             var tag = await _tagService.GetTagByIdAsync(id);
+            if (tag == null)
+            {
+                return NotFound("Tag not found");
+            }
             return Ok(tag);
         }
 
