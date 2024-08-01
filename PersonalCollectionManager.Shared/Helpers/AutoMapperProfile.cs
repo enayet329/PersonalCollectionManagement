@@ -20,6 +20,7 @@ namespace PersonalCollectionManager.Shared.Helpers
 
             // RequestDTOs to Domain Entities
             CreateMap<RegisterRequestDto, User>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore())
                 .ForMember(dest => dest.IsAdmin, opt => opt.Ignore())
                 .ForMember(dest => dest.IsBlocked, opt => opt.Ignore())
                 .ForMember(dest => dest.Collections, opt => opt.Ignore())
@@ -27,9 +28,11 @@ namespace PersonalCollectionManager.Shared.Helpers
                 .ForMember(dest => dest.Likes, opt => opt.Ignore());
             CreateMap<User, RegisterRequestDto>();
 
-            CreateMap<CreateCollectionDto, Collection>()
+            CreateMap<CollectionRequestDto, Collection>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore())
+                .ForMember(dest => dest.Tags, opt => opt.Ignore())
                 .ForMember(dest => dest.Items, opt => opt.Ignore());
-            CreateMap<Collection, CreateCollectionDto>();
+            CreateMap<Collection, CollectionRequestDto>();
 
         }
     }
