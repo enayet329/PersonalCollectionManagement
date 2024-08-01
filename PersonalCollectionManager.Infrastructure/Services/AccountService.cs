@@ -56,13 +56,13 @@ namespace PersonalCollectionManager.Infrastructure.Services
         {
             try
             {
-                var user = await _userRepository.FirstOrDefaultAsync(u => u.Email == loginRequestDTO.Email && u.PasswordHash == loginRequestDTO.Password);
+                var user = await _userRepository.FirstOrDefaultAsync(u => u.Email == loginRequestDTO.Email);
 
-                if (user == null)
+                if (user == null || !BCrypt.Net.BCrypt.Verify(loginRequestDTO.Password, user.PasswordHash))
                 {
                     return new OperationResult(false, "Invalid email or password");
                 }
-                
+
                 return new OperationResult(true, "Login successful");
             }
             catch (Exception ex)
@@ -71,6 +71,7 @@ namespace PersonalCollectionManager.Infrastructure.Services
                 throw;
             }
         }
+
 
 
 
