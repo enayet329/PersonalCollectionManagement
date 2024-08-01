@@ -41,11 +41,10 @@ namespace PersonalCollectionManager.Infrastructure.Services
         {
             try
             {
-                var tagEntity = await GetTagByIdAsync(id);
+                var tagEntity = await _tagRepository.GetByIdAsync(id);
                 if (tagEntity != null)
                 {
-                    var tag = _mapper.Map<Tag>(tagEntity);
-                    _tagRepository.Remove(tag); 
+                    _tagRepository.Remove(tagEntity); 
                     return new OperationResult(true, "Tag deleted successfully.");
                 }
 
