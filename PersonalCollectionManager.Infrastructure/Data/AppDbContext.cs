@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PersonalCollectionManager.Domain.Entities;
 using System;
-using System.Collections.Generic;
 
 namespace PersonalCollectionManager.Infrastructure.Data
 {
@@ -36,49 +35,48 @@ namespace PersonalCollectionManager.Infrastructure.Data
                 .IsUnique();
 
             // Relationships between entities
-            modelBuilder.Entity<Collection>()
-                .HasOne(c => c.User)
-                .WithMany(u => u.Collections)
+            modelBuilder.Entity<User>()
+                .HasMany(u => u.Collections)
+                .WithOne(c => c.User)
                 .HasForeignKey(c => c.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<Comment>()
-                .HasOne(c => c.User)
-                .WithMany(u => u.Comments)
+            modelBuilder.Entity<User>()
+                .HasMany(u => u.Comments)
+                .WithOne(c => c.User)
                 .HasForeignKey(c => c.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<Comment>()
-                .HasOne(c => c.Item)
-                .WithMany(i => i.Comments)
+            modelBuilder.Entity<User>()
+                .HasMany(u => u.Likes)
+                .WithOne(l => l.User)
+                .HasForeignKey(l => l.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Collection>()
+                .HasMany(c => c.Items)
+                .WithOne(i => i.Collection)
+                .HasForeignKey(i => i.CollectionId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Collection>()
+                .HasMany(c => c.Tags)
+                .WithOne(t => t.Collection)
+                .HasForeignKey(t => t.CollectionId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Item>()
+                .HasMany(i => i.Comments)
+                .WithOne(c => c.Item)
                 .HasForeignKey(c => c.ItemId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Item>()
-                .HasOne(i => i.Collection)
-                .WithMany(c => c.Items)
-                .HasForeignKey(i => i.CollectionId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            modelBuilder.Entity<Like>()
-                .HasOne(l => l.User)
-                .WithMany(u => u.Likes)
-                .HasForeignKey(l => l.UserId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<Like>()
-                .HasOne(l => l.Item)
-                .WithMany(i => i.Likes)
+                .HasMany(i => i.Likes)
+                .WithOne(l => l.Item)
                 .HasForeignKey(l => l.ItemId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<Tag>()
-                .HasMany(t => t.Items)
-                .WithMany(i => i.Tags)
-                .UsingEntity<Dictionary<string, object>>(
-                    "ItemTags",
-                    j => j.HasOne<Item>().WithMany().HasForeignKey("ItemId"),
-                    j => j.HasOne<Tag>().WithMany().HasForeignKey("TagId"));
 
             // Configuring the length constraints for strings
             modelBuilder.Entity<Collection>()
@@ -113,16 +111,20 @@ namespace PersonalCollectionManager.Infrastructure.Data
                 .Property(c => c.Content)
                 .IsRequired();
 
-            // Seed admin user with hashed password
-            var adminPasswordHash = BCrypt.Net.BCrypt.HashPassword("Admin@1234");
+            // Seed data
+            SeedData(modelBuilder);
+        }
 
+        private void SeedData(ModelBuilder modelBuilder)
+        {
+            // Seed Users
             modelBuilder.Entity<User>().HasData(
                 new User
                 {
                     Id = Guid.Parse("d2c6e7b4-4a76-4b1e-8d8f-2b9f2f7e0e77"),
                     Username = "admin",
                     Email = "admin@example.com",
-                    PasswordHash = adminPasswordHash,
+                    PasswordHash = BCrypt.Net.BCrypt.HashPassword("Admin@1234"),
                     IsAdmin = true,
                     IsBlocked = false
                 },
@@ -137,58 +139,61 @@ namespace PersonalCollectionManager.Infrastructure.Data
                 }
             );
 
+            // Seed Collections
             modelBuilder.Entity<Collection>().HasData(
                 new Collection
                 {
-                    Id = Guid.Parse("11111111-1111-1111-1111-111111111112"),
+                    Id = Guid.Parse("22222222-2222-2222-2222-222222222222"),
                     Name = "Collection 1",
-                    UserId = Guid.Parse("11111111-1111-1111-1111-111111111111"),
-                    Topic = "Topic 1",
-                    Description = "description 1",
-                    ImageUrl = "https://example.com/image1.jpg"
+                    Description = "First collection",
+                    Topic = "General",
+                    ImageUrl = "https://example.com/collection1.jpg",
+                    UserId = Guid.Parse("11111111-1111-1111-1111-111111111111")
                 }
             );
 
+            // Seed Items
             modelBuilder.Entity<Item>().HasData(
                 new Item
                 {
-                    Id = Guid.Parse("11111111-1111-1111-1111-111111111113"),
+                    Id = Guid.Parse("33333333-3333-3333-3333-333333333333"),
                     Name = "Item 1",
-                    CollectionId = Guid.Parse("11111111-1111-1111-1111-111111111112"),
-                    ImgUrl = "https://example.com/image1.jpg",
+                    Description = "First item",
+                    ImgUrl = "https://example.com/item1.jpg",
+                    CollectionId = Guid.Parse("22222222-2222-2222-2222-222222222222")
                 }
             );
 
+            // Seed Tags
             modelBuilder.Entity<Tag>().HasData(
                 new Tag
                 {
-                    Id = Guid.Parse("11111111-1111-1111-1111-111111111114"),
-                    Name = "Tag 1"
+                    Id = Guid.Parse("44444444-4444-4444-4444-444444444444"),
+                    Name = "Tag 1",
+                    CollectionId = Guid.Parse("22222222-2222-2222-2222-222222222222")
                 }
             );
 
+            // Seed Comments
             modelBuilder.Entity<Comment>().HasData(
                 new Comment
                 {
-                    Id = Guid.Parse("11111111-1111-1111-1111-111111111115"),
-                    Content = "Comment 1",
+                    Id = Guid.Parse("55555555-5555-5555-5555-555555555555"),
+                    Content = "First comment",
+                    CreatedAt = DateTime.UtcNow,
                     UserId = Guid.Parse("11111111-1111-1111-1111-111111111111"),
-                    ItemId = Guid.Parse("11111111-1111-1111-1111-111111111113")
+                    ItemId = Guid.Parse("33333333-3333-3333-3333-333333333333")
                 }
             );
 
+            // Seed Likes
             modelBuilder.Entity<Like>().HasData(
                 new Like
                 {
-                    Id = Guid.Parse("11111111-1111-1111-1111-111111111116"),
+                    Id = Guid.Parse("66666666-6666-6666-6666-666666666666"),
                     UserId = Guid.Parse("11111111-1111-1111-1111-111111111111"),
-                    ItemId = Guid.Parse("11111111-1111-1111-1111-111111111113")
+                    ItemId = Guid.Parse("33333333-3333-3333-3333-333333333333")
                 }
-            );
-
-            // Seed many-to-many relationships
-            modelBuilder.Entity("ItemTags").HasData(
-                new { ItemId = Guid.Parse("11111111-1111-1111-1111-111111111113"), TagId = Guid.Parse("11111111-1111-1111-1111-111111111114") }
             );
         }
     }
