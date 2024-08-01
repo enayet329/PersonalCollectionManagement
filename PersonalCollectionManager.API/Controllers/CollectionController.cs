@@ -25,16 +25,16 @@ namespace PersonalCollectionManager.API.Controllers
         }
 
         [HttpPost("add/collection")]
-        public IActionResult AddCollection(CreateCollectionDto collection)
+        public async Task<IActionResult> AddCollection(CollectionRequestDto collection)
         {
-            var result = _collectionService.AddCollectionAsync(collection);
+            var result = await _collectionService.AddCollectionAsync(collection);
             return Ok(result);
         }
 
         [HttpDelete("delete/collection")]
-        public IActionResult DeleteCollection(Guid id)
+        public async Task<IActionResult> DeleteCollection(Guid id)
         {
-            var result = _collectionService.DeleteCollectionAsync(id);
+            var result = await _collectionService.DeleteCollectionAsync(id);
             return Ok(result);
         }
 
@@ -52,7 +52,7 @@ namespace PersonalCollectionManager.API.Controllers
         }
 
         [HttpPut("update/collection")]
-        public IActionResult UpdateCollection(CreateCollectionDto collection)
+        public IActionResult UpdateCollection(CollectionRequestDto collection)
         {
             var result = _collectionService.UpdateCollectionAsync(collection);
             return Ok(result);

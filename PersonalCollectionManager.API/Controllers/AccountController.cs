@@ -19,13 +19,10 @@ namespace PersonalCollectionManager.API.Controllers
 
 
         [HttpPost("register")]
-        public IActionResult Register(RegisterRequestDto user)
+        public async Task<IActionResult> Register(RegisterRequestDto user)
         {
-            var result = _accountService.Register(user);
-            if (result == null)
-            {
-                return Unauthorized(new { message = "Invalid username or password." });
-            }
+            var result = await _accountService.Register(user);
+
             return Ok(result);
         }
 
