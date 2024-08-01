@@ -28,14 +28,15 @@ namespace PersonalCollectionManager.Infrastructure.Services
             try
             {
                 //TODO Validate userDTO
-                var user =_userRepository.GetByIdAsync(userDTO.Id);
-                if(user == null)
+                var users = _mapper.Map<User>(userDTO);
+                var user =  GetUserByIdAsync(users.Id);
+                if(user.Result == null)
                 {
-                    var users = _mapper.Map<User>(userDTO);
-                    _userRepository.AddAsync(users);
-                    return Task.FromResult(new OperationResult(true, "User registered successfully."));
+                    users.PasswordHash = BCrypt.Net.BCrypt.HashPassword(userDTO.PasswordHash);
+                    await _userRepository.AddAsync(users);
+                    return new OperationResult(true, "User registered successfully.");
                 }
-                return new OperationResult(true, "Login successful");
+                return new OperationResult(false, "User already exists.");
             }
             catch (Exception ex)
             {
