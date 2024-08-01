@@ -23,14 +23,19 @@ namespace PersonalCollectionManager.Infrastructure.Services
 
 
         //TODO Implement register logic 
-        public Task<OperationResult> Register(RegisterRequestDto userDTO)
+        public async Task<OperationResult> Register(RegisterRequestDto userDTO)
         {
             try
             {
                 //TODO Validate userDTO
-                var user = _mapper.Map<User>(userDTO);
-                _userRepository.AddAsync(user);
-                return Task.FromResult(new OperationResult(true, "User registered successfully."));
+                var user =_userRepository.GetByIdAsync(userDTO.Id);
+                if(user == null)
+                {
+                    var users = _mapper.Map<User>(userDTO);
+                    _userRepository.AddAsync(users);
+                    return Task.FromResult(new OperationResult(true, "User registered successfully."));
+                }
+                return new OperationResult(true, "Login successful");
             }
             catch (Exception ex)
             {
