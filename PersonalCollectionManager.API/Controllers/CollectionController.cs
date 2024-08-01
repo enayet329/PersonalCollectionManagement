@@ -45,7 +45,7 @@ namespace PersonalCollectionManager.API.Controllers
 
             if (result == null)
             {
-                return NotFound(new { message = "User not found." });
+                return NotFound(new { message = "Collection not found." });
             }
 
             return Ok(result);
