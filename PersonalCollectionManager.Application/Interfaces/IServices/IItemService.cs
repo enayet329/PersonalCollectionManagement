@@ -1,14 +1,16 @@
-﻿using PersonalCollectionManager.Application.Interfaces.IRepository;
+﻿using PersonalCollectionManager.Application.DTOs.RequestDtos;
+using PersonalCollectionManager.Application.DTOs.ResponseDtos;
+using PersonalCollectionManager.Application.Interfaces.IRepository;
 using PersonalCollectionManager.Domain.Entities;
 
 namespace PersonalCollectionManager.Application.Interfaces.IServices
 {
     public interface IItemService 
     {
-        Task<IEnumerable<Item>> GetAllItemsAsync();
-        Task<Item> GetItemByIdAsync(Guid id);
-        Task AddItemAsync(Item item);
-        Task UpdateItemAsync(Item item);
-        Task DeleteItemAsync(Guid id);
+        Task<IEnumerable<ItemDTO>> GetAllItemsAsync();
+        Task<ItemDTO> GetItemByIdAsync(Guid id);
+        Task<OperationResult> AddItemAsync(ItemRequestDto item);
+        Task<OperationResult> UpdateItemAsync(ItemRequestDto item);
+        Task<OperationResult> DeleteItemAsync(Guid id);
     }
 }
