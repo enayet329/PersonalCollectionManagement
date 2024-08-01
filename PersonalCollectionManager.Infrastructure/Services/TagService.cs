@@ -69,7 +69,7 @@ namespace PersonalCollectionManager.Infrastructure.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error getting all tags.");
-                throw; 
+                return null;
             }
         }
 
@@ -83,7 +83,7 @@ namespace PersonalCollectionManager.Infrastructure.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error getting tag by id.");
-                throw;
+                return null;
             }
         }
 
