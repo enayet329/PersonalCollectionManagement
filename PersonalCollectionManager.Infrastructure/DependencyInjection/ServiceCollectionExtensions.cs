@@ -45,6 +45,7 @@ namespace PersonalCollectionManager.Infrastructure.DependencyInjection
             services.AddScoped<ICommentService, CommentService>();
             services.AddScoped<IItemService, ItemService>();
             services.AddScoped<ITagService, TagService>();
+            services.AddScoped<ILikeService, LikeService>();
 
             services.AddScoped<AdminService>();
             services.AddScoped<AccountService>();
@@ -52,6 +53,7 @@ namespace PersonalCollectionManager.Infrastructure.DependencyInjection
             services.AddScoped<CommentService>();
             services.AddScoped<ItemService>();
             services.AddScoped<TagService>();
+            services.AddScoped<LikeService>();
 
 
             return services;

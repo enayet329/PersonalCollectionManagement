@@ -46,6 +46,19 @@ namespace PersonalCollectionManager.Shared.Helpers
                 .ForMember(dest => dest.Collection, opt => opt.Ignore());
             CreateMap<Tag, TagRequestDto>();
 
+            CreateMap<CommentRequestDto, Comment>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore())
+                .ForMember(dest => dest.Item, opt => opt.Ignore())
+                .ForMember(dest => dest.User, opt => opt.Ignore());
+            CreateMap<Comment, CommentRequestDto>();
+
+            CreateMap<LikeRequestDto, Like>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore())
+                .ForMember(dest => dest.Item, opt => opt.Ignore())
+                .ForMember(dest => dest.User, opt => opt.Ignore());
+            CreateMap<Like, LikeRequestDto>();
+
+
         }
     }
 }
