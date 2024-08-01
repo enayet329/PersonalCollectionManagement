@@ -9,8 +9,8 @@ namespace PersonalCollectionManager.Application.Interfaces.IServices
     {
         Task<IEnumerable<CollectionDTO>> GetAllCollectionsAsync();
         Task<CollectionDTO> GetCollectionByIdAsync(Guid id);
-        Task<OperationResult> AddCollectionAsync(CreateCollectionDto collection);
-        Task<OperationResult> UpdateCollectionAsync(CreateCollectionDto collection);
+        Task<OperationResult> AddCollectionAsync(CollectionRequestDto collection);
+        Task<OperationResult> UpdateCollectionAsync(CollectionRequestDto collection);
         Task<OperationResult> DeleteCollectionAsync(Guid id);
     }
 }
