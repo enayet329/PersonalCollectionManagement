@@ -57,13 +57,13 @@ namespace PersonalCollectionManager.Infrastructure.Services
         {
             try
             {
-                var user = _mapper.Map<IEnumerable<CollectionDTO>>(await _collectionRepository.GetAllAsync());
-                return user;
+                var collection = _mapper.Map<IEnumerable<CollectionDTO>>(await _collectionRepository.GetAllAsync());
+                return collection;
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error getting all collections");
-                throw;
+                return null; 
             }
         }
 
@@ -71,13 +71,13 @@ namespace PersonalCollectionManager.Infrastructure.Services
         {
             try
             {
-                var user  = _mapper.Map<CollectionDTO>(await _collectionRepository.GetByIdAsync(id));
-                return user;
+                var collection  = _mapper.Map<CollectionDTO>(await _collectionRepository.GetByIdAsync(id));
+                return collection;
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error getting collection by id");
-                throw;
+                return null;
             }
         }
 
@@ -85,8 +85,8 @@ namespace PersonalCollectionManager.Infrastructure.Services
         {
             try
             {
-                var user = _mapper.Map<Collection>(collectionDTO);
-                _collectionRepository.Update(user);
+                var collection = _mapper.Map<Collection>(collectionDTO);
+                _collectionRepository.Update(collection);
 
                 return await Task.FromResult(new OperationResult(true, "Collection updated successfully"));
             }

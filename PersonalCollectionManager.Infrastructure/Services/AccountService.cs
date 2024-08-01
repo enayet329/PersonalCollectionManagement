@@ -46,7 +46,7 @@ namespace PersonalCollectionManager.Infrastructure.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error during user registration.");
-                throw;
+                return null;
             }
         }
 
@@ -68,7 +68,7 @@ namespace PersonalCollectionManager.Infrastructure.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error during user login.");
-                throw;
+                return null;
             }
         }
 
@@ -85,7 +85,7 @@ namespace PersonalCollectionManager.Infrastructure.Services
             catch (Exception ex) 
             {
                 _logger.LogError(ex, "Error getting user by id");
-                throw;
+                return null;
             }
         }
 
@@ -99,7 +99,7 @@ namespace PersonalCollectionManager.Infrastructure.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error getting user by email");
-                throw;
+                return null;
             }
         }
 
