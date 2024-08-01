@@ -20,6 +20,8 @@ namespace PersonalCollectionManager.Shared.Helpers
 
             // RequestDTOs to Domain Entities
             CreateMap<RegisterRequestDto, User>()
+                .ForMember(dest => dest.IsAdmin, opt => opt.Ignore())
+                .ForMember(dest => dest.IsBlocked, opt => opt.Ignore())
                 .ForMember(dest => dest.Collections, opt => opt.Ignore())
                 .ForMember(dest => dest.Comments, opt => opt.Ignore())
                 .ForMember(dest => dest.Likes, opt => opt.Ignore());

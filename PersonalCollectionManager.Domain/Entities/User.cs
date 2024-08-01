@@ -14,9 +14,9 @@ namespace PersonalCollectionManager.Domain.Entities
 
         public string PasswordHash { get; set; }
 
-        public bool IsAdmin { get; set; }
+        public bool IsAdmin { get; set; } = false;
 
-        public bool IsBlocked { get; set; }
+        public bool IsBlocked { get; set; } = false;
 
         public virtual ICollection<Collection> Collections { get; set; }
         public virtual ICollection<Comment> Comments { get; set; }
