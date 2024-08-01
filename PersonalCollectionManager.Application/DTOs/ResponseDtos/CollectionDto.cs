@@ -1,4 +1,8 @@
-﻿namespace PersonalCollectionManager.Application.DTOs.ResponseDtos
+﻿using PersonalCollectionManager.Domain.Entities;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+
+namespace PersonalCollectionManager.Application.DTOs.ResponseDtos
 {
     public class CollectionDTO
     {
@@ -10,5 +14,6 @@
         public Guid UserId { get; set; }
         public UserDTO User { get; set; }
         public IEnumerable<ItemDTO> Items { get; set; }
+        public virtual ICollection<TagDTO> Tags { get; set; }
     }
 }
