@@ -83,7 +83,7 @@ namespace PersonalCollectionManager.Infrastructure.Services
 
 
         // TODO: Fix bug with updating item
-        public async Task<OperationResult> UpdateItemAsync(ItemRequestDto item)
+        public async Task<OperationResult> UpdateItemAsync(ItemUpdateRequestDto item)
         {
             try
             {
