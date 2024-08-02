@@ -44,7 +44,7 @@ namespace PersonalCollectionManager.Infrastructure.Services
             try
             {
                 var user = await _itemRepository.GetByIdAsync(id);
-                _itemRepository.Remove(user);
+                await _itemRepository.Remove(user);
                 return new OperationResult(true, "Item deleted successfully");
             }
             catch (Exception ex)
@@ -84,7 +84,7 @@ namespace PersonalCollectionManager.Infrastructure.Services
 
 
         // TODO: Fix bug with updating item
-        public async Task<OperationResult> UpdateItemAsync(ItemUpdateRequestDto item)
+        public async Task<OperationResult> UpdateItemAsync(ItemDto item)
         {
             try
             {

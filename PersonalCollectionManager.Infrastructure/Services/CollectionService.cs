@@ -130,12 +130,12 @@ namespace PersonalCollectionManager.Infrastructure.Services
         }
 
 
-        public async Task<OperationResult> UpdateCollectionAsync(CollectionRequestDto collectionDTO)
+        public async Task<OperationResult> UpdateCollectionAsync(CollectionDto collectionDTO)
         {
             try
             {
                 var collection = _mapper.Map<Collection>(collectionDTO);
-                _collectionRepository.Update(collection);
+                await _collectionRepository.Update(collection);
 
                 return await Task.FromResult(new OperationResult(true, "Collection updated successfully"));
             }

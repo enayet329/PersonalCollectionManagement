@@ -132,5 +132,19 @@ namespace PersonalCollectionManager.Infrastructure.Services
             }
         }
 
+        public Task<OperationResult> UpdateUser(UserDto userDto)
+        {
+            try
+            {
+                var user = _mapper.Map<User>(userDto);
+                _userRepository.Update(user);
+                return Task.FromResult(new OperationResult(true, "User updated successfully."));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error updating user.");
+                return Task.FromResult(new OperationResult(false, "Error updating user."));
+            }
+        }
     }
 }

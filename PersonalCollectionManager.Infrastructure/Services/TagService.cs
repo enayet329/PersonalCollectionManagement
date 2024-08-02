@@ -22,19 +22,19 @@ namespace PersonalCollectionManager.Infrastructure.Services
             _logger = logger;
         }
 
-        public Task<OperationResult> AddTagAsync(TagRequestDto tag)
+        public async Task<OperationResult> AddTagAsync(TagRequestDto tag)
         {
             try
             {
                 var tagEntity = _mapper.Map<Tag>(tag);
-                _tagRepository.AddAsync(tagEntity);
+                await _tagRepository.AddAsync(tagEntity);
 
-                return Task.FromResult(new OperationResult(true, "Tag added successfully."));
+                return new OperationResult(true, "Tag added successfully.");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error adding tag.");
-                return Task.FromResult(new OperationResult(false, "Error adding tag."));
+                return new OperationResult(false, "Error adding tag.");
             }
         }
 
@@ -45,7 +45,7 @@ namespace PersonalCollectionManager.Infrastructure.Services
                 var tagEntity = await _tagRepository.GetByIdAsync(id);
                 if (tagEntity != null)
                 {
-                    _tagRepository.Remove(tagEntity); 
+                    await _tagRepository.Remove(tagEntity); 
                     return new OperationResult(true, "Tag deleted successfully.");
                 }
 
@@ -88,19 +88,19 @@ namespace PersonalCollectionManager.Infrastructure.Services
             }
         }
 
-        public Task<OperationResult> UpdateTagAsync(TagRequestDto tag)
+        public async Task<OperationResult> UpdateTagAsync(TagDto tag)
         {
             try
             {
                 var tagEntity = _mapper.Map<Tag>(tag);
-                _tagRepository.Update(tagEntity);
+                await _tagRepository.Update(tagEntity);
 
-                return Task.FromResult(new OperationResult(true, "Tag updated successfully."));
+                return new OperationResult(true, "Tag updated successfully.");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error updating tag.");
-                return Task.FromResult(new OperationResult(false, "Error updating tag."));
+                return new OperationResult(false, "Error updating tag.");
             }
         }
     }

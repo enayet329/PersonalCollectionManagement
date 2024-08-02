@@ -20,20 +20,20 @@ namespace PersonalCollectionManager.Infrastructure.Services
             _logger = logger;
         }
 
-        public Task<OperationResult> AddCommentAsync(CommentRequestDto comment)
+        public async Task<OperationResult> AddCommentAsync(CommentRequestDto comment)
         {
             try
             {
                 var entity = _mapper.Map<Comment>(comment);
                 entity.CreatedAt = DateTime.Now;
-                _commentRepository.AddAsync(entity);
+                await _commentRepository.AddAsync(entity);
 
-                return Task.FromResult(new OperationResult(true, "Comment added successfully."));
+                return new OperationResult(true, "Comment added successfully.");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error adding comment.");
-                return Task.FromResult(new OperationResult(false, "Error adding comment."));
+                return new OperationResult(false, "Error adding comment.");
             }
         }
 
@@ -44,7 +44,7 @@ namespace PersonalCollectionManager.Infrastructure.Services
                 var comment = await _commentRepository.GetByIdAsync(id);
                 if(comment != null)
                 {
-                    _commentRepository.Remove(comment);
+                    await _commentRepository.Remove(comment);
                     return new OperationResult(true, "Comment deleted successfully.");
                 }
                     return new OperationResult(false, "Comment not found.");
@@ -71,13 +71,13 @@ namespace PersonalCollectionManager.Infrastructure.Services
             }
         }
 
-        public Task<CommentDto> GetCommentByIdAsync(Guid id)
+        public async Task<CommentDto> GetCommentByIdAsync(Guid id)
         {
             try
             {
-                var comment = _commentRepository.GetByIdAsync(id).Result;
+                var comment = await _commentRepository.GetByIdAsync(id);
                 var dto = _mapper.Map<CommentDto>(comment);
-                return Task.FromResult(dto);
+                return dto;
             }
             catch (Exception ex)
             {
@@ -86,19 +86,19 @@ namespace PersonalCollectionManager.Infrastructure.Services
             }
         }
 
-        public Task<OperationResult> UpdateCommentAsync(CommentRequestDto comment)
+        public async Task<OperationResult> UpdateCommentAsync(CommentDto comment)
         {
             try
             {
                 var entity = _mapper.Map<Comment>(comment);
-                _commentRepository.Update(entity);
+                await _commentRepository.Update(entity);
 
-                return Task.FromResult(new OperationResult(true, "Comment updated successfully."));
+                return new OperationResult(true, "Comment updated successfully.");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error updating comment.");
-                return Task.FromResult(new OperationResult(false, "Error updating comment."));
+                return new OperationResult(false, "Error updating comment.");
             }
         }
     }
