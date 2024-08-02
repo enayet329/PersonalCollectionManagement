@@ -6,6 +6,7 @@ using PersonalCollectionManager.Application.Interfaces.IRepository;
 using PersonalCollectionManager.Application.DTOs.ResponseDtos;
 using PersonalCollectionManager.Application.DTOs.RequestDtos;
 using AutoMapper;
+using PersonalCollectionManager.Application.DTOs;
 
 namespace PersonalCollectionManager.Infrastructure.Services
 {
@@ -58,13 +59,13 @@ namespace PersonalCollectionManager.Infrastructure.Services
         }
 
 
-        public async Task<IEnumerable<TagDTO>> GetAllTagAsync()
+        public async Task<IEnumerable<TagDto>> GetAllTagAsync()
         {
             try
             {
                 var tags = await _tagRepository.GetAllAsync();
                 
-                return _mapper.Map<IEnumerable<TagDTO>>(tags);
+                return _mapper.Map<IEnumerable<TagDto>>(tags);
             }
             catch (Exception ex)
             {
@@ -73,12 +74,12 @@ namespace PersonalCollectionManager.Infrastructure.Services
             }
         }
 
-        public async Task<TagDTO> GetTagByIdAsync(Guid id)
+        public async Task<TagDto> GetTagByIdAsync(Guid id)
         {
             try
             {
                 var tag = await _tagRepository.GetByIdAsync(id);
-                return _mapper.Map<TagDTO>(tag);
+                return _mapper.Map<TagDto>(tag);
             }
             catch (Exception ex)
             {

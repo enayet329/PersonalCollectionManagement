@@ -53,11 +53,11 @@ namespace PersonalCollectionManager.Infrastructure.Services
             }
         }
 
-        public async Task<IEnumerable<CollectionDTO>> GetAllCollectionsAsync()
+        public async Task<IEnumerable<CollectionDto>> GetAllCollectionsAsync()
         {
             try
             {
-                var collection = _mapper.Map<IEnumerable<CollectionDTO>>(await _collectionRepository.GetAllCollectionAsync());
+                var collection = _mapper.Map<IEnumerable<CollectionDto>>(await _collectionRepository.GetAllCollectionAsync());
                 return collection;
             }
             catch (Exception ex)
@@ -67,12 +67,12 @@ namespace PersonalCollectionManager.Infrastructure.Services
             }
         }
 
-        public async Task<IEnumerable<CollectionDTO>> GetAllCollectionsByUserIdAsync(Guid id)
+        public async Task<IEnumerable<CollectionDto>> GetAllCollectionsByUserIdAsync(Guid id)
         {
             try
             {
                 var collerctions = await _collectionRepository.GetCollectionsByUserIdAsync(id);
-                var collection = _mapper.Map<IEnumerable<CollectionDTO>>(collerctions);
+                var collection = _mapper.Map<IEnumerable<CollectionDto>>(collerctions);
                 return collection;
             }
             catch (Exception ex)
@@ -83,11 +83,11 @@ namespace PersonalCollectionManager.Infrastructure.Services
                 
         }
 
-        public async Task<CollectionDTO> GetCollectionByIdAsync(Guid id)
+        public async Task<CollectionDto> GetCollectionByIdAsync(Guid id)
         {
             try
             {
-                var collection  = _mapper.Map<CollectionDTO>(await _collectionRepository.GetCollectionByIdAsync(id));
+                var collection  = _mapper.Map<CollectionDto>(await _collectionRepository.GetCollectionByIdAsync(id));
                 return collection;
             }
             catch (Exception ex)
@@ -97,12 +97,12 @@ namespace PersonalCollectionManager.Infrastructure.Services
             }
         }
 
-        public async Task<CollectionDTO> GetCollectionByUserIdAsync(Guid id)
+        public async Task<CollectionDto> GetCollectionByUserIdAsync(Guid id)
         {
             try
             {
                 var collection = await _collectionRepository.GetCollectionByUserIdAsync(id);
-                var collectionDTO = _mapper.Map<CollectionDTO>(collection);
+                var collectionDTO = _mapper.Map<CollectionDto>(collection);
                 return collectionDTO;
             }
             catch (Exception ex)
@@ -113,12 +113,12 @@ namespace PersonalCollectionManager.Infrastructure.Services
         }
 
         // TODO: Implement this method
-        public async Task<IEnumerable<CollectionDTO>> GetLargestCollecitonAsync()
+        public async Task<IEnumerable<CollectionDto>> GetLargestCollecitonAsync()
         {
             try
             {
                 var collectios = await _collectionRepository.GetLargestCollectionsAsync(5);
-                var collectionDTOs = _mapper.Map<IEnumerable<CollectionDTO>>(collectios);
+                var collectionDTOs = _mapper.Map<IEnumerable<CollectionDto>>(collectios);
                 return collectionDTOs;
             }
             catch (Exception ex)

@@ -24,7 +24,7 @@ namespace PersonalCollectionManager.Domain.Entities
 
         [ForeignKey("CollectionId")]
         public virtual Collection Collection { get; set; }
-
+        public virtual ICollection<Tag> Tags { get; set; }
         public virtual ICollection<Comment> Comments { get; set; }
         public virtual ICollection<Like> Likes { get; set; }
     }

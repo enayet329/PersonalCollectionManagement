@@ -56,12 +56,12 @@ namespace PersonalCollectionManager.Infrastructure.Services
             }
         }
 
-        public async Task<IEnumerable<CommentDTO>> GetAllCommentForItemAsync()
+        public async Task<IEnumerable<CommentDto>> GetAllCommentForItemAsync()
         {
             try
             {
                 var comments = await _commentRepository.GetAllAsync();
-                var dtos = _mapper.Map<IEnumerable<CommentDTO>>(comments);
+                var dtos = _mapper.Map<IEnumerable<CommentDto>>(comments);
                 return dtos;
             }
             catch (Exception ex)
@@ -71,12 +71,12 @@ namespace PersonalCollectionManager.Infrastructure.Services
             }
         }
 
-        public Task<CommentDTO> GetCommentByIdAsync(Guid id)
+        public Task<CommentDto> GetCommentByIdAsync(Guid id)
         {
             try
             {
                 var comment = _commentRepository.GetByIdAsync(id).Result;
-                var dto = _mapper.Map<CommentDTO>(comment);
+                var dto = _mapper.Map<CommentDto>(comment);
                 return Task.FromResult(dto);
             }
             catch (Exception ex)

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.Logging;
+using PersonalCollectionManager.Application.DTOs;
 using PersonalCollectionManager.Application.DTOs.RequestDtos;
 using PersonalCollectionManager.Application.DTOs.ResponseDtos;
 using PersonalCollectionManager.Application.Interfaces.IRepository;
@@ -75,12 +76,12 @@ namespace PersonalCollectionManager.Infrastructure.Services
 
 
 
-        public async Task<UserDTO> GetUserByIdAsync(Guid id)
+        public async Task<UserDto> GetUserByIdAsync(Guid id)
         {
             try
             {
                 var user = await _userRepository.GetByIdAsync(id);
-                return _mapper.Map<UserDTO>(user);
+                return _mapper.Map<UserDto>(user);
             }
             catch (Exception ex) 
             {
@@ -89,12 +90,12 @@ namespace PersonalCollectionManager.Infrastructure.Services
             }
         }
 
-        public async Task<UserDTO> GetUserByUseremailAsync(string email)
+        public async Task<UserDto> GetUserByUseremailAsync(string email)
         {
             try
             {
                 var user = await _userRepository.GetUserByEmailAsync(email);
-                return _mapper.Map<UserDTO>(user);
+                return _mapper.Map<UserDto>(user);
             }
             catch (Exception ex)
             {

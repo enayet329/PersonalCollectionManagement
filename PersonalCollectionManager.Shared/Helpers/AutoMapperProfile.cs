@@ -1,5 +1,6 @@
 ﻿
 using AutoMapper;
+using PersonalCollectionManager.Application.DTOs;
 using PersonalCollectionManager.Application.DTOs.RequestDtos;
 using PersonalCollectionManager.Application.DTOs.ResponseDtos;
 using PersonalCollectionManager.Domain.Entities;
@@ -11,12 +12,12 @@ namespace PersonalCollectionManager.Shared.Helpers
         public AutoMapperProfile()
         {
             // ResponseDTOs to Domain Entities
-            CreateMap<Collection, CollectionDTO>().ReverseMap();
-            CreateMap<Comment, CommentDTO>().ReverseMap();
-            CreateMap<Item, ItemDTO>().ReverseMap();
-            CreateMap<Like, LikeDTO>().ReverseMap();
-            CreateMap<Tag, TagDTO>().ReverseMap();
-            CreateMap<User, UserDTO>().ReverseMap();
+            CreateMap<Collection, CollectionDto>().ReverseMap();
+            CreateMap<Comment, CommentDto>().ReverseMap();
+            CreateMap<Item, ItemDto>().ReverseMap();
+            CreateMap<Like, LikeDto>().ReverseMap();
+            CreateMap<Tag, TagDto>().ReverseMap();
+            CreateMap<User, UserDto>().ReverseMap();
 
             // RequestDTOs to Domain Entities
             CreateMap<RegisterRequestDto, User>()
@@ -26,41 +27,32 @@ namespace PersonalCollectionManager.Shared.Helpers
                 .ForMember(dest => dest.Collections, opt => opt.Ignore())
                 .ForMember(dest => dest.Comments, opt => opt.Ignore())
                 .ForMember(dest => dest.Likes, opt => opt.Ignore());
-            CreateMap<User, RegisterRequestDto>();
 
             CreateMap<CollectionRequestDto, Collection>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
-                .ForMember(dest => dest.Tags, opt => opt.Ignore())
                 .ForMember(dest => dest.Items, opt => opt.Ignore());
-            CreateMap<Collection, CollectionRequestDto>();
 
             CreateMap<ItemRequestDto, Item>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
                 .ForMember(dest => dest.Collection, opt => opt.Ignore())
                 .ForMember(dest => dest.Comments, opt => opt.Ignore())
                 .ForMember(dest => dest.Likes, opt => opt.Ignore());
-            CreateMap<Item, ItemRequestDto>();
 
             CreateMap<TagRequestDto, Tag>()
-                .ForMember(dest => dest.Id, opt => opt.Ignore())
-                .ForMember(dest => dest.Collection, opt => opt.Ignore());
-            CreateMap<Tag, TagRequestDto>();
+                .ForMember(dest => dest.Id, opt => opt.Ignore());
 
             CreateMap<CommentRequestDto, Comment>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
                 .ForMember(dest => dest.Item, opt => opt.Ignore())
                 .ForMember(dest => dest.User, opt => opt.Ignore());
-            CreateMap<Comment, CommentRequestDto>();
 
             CreateMap<LikeRequestDto, Like>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
                 .ForMember(dest => dest.Item, opt => opt.Ignore())
                 .ForMember(dest => dest.User, opt => opt.Ignore());
-            CreateMap<Like, LikeRequestDto>();
 
-            // Domain Entities to ResponseDTOs and vice versa
+            // Domain Entities to UpdateRequestDTOs and vice versa
             CreateMap<ItemUpdateRequestDto, Item>()
-                .ForMember(dest => dest.CollectionId, opt => opt.Ignore())
                 .ForMember(dest => dest.Collection, opt => opt.Ignore())
                 .ForMember(dest => dest.Comments, opt => opt.Ignore())
                 .ForMember(dest => dest.Likes, opt => opt.Ignore());

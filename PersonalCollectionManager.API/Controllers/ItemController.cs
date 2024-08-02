@@ -17,14 +17,14 @@ namespace PersonalCollectionManager.API.Controllers
         }
 
         [HttpGet("get/items")]
-        public async Task<ActionResult<IEnumerable<ItemDTO>>> GetAllItemAsync()
+        public async Task<ActionResult<IEnumerable<ItemDto>>> GetAllItemAsync()
         {
             var items = await _itemService.GetAllItemsAsync();
             return Ok(items);
         }
 
         [HttpGet("get/item/id")]
-        public async Task<ActionResult<ItemDTO>> GetItemByIdAsync(Guid id)
+        public async Task<ActionResult<ItemDto>> GetItemByIdAsync(Guid id)
         {
             var item = await _itemService.GetItemByIdAsync(id);
             return Ok(item);

@@ -18,7 +18,7 @@ namespace PersonalCollectionManager.API.Controllers
         }
 
         [HttpGet("users")]
-        public async Task<ActionResult<IEnumerable<UserDTO>>> GetAllUsers()
+        public async Task<ActionResult<IEnumerable<UserDto>>> GetAllUsers()
         {
             var users = await _adminService.GetAllUserAsync();
             return Ok(users);

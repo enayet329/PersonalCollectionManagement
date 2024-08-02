@@ -12,9 +12,10 @@ namespace PersonalCollectionManager.Domain.Entities
 
         public string Name { get; set; }
 
-        public Guid CollectionId { get; set; }
+        [Required]
+        public Guid ItemId { get; set; }
 
-        [ForeignKey("CollectionId")]
-        public virtual Collection Collection { get; set; }
+        [ForeignKey("ItemId")]
+        public virtual Item Item { get; set; }
     }
 }

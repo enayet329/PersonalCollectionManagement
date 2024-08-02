@@ -18,7 +18,7 @@ namespace PersonalCollectionManager.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<CollectionDTO>>> GetAllColleciton()
+        public async Task<ActionResult<IEnumerable<CollectionDto>>> GetAllColleciton()
         {
             var user = await _collectionService.GetAllCollectionsAsync();
             return Ok(user);
@@ -26,7 +26,7 @@ namespace PersonalCollectionManager.API.Controllers
 
         [HttpGet]
         [Route("get/largest/collection")]
-        public async Task<ActionResult<IEnumerable<CollectionDTO>>> GetLargestCollection()
+        public async Task<ActionResult<IEnumerable<CollectionDto>>> GetLargestCollection()
         {
             var collections = await _collectionService.GetLargestCollecitonAsync();
             return Ok(collections);

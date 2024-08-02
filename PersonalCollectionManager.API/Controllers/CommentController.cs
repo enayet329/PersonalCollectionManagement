@@ -18,14 +18,14 @@ namespace PersonalCollectionManager.API.Controllers
         }
 
         [HttpGet("get/comments")]
-        public async Task<ActionResult<IEnumerable<CommentDTO>>> GetAllComments()
+        public async Task<ActionResult<IEnumerable<CommentDto>>> GetAllComments()
         {
             var comments = await _commentService.GetAllCommentForItemAsync();
             return Ok(comments);
         }
 
         [HttpGet("get/comment/id")]
-        public async Task<ActionResult<CommentDTO>> GetCommentById(Guid id)
+        public async Task<ActionResult<CommentDto>> GetCommentById(Guid id)
         {
             var comment = await _commentService.GetCommentByIdAsync(id);
             return Ok(comment);
