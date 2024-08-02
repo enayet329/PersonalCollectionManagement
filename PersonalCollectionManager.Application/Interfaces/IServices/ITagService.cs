@@ -11,7 +11,7 @@ namespace PersonalCollectionManager.Application.Interfaces.IServices
         Task<IEnumerable<TagDto>> GetAllTagAsync();
         Task<TagDto> GetTagByIdAsync(Guid id);
         Task<OperationResult> AddTagAsync(TagRequestDto tag);
-        Task<OperationResult> UpdateTagAsync(TagRequestDto tag);
+        Task<OperationResult> UpdateTagAsync(TagDto tag);
         Task<OperationResult> DeleteTagAsync(Guid id);
     }
 }

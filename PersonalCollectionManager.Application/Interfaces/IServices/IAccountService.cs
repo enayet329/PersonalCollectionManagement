@@ -9,6 +9,7 @@ namespace PersonalCollectionManager.Application.Interfaces.IServices
     {
         Task<OperationResult> Register(RegisterRequestDto userDto);
         Task<OperationResult> Login(LoginRequestDTO loginRequestDto);
+        Task<OperationResult> UpdateUser(UserDto userDto);
         Task<UserDto> GetUserByIdAsync(Guid id);
         Task<UserDto> GetUserByUseremailAsync(string email);
         Task<bool> IsUsernameAvailableAsync(string username);

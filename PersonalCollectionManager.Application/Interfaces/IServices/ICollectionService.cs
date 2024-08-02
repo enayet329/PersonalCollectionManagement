@@ -17,7 +17,7 @@ namespace PersonalCollectionManager.Application.Interfaces.IServices
 
         Task<CollectionDto> GetCollectionByIdAsync(Guid id);
         Task<OperationResult> AddCollectionAsync(CollectionRequestDto collection);
-        Task<OperationResult> UpdateCollectionAsync(CollectionRequestDto collection);
+        Task<OperationResult> UpdateCollectionAsync(CollectionDto collection);
         Task<OperationResult> DeleteCollectionAsync(Guid id);
     }
 }

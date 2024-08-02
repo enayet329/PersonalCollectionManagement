@@ -11,7 +11,7 @@ namespace PersonalCollectionManager.Application.Interfaces.IServices
         Task<IEnumerable<CommentDto>> GetAllCommentForItemAsync();
         Task<CommentDto> GetCommentByIdAsync(Guid id);
         Task<OperationResult> AddCommentAsync(CommentRequestDto comment);
-        Task<OperationResult> UpdateCommentAsync(CommentRequestDto comment);
+        Task<OperationResult> UpdateCommentAsync(CommentDto comment);
         Task<OperationResult> DeleteCommentAsync(Guid id);
     }
 }

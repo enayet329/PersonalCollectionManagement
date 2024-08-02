@@ -11,7 +11,7 @@ namespace PersonalCollectionManager.Application.Interfaces.IServices
         Task<IEnumerable<ItemDto>> GetAllItemsAsync();
         Task<ItemDto> GetItemByIdAsync(Guid id);
         Task<OperationResult> AddItemAsync(ItemRequestDto item);
-        Task<OperationResult> UpdateItemAsync(ItemUpdateRequestDto item);
+        Task<OperationResult> UpdateItemAsync(ItemDto item);
         Task<OperationResult> DeleteItemAsync(Guid id);
     }
 }
