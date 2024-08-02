@@ -51,7 +51,7 @@ namespace PersonalCollectionManager.Infrastructure.Services
         }
 
 
-        //TODO Implement login logic
+        //TODO Implement login logic and jwt token generation
         public async Task<OperationResult> Login(LoginRequestDTO loginRequestDTO)
         {
             try

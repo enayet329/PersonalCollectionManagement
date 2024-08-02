@@ -57,7 +57,7 @@ namespace PersonalCollectionManager.Infrastructure.Services
         {
             try
             {
-                var collection = _mapper.Map<IEnumerable<CollectionDTO>>(await _collectionRepository.GetAllAsync());
+                var collection = _mapper.Map<IEnumerable<CollectionDTO>>(await _collectionRepository.GetAllCollectionAsync());
                 return collection;
             }
             catch (Exception ex)
@@ -67,11 +67,27 @@ namespace PersonalCollectionManager.Infrastructure.Services
             }
         }
 
+        public async Task<IEnumerable<CollectionDTO>> GetAllCollectionsByUserIdAsync(Guid id)
+        {
+            try
+            {
+                var collerctions = await _collectionRepository.GetCollectionsByUserIdAsync(id);
+                var collection = _mapper.Map<IEnumerable<CollectionDTO>>(collerctions);
+                return collection;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting all collections by user id");
+                return null;
+            }
+                
+        }
+
         public async Task<CollectionDTO> GetCollectionByIdAsync(Guid id)
         {
             try
             {
-                var collection  = _mapper.Map<CollectionDTO>(await _collectionRepository.GetByIdAsync(id));
+                var collection  = _mapper.Map<CollectionDTO>(await _collectionRepository.GetCollectionByIdAsync(id));
                 return collection;
             }
             catch (Exception ex)
@@ -80,6 +96,39 @@ namespace PersonalCollectionManager.Infrastructure.Services
                 return null;
             }
         }
+
+        public async Task<CollectionDTO> GetCollectionByUserIdAsync(Guid id)
+        {
+            try
+            {
+                var collection = await _collectionRepository.GetCollectionByUserIdAsync(id);
+                var collectionDTO = _mapper.Map<CollectionDTO>(collection);
+                return collectionDTO;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting collection by user id");
+                return null;
+            }
+        }
+
+        // TODO: Implement this method
+        public async Task<IEnumerable<CollectionDTO>> GetLargestCollecitonAsync()
+        {
+            try
+            {
+                var collectios = await _collectionRepository.GetLargestCollectionsAsync(5);
+                var collectionDTOs = _mapper.Map<IEnumerable<CollectionDTO>>(collectios);
+                return collectionDTOs;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting largest collections");
+                return null;
+
+            }
+        }
+
 
         public async Task<OperationResult> UpdateCollectionAsync(CollectionRequestDto collectionDTO)
         {

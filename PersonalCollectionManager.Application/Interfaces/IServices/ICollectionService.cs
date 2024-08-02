@@ -12,7 +12,6 @@ namespace PersonalCollectionManager.Application.Interfaces.IServices
         // TODO: Implement
         Task<IEnumerable<CollectionDTO>> GetAllCollectionsByUserIdAsync(Guid id);
         Task<IEnumerable<CollectionDTO>> GetLargestCollecitonAsync();
-        Task<IEnumerable<CollectionDTO>> GetLatestCollectionAsync();
         Task<CollectionDTO> GetCollectionByUserIdAsync(Guid id);
 
         Task<CollectionDTO> GetCollectionByIdAsync(Guid id);
