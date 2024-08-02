@@ -24,6 +24,14 @@ namespace PersonalCollectionManager.API.Controllers
             return Ok(user);
         }
 
+        [HttpGet]
+        [Route("get/largest/collection")]
+        public async Task<ActionResult<IEnumerable<CollectionDTO>>> GetLargestCollection()
+        {
+            var collections = await _collectionService.GetLargestCollecitonAsync();
+            return Ok(collections);
+        }
+
         [HttpPost("add/collection")]
         public async Task<IActionResult> AddCollection(CollectionRequestDto collection)
         {
@@ -31,7 +39,7 @@ namespace PersonalCollectionManager.API.Controllers
             return Ok(result);
         }
 
-        [HttpDelete("delete/collection")]
+        [HttpDelete("delete/collection/id")]
         public async Task<IActionResult> DeleteCollection(Guid id)
         {
             var result = await _collectionService.DeleteCollectionAsync(id);
@@ -46,6 +54,32 @@ namespace PersonalCollectionManager.API.Controllers
             if (result == null)
             {
                 return NotFound(new { message = "Collection not found." });
+            }
+
+            return Ok(result);
+        }
+
+        [HttpGet("get/collection/userId")]
+        public async Task<IActionResult> GetCollectionByName(Guid userId)
+        {
+            var result = await _collectionService.GetCollectionByUserIdAsync(userId);
+
+            if (result == null)
+            {
+                return NotFound(new { message = "Collection not found." });
+            }
+
+            return Ok(result);
+        }
+
+        [HttpGet("get/collections/userId")]
+        public async Task<IActionResult> GetCollectionsByUserId(Guid userId)
+        {
+            var result = await _collectionService.GetAllCollectionsByUserIdAsync(userId);
+
+            if (result == null)
+            {
+                return NotFound(new { message = "Collections not found." });
             }
 
             return Ok(result);
