@@ -17,15 +17,15 @@ namespace PersonalCollectionManager.API.Controllers
             _commentService = commentService;
         }
 
-        [HttpGet("get/comments")]
-        public async Task<ActionResult<IEnumerable<CommentDTO>>> GetAllComments()
+        [HttpGet("get/comments/itemId")]
+        public async Task<ActionResult<IEnumerable<CommentDto>>> GetAllComments(Guid id)
         {
-            var comments = await _commentService.GetAllCommentForItemAsync();
+            var comments = await _commentService.GetAllCommentByItemIdAsync(id);
             return Ok(comments);
         }
 
         [HttpGet("get/comment/id")]
-        public async Task<ActionResult<CommentDTO>> GetCommentById(Guid id)
+        public async Task<ActionResult<CommentDto>> GetCommentById(Guid id)
         {
             var comment = await _commentService.GetCommentByIdAsync(id);
             return Ok(comment);
@@ -46,7 +46,7 @@ namespace PersonalCollectionManager.API.Controllers
         }
 
         [HttpPut("update/comment")]
-        public async Task<IActionResult> UpdateComment(CommentRequestDto comment)
+        public async Task<IActionResult> UpdateComment(CommentDto comment)
         {
             var result = await _commentService.UpdateCommentAsync(comment);
             return Ok(result);

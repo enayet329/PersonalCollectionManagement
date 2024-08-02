@@ -12,9 +12,6 @@ namespace PersonalCollectionManager.Domain.Entities
 
         public string Name { get; set; }
 
-        public Guid CollectionId { get; set; }
-
-        [ForeignKey("CollectionId")]
-        public virtual Collection Collection { get; set; }
+        public virtual ICollection<ItemTag> ItemTags { get; set; } = new List<ItemTag>();
     }
 }

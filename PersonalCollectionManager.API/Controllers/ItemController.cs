@@ -17,16 +17,37 @@ namespace PersonalCollectionManager.API.Controllers
         }
 
         [HttpGet("get/items")]
-        public async Task<ActionResult<IEnumerable<ItemDTO>>> GetAllItemAsync()
+        public async Task<ActionResult<IEnumerable<ItemDto>>> GetAllItemAsync()
         {
             var items = await _itemService.GetAllItemsAsync();
             return Ok(items);
         }
 
+        [HttpGet("get/items/tagName")]
+        public async Task<ActionResult<IEnumerable<ItemDto>>> GetItemByTagIdAsync(string name)
+        {
+            var item = await _itemService.GetItemsByTagAsync(name);
+            return Ok(item);
+        }
+
         [HttpGet("get/item/id")]
-        public async Task<ActionResult<ItemDTO>> GetItemByIdAsync(Guid id)
+        public async Task<ActionResult<ItemDto>> GetItemByIdAsync(Guid id)
         {
             var item = await _itemService.GetItemByIdAsync(id);
+            return Ok(item);
+        }
+
+        [HttpGet("get/item/collecitonId")]
+        public async Task<ActionResult<IEnumerable<ItemDto>>> GetItemByCollectionIdAsync(Guid id)
+        {
+            var item = await _itemService.GetAllItemByCollectionIdAsync(id);
+            return Ok(item);
+        }
+
+        [HttpGet("get/recent/items")]
+        public async Task<ActionResult<IEnumerable<ItemDto>>> GetItemByNameAsync()
+        {
+            var item = await _itemService.GetRecentItemsAsync();
             return Ok(item);
         }
 
@@ -38,7 +59,7 @@ namespace PersonalCollectionManager.API.Controllers
         }
 
         [HttpPut("update/item")]
-        public async Task<IActionResult> UpdateItemAsync([FromBody] ItemRequestDto item)
+        public async Task<IActionResult> UpdateItemAsync([FromBody] ItemDto item)
         {
             var result = await _itemService.UpdateItemAsync(item);
             return Ok(result);

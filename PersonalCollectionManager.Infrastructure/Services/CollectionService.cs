@@ -21,19 +21,19 @@ namespace PersonalCollectionManager.Infrastructure.Services
             _mapper = mapper;
             _logger = loger;
         }
-        public async Task<OperationResult> AddCollectionAsync(CollectionRequestDto collection)
+        public async Task<CollectionDto> AddCollectionAsync(CollectionRequestDto collection)
         {
             try
             {
                 var collectionEntity = _mapper.Map<Collection>(collection);
-                await _collectionRepository.AddAsync(collectionEntity);
+                var result = await _collectionRepository.AddAsync(collectionEntity);
 
-                return new OperationResult(true, "Collection added successfully");
+                return _mapper.Map<CollectionDto>(result);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error adding collection");
-                return new OperationResult(false, $"Error adding collection: {ex.Message}");
+                return null;
             }
         }
 
@@ -53,11 +53,11 @@ namespace PersonalCollectionManager.Infrastructure.Services
             }
         }
 
-        public async Task<IEnumerable<CollectionDTO>> GetAllCollectionsAsync()
+        public async Task<IEnumerable<CollectionDto>> GetAllCollectionsAsync()
         {
             try
             {
-                var collection = _mapper.Map<IEnumerable<CollectionDTO>>(await _collectionRepository.GetAllAsync());
+                var collection = _mapper.Map<IEnumerable<CollectionDto>>(await _collectionRepository.GetAllCollectionAsync());
                 return collection;
             }
             catch (Exception ex)
@@ -67,11 +67,27 @@ namespace PersonalCollectionManager.Infrastructure.Services
             }
         }
 
-        public async Task<CollectionDTO> GetCollectionByIdAsync(Guid id)
+        public async Task<IEnumerable<CollectionDto>> GetAllCollectionsByUserIdAsync(Guid id)
         {
             try
             {
-                var collection  = _mapper.Map<CollectionDTO>(await _collectionRepository.GetByIdAsync(id));
+                var collerctions = await _collectionRepository.GetCollectionsByUserIdAsync(id);
+                var collection = _mapper.Map<IEnumerable<CollectionDto>>(collerctions);
+                return collection;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting all collections by user id");
+                return null;
+            }
+                
+        }
+
+        public async Task<CollectionDto> GetCollectionByIdAsync(Guid id)
+        {
+            try
+            {
+                var collection  = _mapper.Map<CollectionDto>(await _collectionRepository.GetCollectionByIdAsync(id));
                 return collection;
             }
             catch (Exception ex)
@@ -81,19 +97,52 @@ namespace PersonalCollectionManager.Infrastructure.Services
             }
         }
 
-        public async Task<OperationResult> UpdateCollectionAsync(CollectionRequestDto collectionDTO)
+        public async Task<CollectionDto> GetCollectionByUserIdAsync(Guid id)
+        {
+            try
+            {
+                var collection = await _collectionRepository.GetCollectionByUserIdAsync(id);
+                var collectionDTO = _mapper.Map<CollectionDto>(collection);
+                return collectionDTO;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting collection by user id");
+                return null;
+            }
+        }
+
+        // TODO: Implement this method
+        public async Task<IEnumerable<CollectionDto>> GetLargestCollecitonAsync()
+        {
+            try
+            {
+                var collectios = await _collectionRepository.GetLargestCollectionsAsync(5);
+                var collectionDTOs = _mapper.Map<IEnumerable<CollectionDto>>(collectios);
+                return collectionDTOs;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting largest collections");
+                return null;
+
+            }
+        }
+
+
+        public async Task<CollectionDto> UpdateCollectionAsync(CollectionDto collectionDTO)
         {
             try
             {
                 var collection = _mapper.Map<Collection>(collectionDTO);
-                _collectionRepository.Update(collection);
+                var result = await _collectionRepository.Update(collection);
 
-                return await Task.FromResult(new OperationResult(true, "Collection updated successfully"));
+                return _mapper.Map<CollectionDto>(result);
             }
             catch
             {
                 _logger.LogError("Error updating collection");
-                return await Task.FromResult(new OperationResult(false, "Error updating collection"));
+                return null;
             }
         }
     }

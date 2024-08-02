@@ -6,34 +6,42 @@ using PersonalCollectionManager.Application.Interfaces.IRepository;
 using PersonalCollectionManager.Application.DTOs.ResponseDtos;
 using PersonalCollectionManager.Application.DTOs.RequestDtos;
 using AutoMapper;
+using PersonalCollectionManager.Application.DTOs;
+using PersonalCollectionManager.Data.Repositories;
+using System.Linq;
 
 namespace PersonalCollectionManager.Infrastructure.Services
 {
     public class TagService : ITagService
     {
         private readonly ITagRepository _tagRepository;
+        private readonly IItemTagRepository _itemTagRepository;
+        private readonly IItemRepository _itemRepository;
         private readonly IMapper _mapper;
         private readonly ILogger _logger;
-        public TagService(ITagRepository tagRepository,IMapper mapper,ILogger<TagService> logger)
+        public TagService(ITagRepository tagRepository, IItemTagRepository itemTagRepository, IItemRepository itemRepository, IMapper mapper, ILogger<TagService> logger)
         {
             _tagRepository = tagRepository;
+            _itemTagRepository = itemTagRepository;
+            _itemRepository = itemRepository;
             _mapper = mapper;
             _logger = logger;
         }
 
-        public Task<OperationResult> AddTagAsync(TagRequestDto tag)
+
+        public async Task<OperationResult> AddTagAsync(TagRequestDto tag)
         {
             try
             {
                 var tagEntity = _mapper.Map<Tag>(tag);
-                _tagRepository.AddAsync(tagEntity);
-
-                return Task.FromResult(new OperationResult(true, "Tag added successfully."));
+                var result = await _tagRepository.AddAsync(tagEntity);
+                _itemTagRepository.AddTagToItem(tag.ItemId, result.Id);
+                return new OperationResult(true, "Tag added successfully.");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error adding tag.");
-                return Task.FromResult(new OperationResult(false, "Error adding tag."));
+                return new OperationResult(false, "Error adding tag.");
             }
         }
 
@@ -42,13 +50,22 @@ namespace PersonalCollectionManager.Infrastructure.Services
             try
             {
                 var tagEntity = await _tagRepository.GetByIdAsync(id);
-                if (tagEntity != null)
+                if (tagEntity == null)
                 {
-                    _tagRepository.Remove(tagEntity); 
-                    return new OperationResult(true, "Tag deleted successfully.");
+                    return new OperationResult(false, "Tag not found.");
                 }
 
-                return new OperationResult(false, "Tag not found.");
+                var itemTag = await _tagRepository.GetTagWithItemTagAsync(id);
+                if (itemTag == null)
+                {
+                    return new OperationResult(false, "No item associated with this tag.");
+                }
+
+
+                _itemTagRepository.RemoveTagFromItem(itemTag.Id, tagEntity.Id);
+                await _tagRepository.Remove(tagEntity);
+
+                return new OperationResult(true, "Tag deleted successfully.");
             }
             catch (Exception ex)
             {
@@ -58,13 +75,14 @@ namespace PersonalCollectionManager.Infrastructure.Services
         }
 
 
-        public async Task<IEnumerable<TagDTO>> GetAllTagAsync()
+
+        public async Task<IEnumerable<TagDto>> GetAllTagAsync()
         {
             try
             {
                 var tags = await _tagRepository.GetAllAsync();
                 
-                return _mapper.Map<IEnumerable<TagDTO>>(tags);
+                return _mapper.Map<IEnumerable<TagDto>>(tags);
             }
             catch (Exception ex)
             {
@@ -73,12 +91,12 @@ namespace PersonalCollectionManager.Infrastructure.Services
             }
         }
 
-        public async Task<TagDTO> GetTagByIdAsync(Guid id)
+        public async Task<TagDto> GetTagByIdAsync(Guid id)
         {
             try
             {
                 var tag = await _tagRepository.GetByIdAsync(id);
-                return _mapper.Map<TagDTO>(tag);
+                return _mapper.Map<TagDto>(tag);
             }
             catch (Exception ex)
             {
@@ -87,19 +105,33 @@ namespace PersonalCollectionManager.Infrastructure.Services
             }
         }
 
-        public Task<OperationResult> UpdateTagAsync(TagRequestDto tag)
+        public async Task<IEnumerable<TagDto>> GetTagsByItemIdAsync(Guid id)
+        {
+            try
+            {
+                var tags = await _tagRepository.GetByItemId(id);
+                return _mapper.Map<IEnumerable<TagDto>>(tags);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting tags by item id.");
+                return null;
+            }
+        }
+
+        public async Task<OperationResult> UpdateTagAsync(TagDto tag)
         {
             try
             {
                 var tagEntity = _mapper.Map<Tag>(tag);
-                _tagRepository.Update(tagEntity);
+                await _tagRepository.Update(tagEntity);
 
-                return Task.FromResult(new OperationResult(true, "Tag updated successfully."));
+                return new OperationResult(true, "Tag updated successfully.");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error updating tag.");
-                return Task.FromResult(new OperationResult(false, "Error updating tag."));
+                return new OperationResult(false, "Error updating tag.");
             }
         }
     }

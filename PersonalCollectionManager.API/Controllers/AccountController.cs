@@ -65,7 +65,7 @@ namespace PersonalCollectionManager.API.Controllers
             return Ok(user);
         }
 
-        [HttpGet("get/avaiable/usernames")]
+        [HttpGet("avaiable/usernames")]
         public async Task<IActionResult> GetAvailableUsernames(string username)
         {
             var availableUsernames = await _accountService.IsUsernameAvailableAsync(username);
@@ -73,7 +73,7 @@ namespace PersonalCollectionManager.API.Controllers
             return Ok(availableUsernames);
         }
 
-        [HttpGet("get/avaiable/emails")]
+        [HttpGet("avaiable/emails")]
         public async Task<IActionResult> GetAvailableEmails(string email)
         {
             var availableEmails = await _accountService.IsEmailAvailableAsync(email);

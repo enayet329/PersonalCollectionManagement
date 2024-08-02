@@ -7,6 +7,6 @@ namespace PersonalCollectionManager.Application.DTOs.RequestDtos
     {
         public string Name { get; set; }
 
-        public Guid CollectionId { get; set; }
+        public Guid ItemId { get; set; }
     }
 }

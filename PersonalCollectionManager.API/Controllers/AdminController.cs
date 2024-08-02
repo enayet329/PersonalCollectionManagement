@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using PersonalCollectionManager.Application.DTOs.RequestDtos;
 using PersonalCollectionManager.Application.DTOs.ResponseDtos;
+using PersonalCollectionManager.Application.Interfaces.IServices;
 using PersonalCollectionManager.Application.Interfaces.Services;
 using PersonalCollectionManager.Infrastructure.Services;
 
@@ -11,17 +13,38 @@ namespace PersonalCollectionManager.API.Controllers
     public class AdminController : ControllerBase
     {
         private readonly IAdminServices _adminService;
+        private readonly ICollectionService _collectionService;
+        private readonly IItemService _itemService;
 
-        public AdminController(IAdminServices adminService)
+        public AdminController(IAdminServices adminService,ICollectionService collectionService,IItemService itemService)
         {
             _adminService = adminService;
+            _collectionService = collectionService;
+            _itemService = itemService;
         }
+        
 
         [HttpGet("users")]
-        public async Task<ActionResult<IEnumerable<UserDTO>>> GetAllUsers()
+        public async Task<ActionResult<IEnumerable<UserDto>>> GetAllUsers()
         {
             var users = await _adminService.GetAllUserAsync();
             return Ok(users);
+        }
+
+        [HttpPost("create/colleciton")]
+        public async Task<IActionResult> CreateCollecitonForUserAsync(CollectionRequestDto collectionDto)
+        {
+            var response = await _collectionService.AddCollectionAsync(collectionDto);
+
+            return Ok(response);
+        }
+
+        [HttpPost("create/item")]
+        public async Task<IActionResult> CreateItemForCollectionAsync(ItemRequestDto itemDto)
+        {
+            var response = await _itemService.AddItemAsync(itemDto);
+
+            return Ok(response);
         }
 
         [HttpPost("get/user/id")]
