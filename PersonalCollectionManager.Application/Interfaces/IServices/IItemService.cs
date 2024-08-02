@@ -10,7 +10,7 @@ namespace PersonalCollectionManager.Application.Interfaces.IServices
         Task<IEnumerable<ItemDTO>> GetAllItemsAsync();
         Task<ItemDTO> GetItemByIdAsync(Guid id);
         Task<OperationResult> AddItemAsync(ItemRequestDto item);
-        Task<OperationResult> UpdateItemAsync(ItemRequestDto item);
+        Task<OperationResult> UpdateItemAsync(ItemUpdateRequestDto item);
         Task<OperationResult> DeleteItemAsync(Guid id);
     }
 }
