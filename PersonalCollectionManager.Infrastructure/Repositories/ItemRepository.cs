@@ -24,5 +24,12 @@ namespace PersonalCollectionManager.Data.Repositories
         {
             return await _context.Set<Item>().FindAsync(id);
         }
+
+        public async Task<IEnumerable<Item>> GetItemsByCollectionIdAsync(Guid id)
+        {
+            return await _context.Set<Item>()
+               .Where(i => i.Collection.Id == id)
+               .ToListAsync();
+        }
     }
 }

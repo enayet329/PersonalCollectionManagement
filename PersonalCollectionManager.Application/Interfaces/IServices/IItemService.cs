@@ -9,6 +9,7 @@ namespace PersonalCollectionManager.Application.Interfaces.IServices
     public interface IItemService 
     {
         Task<IEnumerable<ItemDto>> GetAllItemsAsync();
+        Task<IEnumerable<ItemDto>> GetAllItemByCollectionIdAsync(Guid id);
         Task<ItemDto> GetItemByIdAsync(Guid id);
         Task<OperationResult> AddItemAsync(ItemRequestDto item);
         Task<OperationResult> UpdateItemAsync(ItemDto item);

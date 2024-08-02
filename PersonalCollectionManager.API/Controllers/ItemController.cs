@@ -30,6 +30,13 @@ namespace PersonalCollectionManager.API.Controllers
             return Ok(item);
         }
 
+        [HttpGet("get/item/collecitonId")]
+        public async Task<ActionResult<IEnumerable<ItemDto>>> GetItemByCollectionIdAsync(Guid id)
+        {
+            var item = await _itemService.GetAllItemByCollectionIdAsync(id);
+            return Ok(item);
+        }
+
         [HttpPost("add/item")]
         public async Task<IActionResult> AddItemAsync([FromBody] ItemRequestDto item)
         {

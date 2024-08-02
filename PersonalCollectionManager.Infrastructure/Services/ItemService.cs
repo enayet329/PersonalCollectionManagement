@@ -54,6 +54,20 @@ namespace PersonalCollectionManager.Infrastructure.Services
             }
         }
 
+        public async Task<IEnumerable<ItemDto>> GetAllItemByCollectionIdAsync(Guid id)
+        {
+            try
+            {
+                var user = await _itemRepository.GetItemsByCollectionIdAsync(id);
+                return _mapper.Map<IEnumerable<ItemDto>>(user);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting all items by collection id");
+                throw;
+            }
+        }
+
         public async Task<IEnumerable<ItemDto>> GetAllItemsAsync()
         {
             try
