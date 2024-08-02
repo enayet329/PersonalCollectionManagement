@@ -8,6 +8,5 @@ namespace PersonalCollectionManager.Application.DTOs.RequestDtos
         public string Name { get; set; }
         public string ImgUrl { get; set; }
         public string Description { get; set; }
-        public Guid CollectionId { get; set; }
     }
 }
