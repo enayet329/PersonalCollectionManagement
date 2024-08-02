@@ -15,11 +15,13 @@ namespace PersonalCollectionManager.Infrastructure.Services
     public class ItemService : IItemService
     {
         private readonly IItemRepository _itemRepository;
+        private readonly IItemTagRepository _itemTagRepository;
         private readonly IMapper _mapper;
         private readonly ILogger<ItemService> _logger;
-        public ItemService(IItemRepository itemRepository,IMapper mapper, ILogger<ItemService> logger)
+        public ItemService(IItemRepository itemRepository,IItemTagRepository itemTagRepository,IMapper mapper, ILogger<ItemService> logger)
         {
             _itemRepository = itemRepository;
+            _itemTagRepository = itemTagRepository;
             _mapper = mapper;
             _logger = logger;
         }
@@ -28,8 +30,9 @@ namespace PersonalCollectionManager.Infrastructure.Services
         {
             try
             {
-                var user = _mapper.Map<Item>(item);
-                var result = await _itemRepository.AddAsync(user);
+                var items = _mapper.Map<Item>(item);
+                items.DateAdded = DateTime.Now;
+                var result = await _itemRepository.AddAsync(items);
                 return _mapper.Map<ItemDto>(result);
             }
             catch (Exception ex)
@@ -44,6 +47,10 @@ namespace PersonalCollectionManager.Infrastructure.Services
             try
             {
                 var user = await _itemRepository.GetByIdAsync(id);
+                if (user == null)
+                {
+                    return new OperationResult(false, "Item not found");
+                }
                 await _itemRepository.Remove(user);
                 return new OperationResult(true, "Item deleted successfully");
             }
@@ -92,6 +99,20 @@ namespace PersonalCollectionManager.Infrastructure.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error getting item by id");
+                throw;
+            }
+        }
+
+        public async Task<IEnumerable<ItemDto>> GetItemsByTagAsync(string tagName)
+        {
+            try
+            {
+                var items = await _itemRepository.GetItemsByTagAsync(tagName);
+                return _mapper.Map<IEnumerable<ItemDto>>(items);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting items by tag");
                 throw;
             }
         }
