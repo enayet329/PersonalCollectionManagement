@@ -15,7 +15,7 @@ namespace PersonalCollectionManager.Data.Repositories
         public LikeRepository(AppDbContext context, ILogger<Repository<Like>> logger)
             : base(context, logger) { }
 
-        public async Task<Like> GetLikeByUserIdAndItemId(LikeRequestDto requestDto)
+        public async Task<Like?> GetLikeByUserIdAndItemId(LikeRequestDto requestDto)
         {
             try
             {
