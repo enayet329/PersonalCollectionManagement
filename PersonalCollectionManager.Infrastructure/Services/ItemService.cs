@@ -97,7 +97,6 @@ namespace PersonalCollectionManager.Infrastructure.Services
         }
 
 
-        // TODO: Fix bug with updating item
         public async Task<OperationResult> UpdateItemAsync(ItemDto item)
         {
             try
