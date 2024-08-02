@@ -46,7 +46,7 @@ namespace PersonalCollectionManager.API.Controllers
         }
 
         [HttpPut("update/comment")]
-        public async Task<IActionResult> UpdateComment(CommentRequestDto comment)
+        public async Task<IActionResult> UpdateComment(CommentDto comment)
         {
             var result = await _commentService.UpdateCommentAsync(comment);
             return Ok(result);

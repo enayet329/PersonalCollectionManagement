@@ -86,7 +86,7 @@ namespace PersonalCollectionManager.API.Controllers
         }
 
         [HttpPut("update/collection")]
-        public IActionResult UpdateCollection(CollectionRequestDto collection)
+        public IActionResult UpdateCollection(CollectionDto collection)
         {
             var result = _collectionService.UpdateCollectionAsync(collection);
             return Ok(result);

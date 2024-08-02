@@ -50,7 +50,7 @@ namespace PersonalCollectionManager.API.Controllers
         }
 
         [HttpPut("update/Tag")]
-        public async Task<ActionResult<TagDto>> UpdateTagAsync(TagRequestDto tag)
+        public async Task<ActionResult<TagDto>> UpdateTagAsync(TagDto tag)
         {
             var updatedTag = await _tagService.UpdateTagAsync(tag);
             return Ok(updatedTag);

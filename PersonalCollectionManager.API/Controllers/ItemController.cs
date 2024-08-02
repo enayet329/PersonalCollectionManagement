@@ -38,7 +38,7 @@ namespace PersonalCollectionManager.API.Controllers
         }
 
         [HttpPut("update/item")]
-        public async Task<IActionResult> UpdateItemAsync([FromBody] ItemUpdateRequestDto item)
+        public async Task<IActionResult> UpdateItemAsync([FromBody] ItemDto item)
         {
             var result = await _itemService.UpdateItemAsync(item);
             return Ok(result);
