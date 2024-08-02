@@ -37,6 +37,13 @@ namespace PersonalCollectionManager.API.Controllers
             return Ok(item);
         }
 
+        [HttpGet("get/recent/items")]
+        public async Task<ActionResult<IEnumerable<ItemDto>>> GetItemByNameAsync()
+        {
+            var item = await _itemService.GetRecentItemsAsync();
+            return Ok(item);
+        }
+
         [HttpPost("add/item")]
         public async Task<IActionResult> AddItemAsync([FromBody] ItemRequestDto item)
         {

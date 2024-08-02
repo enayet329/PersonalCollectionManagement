@@ -19,16 +19,18 @@ namespace PersonalCollectionManager.Data.Repositories
         {
             return await _context.Set<Item>().ToListAsync();
         }
-
-        public async Task<Item?> GetItemByIdAsync(Guid id)
-        {
-            return await _context.Set<Item>().FindAsync(id);
-        }
-
         public async Task<IEnumerable<Item>> GetItemsByCollectionIdAsync(Guid id)
         {
             return await _context.Set<Item>()
                .Where(i => i.Collection.Id == id)
+               .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Item>> GetRecentItemsAsync()
+        {
+            return await _context.Set<Item>()
+               .OrderByDescending(i => i.DateAdded)
+               .Take(10)
                .ToListAsync();
         }
     }

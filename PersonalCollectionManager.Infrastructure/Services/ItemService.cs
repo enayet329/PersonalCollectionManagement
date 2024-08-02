@@ -96,6 +96,20 @@ namespace PersonalCollectionManager.Infrastructure.Services
             }
         }
 
+        public async Task<IEnumerable<ItemDto>> GetRecentItemsAsync()
+        {
+            try
+            {
+                var item =await _itemRepository.GetRecentItemsAsync();
+
+                return _mapper.Map<IEnumerable<ItemDto>>(item);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting recent items");
+                throw;
+            }
+        }
 
         public async Task<OperationResult> UpdateItemAsync(ItemDto item)
         {

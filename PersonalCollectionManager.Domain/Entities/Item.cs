@@ -18,6 +18,7 @@ namespace PersonalCollectionManager.Domain.Entities
         public string ImgUrl { get; set; }
 
         public string Description { get; set; }
+        public DateTime DateAdded { get; set; }
 
         [Required]
         public Guid CollectionId { get; set; }

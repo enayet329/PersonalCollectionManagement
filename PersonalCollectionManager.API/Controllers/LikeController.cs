@@ -16,14 +16,14 @@ namespace PersonalCollectionManager.API.Controllers
         }
 
         [HttpPost("tagle/like")]
-        public async Task<IActionResult> TagleLike(LikeRequestDto request)
+        public async Task<IActionResult> TagleLikeAsync(LikeRequestDto request)
         {
            var result = await _like.ToggleLike(request);
             return Ok(result);
         }
 
         [HttpPost("get/likes")]
-        public async Task<IActionResult> GetLikes(Guid id)
+        public async Task<IActionResult> GetLikesByItemIdAsync(Guid id)
         {
             var likes = await _like.GetAllLikeByItemId(id);
             return Ok(likes);

@@ -7,6 +7,6 @@ namespace PersonalCollectionManager.Application.Interfaces.IRepository
     {
         Task<IEnumerable<Item>> GetAllItemsAsync();
         Task<IEnumerable<Item>> GetItemsByCollectionIdAsync(Guid id);
-        Task<Item> GetItemByIdAsync(Guid id);
+        Task<IEnumerable<Item>> GetRecentItemsAsync();
     }
 }
