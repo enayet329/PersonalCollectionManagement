@@ -15,6 +15,8 @@ namespace PersonalCollectionManager.Domain.Entities
         public string Email { get; set; }
         public string PasswordHash { get; set; }
         public string ImageURL { get; set; }
+        public string PrefrredLanguage { get; set; } = "en";
+        public bool PreffrredThemeDark { get; set; } = false;
         public bool IsAdmin { get; set; } = false;
         public bool IsBlocked { get; set; } = false;
 

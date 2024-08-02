@@ -8,6 +8,5 @@
         public string ImgUrl { get; set; }
         public DateTime DateAdded { get; set; }
         public Guid CollectionId { get; set; }
-
     }
 }
