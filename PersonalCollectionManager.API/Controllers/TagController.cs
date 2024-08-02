@@ -24,6 +24,14 @@ namespace PersonalCollectionManager.API.Controllers
             return Ok(tags);
         }
 
+        [HttpGet("get/Tag/itemId")]
+        public async Task<ActionResult<IEnumerable<TagDto>>> GetTagByItemIdAsync(Guid id)
+        {
+            var tag = await _tagService.GetTagsByItemIdAsync(id);
+
+            return Ok(tag);
+        }
+
         [HttpGet("get/Tag/id")]
         public async Task<ActionResult<TagDto>> GetTagAsync(Guid id)
         {

@@ -88,6 +88,20 @@ namespace PersonalCollectionManager.Infrastructure.Services
             }
         }
 
+        public async Task<IEnumerable<TagDto>> GetTagsByItemIdAsync(Guid itemId)
+        {
+            try
+            {
+                var tags = await _tagRepository.GetByItemId(itemId);
+                return _mapper.Map<IEnumerable<TagDto>>(tags);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting tags by item id.");
+                return null;
+            }
+        }
+
         public async Task<OperationResult> UpdateTagAsync(TagDto tag)
         {
             try

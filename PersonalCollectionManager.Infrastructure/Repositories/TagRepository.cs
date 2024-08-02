@@ -13,10 +13,10 @@ namespace PersonalCollectionManager.Data.Repositories
         public TagRepository(AppDbContext context, ILogger<Repository<Tag>> logger)
             : base(context, logger) { }
 
-
-        public async Task<Tag?> GetTagByNameAsync(string name)
+        public async Task<IEnumerable<Tag>> GetByItemId(Guid id)
         {
-            return await _context.Set<Tag>().FirstOrDefaultAsync(t => t.Name == name);
+            return await _context.Set<Tag>().Where(t => t.Item.Id == id).ToListAsync();
         }
+
     }
 }
