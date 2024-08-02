@@ -24,18 +24,18 @@ namespace PersonalCollectionManager.Infrastructure.Services
             _logger = logger;
         }
 
-        public async Task<OperationResult> AddItemAsync(ItemRequestDto item)
+        public async Task<ItemDto> AddItemAsync(ItemRequestDto item)
         {
             try
             {
                 var user = _mapper.Map<Item>(item);
-                await _itemRepository.AddAsync(user);
-                return new OperationResult(true, "Item added successfully");
+                var result = await _itemRepository.AddAsync(user);
+                return _mapper.Map<ItemDto>(result);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error adding item");
-                return new OperationResult(false, "Error adding item");
+                return null;
             }
         }
 
@@ -111,18 +111,18 @@ namespace PersonalCollectionManager.Infrastructure.Services
             }
         }
 
-        public async Task<OperationResult> UpdateItemAsync(ItemDto item)
+        public async Task<ItemDto> UpdateItemAsync(ItemDto item)
         {
             try
             {
                 var user = _mapper.Map<Item>(item);
-                await _itemRepository.Update(user);
-                return new OperationResult(true, "Item updated successfully");
+                var result = await _itemRepository.Update(user);
+                return _mapper.Map<ItemDto>(result);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error Updating Item");
-                throw;
+                return null;
             }
         }
 

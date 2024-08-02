@@ -21,19 +21,19 @@ namespace PersonalCollectionManager.Infrastructure.Services
             _mapper = mapper;
             _logger = loger;
         }
-        public async Task<OperationResult> AddCollectionAsync(CollectionRequestDto collection)
+        public async Task<CollectionDto> AddCollectionAsync(CollectionRequestDto collection)
         {
             try
             {
                 var collectionEntity = _mapper.Map<Collection>(collection);
-                await _collectionRepository.AddAsync(collectionEntity);
+                var result = await _collectionRepository.AddAsync(collectionEntity);
 
-                return new OperationResult(true, "Collection added successfully");
+                return _mapper.Map<CollectionDto>(result);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error adding collection");
-                return new OperationResult(false, $"Error adding collection: {ex.Message}");
+                return null;
             }
         }
 
@@ -130,19 +130,19 @@ namespace PersonalCollectionManager.Infrastructure.Services
         }
 
 
-        public async Task<OperationResult> UpdateCollectionAsync(CollectionDto collectionDTO)
+        public async Task<CollectionDto> UpdateCollectionAsync(CollectionDto collectionDTO)
         {
             try
             {
                 var collection = _mapper.Map<Collection>(collectionDTO);
-                await _collectionRepository.Update(collection);
+                var result = await _collectionRepository.Update(collection);
 
-                return await Task.FromResult(new OperationResult(true, "Collection updated successfully"));
+                return _mapper.Map<CollectionDto>(result);
             }
             catch
             {
                 _logger.LogError("Error updating collection");
-                return await Task.FromResult(new OperationResult(false, "Error updating collection"));
+                return null;
             }
         }
     }
