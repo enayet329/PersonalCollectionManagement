@@ -56,11 +56,11 @@ namespace PersonalCollectionManager.Infrastructure.Services
             }
         }
 
-        public async Task<IEnumerable<CommentDto>> GetAllCommentForItemAsync()
+        public async Task<IEnumerable<CommentDto>> GetAllCommentByItemIdAsync(Guid id)
         {
             try
             {
-                var comments = await _commentRepository.GetAllAsync();
+                var comments = await _commentRepository.GetCommentsByItemAsync(id);
                 var dtos = _mapper.Map<IEnumerable<CommentDto>>(comments);
                 return dtos;
             }

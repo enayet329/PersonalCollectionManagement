@@ -8,7 +8,7 @@ namespace PersonalCollectionManager.Application.Interfaces.IServices
 {
     public interface ICommentService
     {
-        Task<IEnumerable<CommentDto>> GetAllCommentForItemAsync();
+        Task<IEnumerable<CommentDto>> GetAllCommentByItemIdAsync(Guid id);
         Task<CommentDto> GetCommentByIdAsync(Guid id);
         Task<OperationResult> AddCommentAsync(CommentRequestDto comment);
         Task<OperationResult> UpdateCommentAsync(CommentDto comment);

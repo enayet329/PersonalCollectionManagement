@@ -17,10 +17,10 @@ namespace PersonalCollectionManager.API.Controllers
             _commentService = commentService;
         }
 
-        [HttpGet("get/comments")]
-        public async Task<ActionResult<IEnumerable<CommentDto>>> GetAllComments()
+        [HttpGet("get/comments/itemId")]
+        public async Task<ActionResult<IEnumerable<CommentDto>>> GetAllComments(Guid id)
         {
-            var comments = await _commentService.GetAllCommentForItemAsync();
+            var comments = await _commentService.GetAllCommentByItemIdAsync(id);
             return Ok(comments);
         }
 
