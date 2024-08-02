@@ -8,8 +8,8 @@ namespace PersonalCollectionManager.Application.Interfaces.IRepository
         Task<T> GetByIdAsync(Guid id);
         Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate);
         Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> predicate);
-        Task AddAsync(T entity);
-        Task Update(T entity);
+        Task<T> AddAsync(T entity);
+        Task<T> Update(T entity);
         Task Remove(T entity);
     }
 }
