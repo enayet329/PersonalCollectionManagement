@@ -10,7 +10,6 @@ namespace PersonalCollectionManager.Application.Interfaces.IServices
     {
         Task<IEnumerable<CollectionDto>> GetAllCollectionsAsync();
 
-        // TODO: Implement
         Task<IEnumerable<CollectionDto>> GetAllCollectionsByUserIdAsync(Guid id);
         Task<IEnumerable<CollectionDto>> GetLargestCollecitonAsync();
         Task<CollectionDto> GetCollectionByUserIdAsync(Guid id);

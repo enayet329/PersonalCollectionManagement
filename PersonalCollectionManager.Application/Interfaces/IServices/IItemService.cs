@@ -11,6 +11,7 @@ namespace PersonalCollectionManager.Application.Interfaces.IServices
         Task<IEnumerable<ItemDto>> GetAllItemsAsync();
         Task<IEnumerable<ItemDto>> GetAllItemByCollectionIdAsync(Guid id);
         Task<IEnumerable<ItemDto>> GetRecentItemsAsync();
+        Task<IEnumerable<ItemDto>> GetItemsByTagAsync(string tag);
         Task<ItemDto> GetItemByIdAsync(Guid id);
         Task<ItemDto> AddItemAsync(ItemRequestDto item);
         Task<ItemDto> UpdateItemAsync(ItemDto item);
