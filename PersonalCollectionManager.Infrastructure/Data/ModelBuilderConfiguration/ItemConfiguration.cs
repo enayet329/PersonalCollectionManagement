@@ -8,11 +8,6 @@ public class ItemConfiguration : IEntityTypeConfiguration<Item>
     {
         builder.HasIndex(i => i.Id).IsUnique();
 
-        builder.HasMany(i => i.Tags)
-            .WithOne(t => t.Item)
-            .HasForeignKey(t => t.ItemId)
-            .OnDelete(DeleteBehavior.Cascade);
-
         builder.HasMany(i => i.Comments)
             .WithOne(c => c.Item)
             .HasForeignKey(c => c.ItemId)

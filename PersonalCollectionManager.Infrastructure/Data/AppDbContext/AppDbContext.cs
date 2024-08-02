@@ -14,6 +14,7 @@ namespace PersonalCollectionManager.Infrastructure.Data
         public DbSet<Tag> Tags { get; set; }
         public DbSet<Like> Likes { get; set; }
         public DbSet<Comment> Comments { get; set; }
+        public DbSet<ItemTag> ItemTags { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -24,6 +25,7 @@ namespace PersonalCollectionManager.Infrastructure.Data
             modelBuilder.ApplyConfiguration(new CollectionConfiguration());
             modelBuilder.ApplyConfiguration(new ItemConfiguration());
             modelBuilder.ApplyConfiguration(new TagConfiguration());
+            modelBuilder.ApplyConfiguration(new ItemTagConfiguration());
             modelBuilder.ApplyConfiguration(new LikeConfiguration());
             modelBuilder.ApplyConfiguration(new CommentConfiguration());
 

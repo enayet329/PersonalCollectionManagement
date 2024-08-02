@@ -15,6 +15,8 @@ public static class SeedData
                 Email = "admin@example.com",
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword("Admin@1234"),
                 ImageURL = "https://example.com/admin.jpg",
+                PrefrredLanguage = "en",
+                PreffrredThemeDark = false,
                 IsAdmin = true,
                 IsBlocked = false
             },
@@ -25,6 +27,8 @@ public static class SeedData
                 Email = "user1@example.com",
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword("User@1234"),
                 ImageURL = "https://example.com/user1.jpg",
+                PrefrredLanguage = "en",
+                PreffrredThemeDark = false,
                 IsAdmin = false,
                 IsBlocked = false
             }
@@ -50,6 +54,7 @@ public static class SeedData
                 Id = Guid.Parse("33333333-3333-3333-3333-333333333333"),
                 Name = "Item 1",
                 Description = "First item",
+                DateAdded = DateTime.UtcNow,
                 ImgUrl = "https://example.com/item1.jpg",
                 CollectionId = Guid.Parse("22222222-2222-2222-2222-222222222222")
             }
@@ -60,8 +65,16 @@ public static class SeedData
             new Tag
             {
                 Id = Guid.Parse("44444444-4444-4444-4444-444444444444"),
-                Name = "Tag 1",
-                ItemId = Guid.Parse("33333333-3333-3333-3333-333333333333")
+                Name = "Tag 1"
+            }
+        );
+
+        // Seed ItemTags (for many-to-many relationship)
+        modelBuilder.Entity<ItemTag>().HasData(
+            new ItemTag
+            {
+                ItemId = Guid.Parse("33333333-3333-3333-3333-333333333333"),
+                TagId = Guid.Parse("44444444-4444-4444-4444-444444444444")
             }
         );
 

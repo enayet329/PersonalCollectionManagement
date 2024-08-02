@@ -11,10 +11,5 @@ public class TagConfiguration : IEntityTypeConfiguration<Tag>
         builder.Property(t => t.Name)
             .HasMaxLength(50)
             .IsRequired();
-
-        builder.HasOne(t => t.Item)
-            .WithMany(i => i.Tags)
-            .HasForeignKey(t => t.ItemId)
-            .OnDelete(DeleteBehavior.Cascade);
     }
 }
