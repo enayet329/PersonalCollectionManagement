@@ -58,7 +58,14 @@ namespace PersonalCollectionManager.Shared.Helpers
                 .ForMember(dest => dest.User, opt => opt.Ignore());
             CreateMap<Like, LikeRequestDto>();
 
+            // Domain Entities to ResponseDTOs and vice versa
+            CreateMap<ItemUpdateRequestDto, Item>()
+                .ForMember(dest => dest.CollectionId, opt => opt.Ignore())
+                .ForMember(dest => dest.Collection, opt => opt.Ignore())
+                .ForMember(dest => dest.Comments, opt => opt.Ignore())
+                .ForMember(dest => dest.Likes, opt => opt.Ignore());
 
+            CreateMap<Item, ItemUpdateRequestDto>();
         }
     }
 }
