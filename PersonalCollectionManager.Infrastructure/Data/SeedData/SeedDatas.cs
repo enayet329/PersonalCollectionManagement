@@ -14,6 +14,7 @@ public static class SeedData
                 Username = "admin",
                 Email = "admin@example.com",
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword("Admin@1234"),
+                ImageURL = "https://example.com/admin.jpg",
                 IsAdmin = true,
                 IsBlocked = false
             },
@@ -23,6 +24,7 @@ public static class SeedData
                 Username = "user1",
                 Email = "user1@example.com",
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword("User@1234"),
+                ImageURL = "https://example.com/user1.jpg",
                 IsAdmin = false,
                 IsBlocked = false
             }
