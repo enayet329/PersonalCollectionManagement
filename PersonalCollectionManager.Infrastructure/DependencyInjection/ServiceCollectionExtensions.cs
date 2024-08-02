@@ -37,6 +37,7 @@ namespace PersonalCollectionManager.Infrastructure.DependencyInjection
             services.AddScoped<ILikeRepository, LikeRepository>();
             services.AddScoped<ITagRepository, TagRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IItemTagRepository, ItemTagRepository>();
 
             // Services
             services.AddScoped<IAdminServices, AdminService>();
@@ -46,6 +47,7 @@ namespace PersonalCollectionManager.Infrastructure.DependencyInjection
             services.AddScoped<IItemService, ItemService>();
             services.AddScoped<ITagService, TagService>();
             services.AddScoped<ILikeService, LikeService>();
+
 
             services.AddScoped<AdminService>();
             services.AddScoped<AccountService>();
