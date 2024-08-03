@@ -12,5 +12,5 @@
     //    }
     //}
 
-    public record OperationResult(bool Success, string Message = null, string Token = null);
+    public record OperationResult(bool Success, string Message = null, string Token = null, string PrefferedLanguage = null,string PrefferedThemDark = null);
 }
