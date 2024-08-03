@@ -24,6 +24,11 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .HasForeignKey(l => l.UserId)
             .OnDelete(DeleteBehavior.Restrict);
 
+        builder.HasMany(u => u.RefreshTokens)
+            .WithOne(rt => rt.User)
+            .HasForeignKey(rt => rt.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
         builder.Property(u => u.Username)
             .HasMaxLength(50)
             .IsRequired();
