@@ -15,13 +15,22 @@ namespace PersonalCollectionManager.Shared.Helpers
             CreateMap<Item, ItemDto>().ReverseMap();
             CreateMap<Like, LikeDto>().ReverseMap();
             CreateMap<Tag, TagDto>().ReverseMap();
-            CreateMap<User, UserDto>().ReverseMap();
+            //CreateMap<User, UserDto>().ReverseMap();
+
+            CreateMap<User, UserDto>()
+                .ForMember(dest => dest.PrefrredLanguage, opt => opt.MapFrom(src => src.PreferredLanguage))
+                .ForMember(dest => dest.PreffrredThemeDark, opt => opt.MapFrom(src => src.PreferredThemeDark));
+           
+            CreateMap<UserDto, User>()
+                .ForMember(dest => dest.PreferredLanguage, opt => opt.MapFrom(src => src.PrefrredLanguage))
+                .ForMember(dest => dest.PreferredThemeDark, opt => opt.MapFrom(src => src.PreffrredThemeDark));
 
             // RequestDTOs to Domain Entities
             CreateMap<RegisterRequestDto, User>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
-                .ForMember(dest => dest.PrefrredLanguage, opt => opt.Ignore())
-                .ForMember(dest => dest.PreffrredThemeDark, opt => opt.Ignore())
+                .ForMember(dest => dest.PreferredThemeDark, opt => opt.Ignore())
+                .ForMember(dest => dest.PreferredThemeDark, opt => opt.Ignore())
+                .ForMember(dest => dest.RefreshTokens, opt => opt.Ignore())
                 .ForMember(dest => dest.IsAdmin, opt => opt.Ignore())
                 .ForMember(dest => dest.IsBlocked, opt => opt.Ignore())
                 .ForMember(dest => dest.Collections, opt => opt.Ignore())

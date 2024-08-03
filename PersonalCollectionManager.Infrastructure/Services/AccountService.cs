@@ -3,56 +3,63 @@ using Microsoft.Extensions.Logging;
 using PersonalCollectionManager.Application.DTOs;
 using PersonalCollectionManager.Application.DTOs.RequestDtos;
 using PersonalCollectionManager.Application.DTOs.ResponseDtos;
+using PersonalCollectionManager.Application.Interfaces.IAuthService;
 using PersonalCollectionManager.Application.Interfaces.IRepository;
 using PersonalCollectionManager.Application.Interfaces.IServices;
 using PersonalCollectionManager.Domain.Entities;
-using System.Linq.Expressions;
+using System;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace PersonalCollectionManager.Infrastructure.Services
 {
     public class AccountService : IAccountService
     {
         private readonly IUserRepository _userRepository;
+        private readonly IAuthRepository _authRepository;
+        private readonly IJwtTokenService _jwtTokenService;
         private readonly IMapper _mapper;
         private readonly ILogger<AccountService> _logger;
-        public AccountService(IUserRepository userRepository, IMapper mapper,ILogger<AccountService> logger)
+
+        public AccountService(IUserRepository userRepository, IAuthRepository authRepository, IJwtTokenService jwtTokenService, IMapper mapper, ILogger<AccountService> logger)
         {
             _userRepository = userRepository;
+            _authRepository = authRepository;
+            _jwtTokenService = jwtTokenService;
             _mapper = mapper;
             _logger = logger;
         }
 
-
-        //TODO Implement register logic 
         public async Task<OperationResult> Register(RegisterRequestDto userDTO)
         {
             try
             {
-                //TODO Validate userDTO
-                var userName = await IsUsernameAvailableAsync(userDTO.Username);
-                var email = await IsEmailAvailableAsync(userDTO.Email);
-                if (userName == false && email == false)
-                {
-                    var users = _mapper.Map<User>(userDTO);
-                    users.PasswordHash = BCrypt.Net.BCrypt.HashPassword(userDTO.PasswordHash);
-                    await _userRepository.AddAsync(users);
-                    return new OperationResult(true, "User registered successfully.");
-                }
-                else if (userName == true)
+                if (await IsUsernameAvailableAsync(userDTO.Username))
                 {
                     return new OperationResult(false, "Username already taken.");
                 }
-                return new OperationResult(false, "Useremail already taken.");
+
+                if (await IsEmailAvailableAsync(userDTO.Email))
+                {
+                    return new OperationResult(false, "Email already taken.");
+                }
+
+                var user = _mapper.Map<User>(userDTO);
+                user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(userDTO.PasswordHash);
+                user.PreferredThemeDark = false;
+                user.PreferredLanguage = "en";
+
+                await _userRepository.AddAsync(user);
+                return new OperationResult(true, "User registered successfully.");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error during user registration.");
-                return null;
+                return new OperationResult(false, "Error during user registration.");
             }
         }
 
-
-        //TODO Implement login logic and jwt token generation
         public async Task<OperationResult> Login(LoginRequestDTO loginRequestDTO)
         {
             try
@@ -61,20 +68,43 @@ namespace PersonalCollectionManager.Infrastructure.Services
 
                 if (user == null || !BCrypt.Net.BCrypt.Verify(loginRequestDTO.Password, user.PasswordHash))
                 {
-                    return new OperationResult(false, "Invalid email or password");
+                    return new OperationResult(false, "Invalid email or password.");
                 }
 
-                return new OperationResult(true, "Login successful");
+                var refrshToken = await _authRepository.GetRefreshToken(user.Id);
+                var accessToken = _jwtTokenService.GenerateToken(user);
+
+                if (refrshToken == null || refrshToken.IsExpired)
+                {
+
+                    var refreshToken = _jwtTokenService.GenerateRefreshToken();
+
+                    var refreshTokenEntity = new RefreshToken
+                    {
+                        Token = refreshToken,
+                        UserId = user.Id,
+                        Expires = DateTime.Now.AddDays(7),
+                        Created = DateTime.UtcNow,
+                    };
+
+                    var result = await _authRepository.AddAsync(refreshTokenEntity);
+
+                    if (result == null)
+                    {
+                        return new OperationResult(false, "Error saving refresh token.");
+                    }
+                    return new OperationResult(true, "Login successful", accessToken, refreshToken, user.PreferredLanguage,user.PreferredThemeDark);
+                }
+
+                return new OperationResult(true, "Login successful", accessToken, refrshToken.Token);
+
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error during user login.");
-                return null;
+                return new OperationResult(false, "Error during user login.");
             }
         }
-
-
-
 
         public async Task<UserDto> GetUserByIdAsync(Guid id)
         {
@@ -83,9 +113,9 @@ namespace PersonalCollectionManager.Infrastructure.Services
                 var user = await _userRepository.GetByIdAsync(id);
                 return _mapper.Map<UserDto>(user);
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
-                _logger.LogError(ex, "Error getting user by id");
+                _logger.LogError(ex, "Error getting user by id.");
                 return null;
             }
         }
@@ -99,7 +129,7 @@ namespace PersonalCollectionManager.Infrastructure.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error getting user by email");
+                _logger.LogError(ex, "Error getting user by email.");
                 return null;
             }
         }
@@ -113,7 +143,7 @@ namespace PersonalCollectionManager.Infrastructure.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error getting user by email");
+                _logger.LogError(ex, "Error checking email availability.");
                 throw;
             }
         }
@@ -125,25 +155,95 @@ namespace PersonalCollectionManager.Infrastructure.Services
                 var users = await _userRepository.FindAsync(u => u.Username == username);
                 return users.Any();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                _logger.LogError(ex, "Error getting user by username");
+                _logger.LogError(ex, "Error checking username availability.");
                 throw;
             }
         }
 
-        public Task<OperationResult> UpdateUser(UserDto userDto)
+        public async Task<OperationResult> UpdateUser(UserDto userDto)
         {
             try
             {
                 var user = _mapper.Map<User>(userDto);
-                _userRepository.Update(user);
-                return Task.FromResult(new OperationResult(true, "User updated successfully."));
+                await _userRepository.Update(user);
+                return new OperationResult(true, "User updated successfully.");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error updating user.");
-                return Task.FromResult(new OperationResult(false, "Error updating user."));
+                return new OperationResult(false, "Error updating user.");
+            }
+        }
+
+        public async Task<OperationResult> GetRefreshToken(RefreshTokenRequestDto refreshToken)
+        {
+            try
+            {
+                var principal = _jwtTokenService.GetPrincipalFromToken(refreshToken.AccessToken);
+                var userId = principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+                var refreshTokenEntity = await _authRepository.GetRefreshToken(Guid.Parse(userId));
+
+                if (refreshTokenEntity == null || refreshTokenEntity.Token != refreshToken.RefreshToken || refreshTokenEntity.IsExpired)
+                {
+                    return new OperationResult(false, "Invalid refresh token.");
+                }
+
+                var user = _mapper.Map<User>(await GetUserByIdAsync(Guid.Parse(userId)));
+
+                var accessToken = _jwtTokenService.GenerateToken(user);
+                var newRefreshToken = _jwtTokenService.GenerateRefreshToken();
+
+                refreshTokenEntity.Token = newRefreshToken;
+                refreshTokenEntity.Created = DateTime.UtcNow;
+                refreshTokenEntity.Expires = DateTime.Now.AddDays(7);
+
+                var result = await _authRepository.Update(refreshTokenEntity);
+                
+                if(result == null)
+                {
+                    return new OperationResult(false, "Error updating refresh token.");
+                }
+
+                return new OperationResult(true, "Access token refreshed successfully.", accessToken, newRefreshToken);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error refreshing access token.");
+                return new OperationResult(false, "Error refreshing access token.");
+            }
+        }
+
+        public async Task<bool> ChangeThemeAsync(Guid userId,bool isDarkMode)
+        {
+            try
+            {
+                var user = await _userRepository.GetByIdAsync(userId);
+                user.PreferredThemeDark = isDarkMode;
+                var result = await _userRepository.Update(user);
+                return result.PreferredThemeDark == isDarkMode;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error changing theme.");
+                return false;
+            }
+        }
+
+        public async Task<bool> ChangeLanguageAsync(Guid userId, string language)
+        {
+            try
+            {
+                var user = await _userRepository.GetByIdAsync(userId);
+                user.PreferredLanguage = language;
+                var result = await _userRepository.Update(user);
+                return result.PreferredLanguage == language;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error changing language.");
+                return false;
             }
         }
     }

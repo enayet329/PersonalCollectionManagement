@@ -30,6 +30,7 @@ namespace PersonalCollectionManager.Infrastructure.Services
             try
             {
                 var users = await _userRepository.GetAllAsync();
+                
                 return _mapper.Map<IEnumerable<UserDto>>(users);
             }
             catch (Exception ex)

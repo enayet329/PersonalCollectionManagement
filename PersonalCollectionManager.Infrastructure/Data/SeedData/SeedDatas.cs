@@ -15,8 +15,8 @@ public static class SeedData
                 Email = "admin@example.com",
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword("Admin@1234"),
                 ImageURL = "https://example.com/admin.jpg",
-                PrefrredLanguage = "en",
-                PreffrredThemeDark = false,
+                PreferredLanguage = "en",
+                PreferredThemeDark = false,
                 IsAdmin = true,
                 IsBlocked = false
             },
@@ -27,8 +27,8 @@ public static class SeedData
                 Email = "user1@example.com",
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword("User@1234"),
                 ImageURL = "https://example.com/user1.jpg",
-                PrefrredLanguage = "en",
-                PreffrredThemeDark = false,
+                PreferredLanguage = "en",
+                PreferredThemeDark = false,
                 IsAdmin = false,
                 IsBlocked = false
             }
@@ -97,6 +97,26 @@ public static class SeedData
                 Id = Guid.Parse("66666666-6666-6666-6666-666666666666"),
                 UserId = Guid.Parse("11111111-1111-1111-1111-111111111111"),
                 ItemId = Guid.Parse("33333333-3333-3333-3333-333333333333")
+            }
+        );
+
+        // Seed Refresh Tokens
+        modelBuilder.Entity<RefreshToken>().HasData(
+            new RefreshToken
+            {
+                Id = Guid.Parse("77777777-7777-7777-7777-777777777777"),
+                Token = "sampleRefreshToken1",
+                Expires = DateTime.UtcNow.AddDays(7),
+                Created = DateTime.UtcNow,
+                UserId = Guid.Parse("11111111-1111-1111-1111-111111111111")
+            },
+            new RefreshToken
+            {
+                Id = Guid.Parse("88888888-8888-8888-8888-888888888888"),
+                Token = "sampleRefreshToken2",
+                Expires = DateTime.UtcNow.AddDays(7),
+                Created = DateTime.UtcNow,
+                UserId = Guid.Parse("d2c6e7b4-4a76-4b1e-8d8f-2b9f2f7e0e77")
             }
         );
     }
