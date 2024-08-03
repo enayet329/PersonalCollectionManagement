@@ -15,8 +15,8 @@ public static class SeedData
                 Email = "admin@example.com",
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword("Admin@1234"),
                 ImageURL = "https://example.com/admin.jpg",
-                PrefrredLanguage = "en",
-                PreffrredThemeDark = false,
+                PreferredLanguage = "en",
+                PreferredThemeDark = false,
                 IsAdmin = true,
                 IsBlocked = false
             },
@@ -27,8 +27,8 @@ public static class SeedData
                 Email = "user1@example.com",
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword("User@1234"),
                 ImageURL = "https://example.com/user1.jpg",
-                PrefrredLanguage = "en",
-                PreffrredThemeDark = false,
+                PreferredLanguage = "en",
+                PreferredThemeDark = false,
                 IsAdmin = false,
                 IsBlocked = false
             }
