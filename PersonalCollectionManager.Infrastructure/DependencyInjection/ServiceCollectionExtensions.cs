@@ -2,15 +2,16 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using PersonalCollectionManager.Application.Interfaces.IAuthService;
 using PersonalCollectionManager.Application.Interfaces.IRepository;
 using PersonalCollectionManager.Application.Interfaces.IServices;
 using PersonalCollectionManager.Application.Interfaces.Services;
 using PersonalCollectionManager.Data.Repositories;
+using PersonalCollectionManager.Infrastructure.AuthenticationServices;
 using PersonalCollectionManager.Infrastructure.Data;
 using PersonalCollectionManager.Infrastructure.Repositories;
 using PersonalCollectionManager.Infrastructure.Services;
 using PersonalCollectionManager.Shared.Helpers;
-
 
 namespace PersonalCollectionManager.Infrastructure.DependencyInjection
 {
@@ -22,16 +23,10 @@ namespace PersonalCollectionManager.Infrastructure.DependencyInjection
                 options.UseSqlServer(configuration.GetConnectionString("PersonalCollectionManagerDb"),
                 b => b.MigrationsAssembly(typeof(ServiceCollectionExtensions).Assembly.FullName))
                 .EnableSensitiveDataLogging()
-                .LogTo(Console.WriteLine, LogLevel.Information),
-                ServiceLifetime.Scoped);
-
-
-            // Jwt Authentication
-
+                .LogTo(Console.WriteLine, LogLevel.Information));
 
             // Helpers
             services.AddAutoMapper(typeof(AutoMapperProfile));
-
 
             // Repositories
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
@@ -42,6 +37,7 @@ namespace PersonalCollectionManager.Infrastructure.DependencyInjection
             services.AddScoped<ITagRepository, TagRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IItemTagRepository, ItemTagRepository>();
+            services.AddScoped<IAuthRepository, AuthRepository>();
 
             // Services
             services.AddScoped<IAdminServices, AdminService>();
@@ -52,18 +48,11 @@ namespace PersonalCollectionManager.Infrastructure.DependencyInjection
             services.AddScoped<ITagService, TagService>();
             services.AddScoped<ILikeService, LikeService>();
 
-
-            services.AddScoped<AdminService>();
-            services.AddScoped<AccountService>();
-            services.AddScoped<CollectionService>();
-            services.AddScoped<CommentService>();
-            services.AddScoped<ItemService>();
-            services.AddScoped<TagService>();
-            services.AddScoped<LikeService>();
+            // Authentication Service
+            services.AddScoped<IJwtTokenService, JwtTokenService>();
 
 
             return services;
         }
-
     }
 }
