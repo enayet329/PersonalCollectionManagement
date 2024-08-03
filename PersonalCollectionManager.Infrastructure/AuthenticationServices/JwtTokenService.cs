@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -21,7 +22,20 @@ namespace PersonalCollectionManager.Infrastructure.AuthenticationServices
 
         public string GenerateRefreshToken()
         {
-            
+            var randomNumber = new byte[byte.MaxValue];
+            using (var rng = new System.Security.Cryptography.RNGCryptoServiceProvider())
+            {
+                rng.GetBytes(randomNumber);
+            }
+            // Combine the random number with a new GUID and the current timestamp
+            var uniqueToken = $"{Convert.ToBase64String(randomNumber)}|{Guid.NewGuid()}|{DateTime.UtcNow.Ticks}";
+
+            // Use SHA256 to hash the unique token
+            using (var sha256 = SHA256.Create())
+            {
+                var hashedToken = sha256.ComputeHash(Encoding.UTF8.GetBytes(uniqueToken));
+                return Convert.ToBase64String(hashedToken);
+            }
         }
 
         public string GenerateToken(User user)

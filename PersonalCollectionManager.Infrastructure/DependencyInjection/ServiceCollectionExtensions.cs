@@ -25,6 +25,10 @@ namespace PersonalCollectionManager.Infrastructure.DependencyInjection
                 .LogTo(Console.WriteLine, LogLevel.Information),
                 ServiceLifetime.Scoped);
 
+
+            // Jwt Authentication
+
+
             // Helpers
             services.AddAutoMapper(typeof(AutoMapperProfile));
 
