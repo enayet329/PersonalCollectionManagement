@@ -99,5 +99,25 @@ public static class SeedData
                 ItemId = Guid.Parse("33333333-3333-3333-3333-333333333333")
             }
         );
+
+        // Seed Refresh Tokens
+        modelBuilder.Entity<RefreshToken>().HasData(
+            new RefreshToken
+            {
+                Id = Guid.Parse("77777777-7777-7777-7777-777777777777"),
+                Token = "sampleRefreshToken1",
+                Expires = DateTime.UtcNow.AddDays(7),
+                Created = DateTime.UtcNow,
+                UserId = Guid.Parse("11111111-1111-1111-1111-111111111111")
+            },
+            new RefreshToken
+            {
+                Id = Guid.Parse("88888888-8888-8888-8888-888888888888"),
+                Token = "sampleRefreshToken2",
+                Expires = DateTime.UtcNow.AddDays(7),
+                Created = DateTime.UtcNow,
+                UserId = Guid.Parse("d2c6e7b4-4a76-4b1e-8d8f-2b9f2f7e0e77")
+            }
+        );
     }
 }
