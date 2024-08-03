@@ -6,6 +6,8 @@ namespace PersonalCollectionManager.Application.Interfaces.IAuthService
 {
     public interface IJwtTokenService
     {
-        string GenerateToken(User user, IList<Claim> additionalClaims = null);
+        string GenerateToken(User user);
+        string GenerateRefreshToken();
+        ClaimsPrincipal GetPrincipalFromToken(string token);
     }
 }
