@@ -15,13 +15,17 @@ namespace PersonalCollectionManager.Domain.Entities
         public string Email { get; set; }
         public string PasswordHash { get; set; }
         public string ImageURL { get; set; }
-        public string PrefrredLanguage { get; set; } = "en";
-        public bool PreffrredThemeDark { get; set; } = false;
+
+        [StringLength(2)]
+        public string PreferredLanguage { get; set; } = "en";
+        public bool PreferredThemeDark { get; set; } = false;
         public bool IsAdmin { get; set; } = false;
         public bool IsBlocked { get; set; } = false;
 
         public virtual ICollection<Collection> Collections { get; set; }
         public virtual ICollection<Comment> Comments { get; set; }
         public virtual ICollection<Like> Likes { get; set; }
+
+        public virtual ICollection<RefreshToken> RefreshTokens { get; set; }
     }
 }
