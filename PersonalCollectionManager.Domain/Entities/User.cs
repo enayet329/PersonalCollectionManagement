@@ -16,9 +16,9 @@ namespace PersonalCollectionManager.Domain.Entities
         public string PasswordHash { get; set; }
         public string ImageURL { get; set; }
 
-        [StringLength(2)]
-        public string PreferredLanguage { get; set; } = "en";
-        public bool PreferredThemeDark { get; set; } = false;
+        [StringLength(3)]
+        public string PreferredLanguage { get; set; } = "en"; // Default to English
+        public bool PreferredThemeDark { get; set; } = false; // Default to light theme
         public bool IsAdmin { get; set; } = false;
         public bool IsBlocked { get; set; } = false;
 
