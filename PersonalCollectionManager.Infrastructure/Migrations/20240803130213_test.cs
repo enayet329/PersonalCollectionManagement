@@ -34,8 +34,8 @@ namespace PersonalCollectionManager.Infrastructure.Migrations
                     Email = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ImageURL = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PrefrredLanguage = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PreffrredThemeDark = table.Column<bool>(type: "bit", nullable: false),
+                    PreferredLanguage = table.Column<string>(type: "nvarchar(3)", maxLength: 3, nullable: false),
+                    PreferredThemeDark = table.Column<bool>(type: "bit", nullable: false),
                     IsAdmin = table.Column<bool>(type: "bit", nullable: false),
                     IsBlocked = table.Column<bool>(type: "bit", nullable: false)
                 },
@@ -60,6 +60,28 @@ namespace PersonalCollectionManager.Infrastructure.Migrations
                     table.PrimaryKey("PK_Collections", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Collections_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "RefreshTokens",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Token = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Expires = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Created = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Revoked = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RefreshTokens", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_RefreshTokens_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
@@ -171,11 +193,11 @@ namespace PersonalCollectionManager.Infrastructure.Migrations
 
             migrationBuilder.InsertData(
                 table: "Users",
-                columns: new[] { "Id", "Email", "ImageURL", "IsAdmin", "IsBlocked", "PasswordHash", "PreffrredThemeDark", "PrefrredLanguage", "Username" },
+                columns: new[] { "Id", "Email", "ImageURL", "IsAdmin", "IsBlocked", "PasswordHash", "PreferredLanguage", "PreferredThemeDark", "Username" },
                 values: new object[,]
                 {
-                    { new Guid("11111111-1111-1111-1111-111111111111"), "user1@example.com", "https://example.com/user1.jpg", false, false, "$2a$10$3ntW07qsM27HEwghWDi3EuvwidrEl9f.KTJwF.DffJEgxXeoZqWBW", false, "en", "user1" },
-                    { new Guid("d2c6e7b4-4a76-4b1e-8d8f-2b9f2f7e0e77"), "admin@example.com", "https://example.com/admin.jpg", true, false, "$2a$10$qKpj0dqitxxUurt8Ezc6Puk3jQi92tjl78YZ058Vh6RvQMqC/K5ZG", false, "en", "admin" }
+                    { new Guid("11111111-1111-1111-1111-111111111111"), "user1@example.com", "https://example.com/user1.jpg", false, false, "$2a$10$irUycdjwCU.yXpW/wzfbmuUIZEnHuqkKz7VKZ2DEeFuDl4aUmTZ7e", "en", false, "user1" },
+                    { new Guid("d2c6e7b4-4a76-4b1e-8d8f-2b9f2f7e0e77"), "admin@example.com", "https://example.com/admin.jpg", true, false, "$2a$10$tZt6npOCgGVoeWtoihCoMOn3cM2GSfpPCS.dAfVYM6x4voeU1uNwO", "en", false, "admin" }
                 });
 
             migrationBuilder.InsertData(
@@ -184,14 +206,23 @@ namespace PersonalCollectionManager.Infrastructure.Migrations
                 values: new object[] { new Guid("22222222-2222-2222-2222-222222222222"), "First collection", "https://example.com/collection1.jpg", "Collection 1", "General", new Guid("11111111-1111-1111-1111-111111111111") });
 
             migrationBuilder.InsertData(
+                table: "RefreshTokens",
+                columns: new[] { "Id", "Created", "Expires", "Revoked", "Token", "UserId" },
+                values: new object[,]
+                {
+                    { new Guid("77777777-7777-7777-7777-777777777777"), new DateTime(2024, 8, 3, 13, 2, 13, 308, DateTimeKind.Utc).AddTicks(147), new DateTime(2024, 8, 10, 13, 2, 13, 308, DateTimeKind.Utc).AddTicks(140), null, "sampleRefreshToken1", new Guid("11111111-1111-1111-1111-111111111111") },
+                    { new Guid("88888888-8888-8888-8888-888888888888"), new DateTime(2024, 8, 3, 13, 2, 13, 308, DateTimeKind.Utc).AddTicks(150), new DateTime(2024, 8, 10, 13, 2, 13, 308, DateTimeKind.Utc).AddTicks(149), null, "sampleRefreshToken2", new Guid("d2c6e7b4-4a76-4b1e-8d8f-2b9f2f7e0e77") }
+                });
+
+            migrationBuilder.InsertData(
                 table: "Items",
                 columns: new[] { "Id", "CollectionId", "DateAdded", "Description", "ImgUrl", "Name" },
-                values: new object[] { new Guid("33333333-3333-3333-3333-333333333333"), new Guid("22222222-2222-2222-2222-222222222222"), new DateTime(2024, 8, 2, 16, 41, 47, 626, DateTimeKind.Utc).AddTicks(2227), "First item", "https://example.com/item1.jpg", "Item 1" });
+                values: new object[] { new Guid("33333333-3333-3333-3333-333333333333"), new Guid("22222222-2222-2222-2222-222222222222"), new DateTime(2024, 8, 3, 13, 2, 13, 307, DateTimeKind.Utc).AddTicks(9926), "First item", "https://example.com/item1.jpg", "Item 1" });
 
             migrationBuilder.InsertData(
                 table: "Comments",
                 columns: new[] { "Id", "Content", "CreatedAt", "ItemId", "UserId" },
-                values: new object[] { new Guid("55555555-5555-5555-5555-555555555555"), "First comment", new DateTime(2024, 8, 2, 16, 41, 47, 626, DateTimeKind.Utc).AddTicks(2318), new Guid("33333333-3333-3333-3333-333333333333"), new Guid("11111111-1111-1111-1111-111111111111") });
+                values: new object[] { new Guid("55555555-5555-5555-5555-555555555555"), "First comment", new DateTime(2024, 8, 3, 13, 2, 13, 308, DateTimeKind.Utc).AddTicks(49), new Guid("33333333-3333-3333-3333-333333333333"), new Guid("11111111-1111-1111-1111-111111111111") });
 
             migrationBuilder.InsertData(
                 table: "ItemTags",
@@ -258,6 +289,11 @@ namespace PersonalCollectionManager.Infrastructure.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_RefreshTokens_UserId",
+                table: "RefreshTokens",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Tags_Id",
                 table: "Tags",
                 column: "Id",
@@ -287,6 +323,9 @@ namespace PersonalCollectionManager.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "Likes");
+
+            migrationBuilder.DropTable(
+                name: "RefreshTokens");
 
             migrationBuilder.DropTable(
                 name: "Tags");

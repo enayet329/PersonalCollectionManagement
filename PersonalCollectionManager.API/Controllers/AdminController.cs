@@ -1,14 +1,14 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PersonalCollectionManager.Application.DTOs.RequestDtos;
 using PersonalCollectionManager.Application.DTOs.ResponseDtos;
 using PersonalCollectionManager.Application.Interfaces.IServices;
 using PersonalCollectionManager.Application.Interfaces.Services;
-using PersonalCollectionManager.Infrastructure.Services;
 
 namespace PersonalCollectionManager.API.Controllers
 {
     [ApiController]
+    [Authorize(policy: "AdminOnly")]
     [Route("api/[controller]")]
     public class AdminController : ControllerBase
     {
@@ -16,13 +16,12 @@ namespace PersonalCollectionManager.API.Controllers
         private readonly ICollectionService _collectionService;
         private readonly IItemService _itemService;
 
-        public AdminController(IAdminServices adminService,ICollectionService collectionService,IItemService itemService)
+        public AdminController(IAdminServices adminService, ICollectionService collectionService, IItemService itemService)
         {
             _adminService = adminService;
             _collectionService = collectionService;
             _itemService = itemService;
         }
-        
 
         [HttpGet("users")]
         public async Task<ActionResult<IEnumerable<UserDto>>> GetAllUsers()
@@ -31,11 +30,10 @@ namespace PersonalCollectionManager.API.Controllers
             return Ok(users);
         }
 
-        [HttpPost("create/colleciton")]
-        public async Task<IActionResult> CreateCollecitonForUserAsync(CollectionRequestDto collectionDto)
+        [HttpPost("create/collection")]
+        public async Task<IActionResult> CreateCollectionForUserAsync(CollectionRequestDto collectionDto)
         {
             var response = await _collectionService.AddCollectionAsync(collectionDto);
-
             return Ok(response);
         }
 
@@ -43,11 +41,10 @@ namespace PersonalCollectionManager.API.Controllers
         public async Task<IActionResult> CreateItemForCollectionAsync(ItemRequestDto itemDto)
         {
             var response = await _itemService.AddItemAsync(itemDto);
-
             return Ok(response);
         }
 
-        [HttpPost("get/user/id")]
+        [HttpGet("get/user/id")]
         public async Task<IActionResult> GetUserById(Guid id)
         {
             var user = await _adminService.GetUserByIdAsync(id);
@@ -58,11 +55,11 @@ namespace PersonalCollectionManager.API.Controllers
             return Ok(user);
         }
 
-        [HttpPost("get/user/email")]
+        [HttpGet("get/user/email")]
         public async Task<IActionResult> GetUserByEmail(string email)
         {
             var user = await _adminService.GetUserByEmailAsync(email);
-            if (email == null)
+            if (user == null)
             {
                 return NotFound();
             }
@@ -70,7 +67,6 @@ namespace PersonalCollectionManager.API.Controllers
         }
 
         [HttpPut("update/admin")]
-        
         public async Task<IActionResult> UpdateUserAsAdmin(Guid id)
         {
             var user = await _adminService.AddAdminRoleAsync(id);
@@ -91,20 +87,24 @@ namespace PersonalCollectionManager.API.Controllers
             return Ok(user);
         }
 
-        [HttpPost("block/user")]
+        [HttpPut("block/user")]
         public async Task<IActionResult> BlockUser(Guid id)
         {
             var response = await _adminService.BlockUserAsync(id);
-
             return Ok(response);
         }
 
-        [HttpPost("unblock/user")]
+        [HttpPut("unblock/user")]
         public async Task<IActionResult> UnblockUser(Guid id)
         {
             var response = await _adminService.UnblockUserAsync(id);
-
             return Ok(response);
         }
     }
 }
+
+/*
+ * The AdminController class is responsible for handling all the admin related requests.
+ * It has methods for creating, updating, deleting, blocking, unblocking, and getting users.
+ * It also has methods for creating and adding items to collections.
+ */

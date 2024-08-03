@@ -39,6 +39,20 @@ namespace PersonalCollectionManager.API.Controllers
             return Ok(userDto);
         }
 
+        [HttpPost("refresh-token")]
+        public async Task<IActionResult> RefreshToken(RefreshTokenRequestDto token)
+        {
+            var userDto = await _accountService.GetRefreshToken(token);
+
+            if (userDto == null)
+            {
+                return Unauthorized(new { message = "Invalid token." });
+            }
+
+            return Ok(userDto);
+        }
+
+
         [HttpGet("get/user/id")]
         public async Task<IActionResult> GetUserById(Guid id)
         {
@@ -79,6 +93,29 @@ namespace PersonalCollectionManager.API.Controllers
             var availableEmails = await _accountService.IsEmailAvailableAsync(email);
 
             return Ok(availableEmails);
+        }
+
+        [HttpPut("change/language")]
+        public async Task<IActionResult> ChangeTheme(Guid userId, string language)
+        {
+            var result = await _accountService.ChangeLanguageAsync(userId, language);
+            if(result == true)
+            {
+                return Ok(new { message = "Language updated successfully." });
+            }
+            return Ok(new { message = "Language not updated." });
+
+        }
+
+        [HttpPut("change/theme")]
+        public async Task<IActionResult> ChangeThem(Guid userId, bool theme)
+        {
+            var result = await _accountService.ChangeThemeAsync(userId, theme);
+            if (result == true)
+            {
+                return Ok(new { message = "Theme updated successfully." });
+            }
+            return Ok(new { message = "Theme not updated." });
         }
     }
 }

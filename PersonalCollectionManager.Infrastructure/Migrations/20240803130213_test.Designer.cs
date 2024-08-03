@@ -12,7 +12,7 @@ using PersonalCollectionManager.Infrastructure.Data;
 namespace PersonalCollectionManager.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240802164148_test")]
+    [Migration("20240803130213_test")]
     partial class test
     {
         /// <inheritdoc />
@@ -106,7 +106,7 @@ namespace PersonalCollectionManager.Infrastructure.Migrations
                         {
                             Id = new Guid("55555555-5555-5555-5555-555555555555"),
                             Content = "First comment",
-                            CreatedAt = new DateTime(2024, 8, 2, 16, 41, 47, 626, DateTimeKind.Utc).AddTicks(2318),
+                            CreatedAt = new DateTime(2024, 8, 3, 13, 2, 13, 308, DateTimeKind.Utc).AddTicks(49),
                             ItemId = new Guid("33333333-3333-3333-3333-333333333333"),
                             UserId = new Guid("11111111-1111-1111-1111-111111111111")
                         });
@@ -151,7 +151,7 @@ namespace PersonalCollectionManager.Infrastructure.Migrations
                         {
                             Id = new Guid("33333333-3333-3333-3333-333333333333"),
                             CollectionId = new Guid("22222222-2222-2222-2222-222222222222"),
-                            DateAdded = new DateTime(2024, 8, 2, 16, 41, 47, 626, DateTimeKind.Utc).AddTicks(2227),
+                            DateAdded = new DateTime(2024, 8, 3, 13, 2, 13, 307, DateTimeKind.Utc).AddTicks(9926),
                             Description = "First item",
                             ImgUrl = "https://example.com/item1.jpg",
                             Name = "Item 1"
@@ -210,6 +210,53 @@ namespace PersonalCollectionManager.Infrastructure.Migrations
                         });
                 });
 
+            modelBuilder.Entity("PersonalCollectionManager.Domain.Entities.RefreshToken", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("Expires")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("Revoked")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("RefreshTokens");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("77777777-7777-7777-7777-777777777777"),
+                            Created = new DateTime(2024, 8, 3, 13, 2, 13, 308, DateTimeKind.Utc).AddTicks(147),
+                            Expires = new DateTime(2024, 8, 10, 13, 2, 13, 308, DateTimeKind.Utc).AddTicks(140),
+                            Token = "sampleRefreshToken1",
+                            UserId = new Guid("11111111-1111-1111-1111-111111111111")
+                        },
+                        new
+                        {
+                            Id = new Guid("88888888-8888-8888-8888-888888888888"),
+                            Created = new DateTime(2024, 8, 3, 13, 2, 13, 308, DateTimeKind.Utc).AddTicks(150),
+                            Expires = new DateTime(2024, 8, 10, 13, 2, 13, 308, DateTimeKind.Utc).AddTicks(149),
+                            Token = "sampleRefreshToken2",
+                            UserId = new Guid("d2c6e7b4-4a76-4b1e-8d8f-2b9f2f7e0e77")
+                        });
+                });
+
             modelBuilder.Entity("PersonalCollectionManager.Domain.Entities.Tag", b =>
                 {
                     b.Property<Guid>("Id")
@@ -260,12 +307,13 @@ namespace PersonalCollectionManager.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("PreffrredThemeDark")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("PrefrredLanguage")
+                    b.Property<string>("PreferredLanguage")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(3)
+                        .HasColumnType("nvarchar(3)");
+
+                    b.Property<bool>("PreferredThemeDark")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Username")
                         .IsRequired()
@@ -290,9 +338,9 @@ namespace PersonalCollectionManager.Infrastructure.Migrations
                             ImageURL = "https://example.com/admin.jpg",
                             IsAdmin = true,
                             IsBlocked = false,
-                            PasswordHash = "$2a$10$qKpj0dqitxxUurt8Ezc6Puk3jQi92tjl78YZ058Vh6RvQMqC/K5ZG",
-                            PreffrredThemeDark = false,
-                            PrefrredLanguage = "en",
+                            PasswordHash = "$2a$10$tZt6npOCgGVoeWtoihCoMOn3cM2GSfpPCS.dAfVYM6x4voeU1uNwO",
+                            PreferredLanguage = "en",
+                            PreferredThemeDark = false,
                             Username = "admin"
                         },
                         new
@@ -302,9 +350,9 @@ namespace PersonalCollectionManager.Infrastructure.Migrations
                             ImageURL = "https://example.com/user1.jpg",
                             IsAdmin = false,
                             IsBlocked = false,
-                            PasswordHash = "$2a$10$3ntW07qsM27HEwghWDi3EuvwidrEl9f.KTJwF.DffJEgxXeoZqWBW",
-                            PreffrredThemeDark = false,
-                            PrefrredLanguage = "en",
+                            PasswordHash = "$2a$10$irUycdjwCU.yXpW/wzfbmuUIZEnHuqkKz7VKZ2DEeFuDl4aUmTZ7e",
+                            PreferredLanguage = "en",
+                            PreferredThemeDark = false,
                             Username = "user1"
                         });
                 });
@@ -388,6 +436,17 @@ namespace PersonalCollectionManager.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("PersonalCollectionManager.Domain.Entities.RefreshToken", b =>
+                {
+                    b.HasOne("PersonalCollectionManager.Domain.Entities.User", "User")
+                        .WithMany("RefreshTokens")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("PersonalCollectionManager.Domain.Entities.Collection", b =>
                 {
                     b.Navigation("Items");
@@ -414,6 +473,8 @@ namespace PersonalCollectionManager.Infrastructure.Migrations
                     b.Navigation("Comments");
 
                     b.Navigation("Likes");
+
+                    b.Navigation("RefreshTokens");
                 });
 #pragma warning restore 612, 618
         }
