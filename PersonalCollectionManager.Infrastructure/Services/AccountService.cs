@@ -96,7 +96,7 @@ namespace PersonalCollectionManager.Infrastructure.Services
                     return new OperationResult(true, "Login successful", accessToken, refreshToken, user.PreferredLanguage,user.PreferredThemeDark);
                 }
 
-                return new OperationResult(true, "Login successful", accessToken, refrshToken.Token);
+                return new OperationResult(true, "Login successful", accessToken, refrshToken.Token, user.PreferredLanguage, user.PreferredThemeDark);
 
             }
             catch (Exception ex)

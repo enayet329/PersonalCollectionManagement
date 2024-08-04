@@ -7,7 +7,7 @@ using PersonalCollectionManager.Data.Repositories;
 
 namespace PersonalCollectionManager.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v1/comments")]
     [ApiController]
     public class CommentController : ControllerBase
     {
@@ -17,35 +17,34 @@ namespace PersonalCollectionManager.API.Controllers
             _commentService = commentService;
         }
 
-        [HttpGet("get/comments/itemId")]
+        [HttpGet("item/{itemId:guid}")]
         public async Task<ActionResult<IEnumerable<CommentDto>>> GetAllComments(Guid id)
         {
             var comments = await _commentService.GetAllCommentByItemIdAsync(id);
             return Ok(comments);
         }
 
-        [HttpGet("get/comment/id")]
+        [HttpGet("{id:guid}")]
         public async Task<ActionResult<CommentDto>> GetCommentById(Guid id)
         {
             var comment = await _commentService.GetCommentByIdAsync(id);
             return Ok(comment);
         }
 
-        [HttpPost("add/comment")]
+        [HttpPost]
         public async Task<IActionResult> AddComment(CommentRequestDto comment)
         {
             var newComment = await _commentService.AddCommentAsync(comment);
             return Ok(newComment);
         }
-
-        [HttpDelete("delete/comment/id")]
+        [HttpDelete("{id:guid}")]
         public async Task<IActionResult> DeleteComment(Guid id)
         {
             var result = await _commentService.DeleteCommentAsync(id);
             return Ok(result);
         }
 
-        [HttpPut("update/comment")]
+        [HttpPut("{id:guid}")]
         public async Task<IActionResult> UpdateComment(CommentDto comment)
         {
             var result = await _commentService.UpdateCommentAsync(comment);

@@ -1,94 +1,82 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using PersonalCollectionManager.Application.DTOs.RequestDtos;
 using PersonalCollectionManager.Application.DTOs.ResponseDtos;
 using PersonalCollectionManager.Application.Interfaces.IServices;
-
+using System.Collections.Generic;
+using System;
+using System.Threading.Tasks;
 
 namespace PersonalCollectionManager.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v1/collections")]
     [ApiController]
     public class CollectionController : ControllerBase
     {
         private readonly ICollectionService _collectionService;
+
         public CollectionController(ICollectionService collectionService)
         {
             _collectionService = collectionService;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<CollectionDto>>> GetAllColleciton()
+        public async Task<ActionResult<IEnumerable<CollectionDto>>> GetAllCollections()
         {
-            var user = await _collectionService.GetAllCollectionsAsync();
-            return Ok(user);
+            var collections = await _collectionService.GetAllCollectionsAsync();
+            return Ok(collections);
         }
 
-        [HttpGet]
-        [Route("get/largest/collection")]
+        [HttpGet("largest")]
         public async Task<ActionResult<IEnumerable<CollectionDto>>> GetLargestCollection()
         {
             var collections = await _collectionService.GetLargestCollecitonAsync();
             return Ok(collections);
         }
 
-        [HttpPost("add/collection")]
-        public async Task<IActionResult> AddCollection(CollectionRequestDto collection)
+        [HttpPost]
+        public async Task<IActionResult> AddCollection([FromBody] CollectionRequestDto collection)
         {
             var result = await _collectionService.AddCollectionAsync(collection);
             return Ok(result);
         }
 
-        [HttpDelete("delete/collection/id")]
-        public async Task<IActionResult> DeleteCollection(Guid id)
+        [HttpDelete("{id:guid}")]
+        public async Task<IActionResult> DeleteCollection([FromRoute] Guid id)
         {
             var result = await _collectionService.DeleteCollectionAsync(id);
             return Ok(result);
         }
 
-        [HttpGet("get/collection/id")]
-        public async Task<IActionResult> GetCollectionById(Guid id)
+        [HttpGet("{id:guid}")]
+        public async Task<IActionResult> GetCollectionById([FromRoute] Guid id)
         {
-            var result = await _collectionService.GetCollectionByIdAsync(id);
+            var collection = await _collectionService.GetCollectionByIdAsync(id);
 
-            if (result == null)
+            if (collection == null)
             {
                 return NotFound(new { message = "Collection not found." });
             }
 
-            return Ok(result);
+            return Ok(collection);
         }
 
-        [HttpGet("get/collection/userId")]
-        public async Task<IActionResult> GetCollectionByName(Guid userId)
+        [HttpGet("user/{userId:guid}")]
+        public async Task<IActionResult> GetCollectionsByUserId([FromRoute] Guid userId)
         {
-            var result = await _collectionService.GetCollectionByUserIdAsync(userId);
+            var collections = await _collectionService.GetAllCollectionsByUserIdAsync(userId);
 
-            if (result == null)
-            {
-                return NotFound(new { message = "Collection not found." });
-            }
-
-            return Ok(result);
-        }
-
-        [HttpGet("get/collections/userId")]
-        public async Task<IActionResult> GetCollectionsByUserId(Guid userId)
-        {
-            var result = await _collectionService.GetAllCollectionsByUserIdAsync(userId);
-
-            if (result == null)
+            if (collections == null)
             {
                 return NotFound(new { message = "Collections not found." });
             }
 
-            return Ok(result);
+            return Ok(collections);
         }
 
-        [HttpPut("update/collection")]
-        public IActionResult UpdateCollection(CollectionDto collection)
+        [HttpPut]
+        public async Task<IActionResult> UpdateCollection([FromBody] CollectionDto collection)
         {
-            var result = _collectionService.UpdateCollectionAsync(collection);
+            var result = await _collectionService.UpdateCollectionAsync(collection);
             return Ok(result);
         }
     }

@@ -1,33 +1,32 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity.Data;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using PersonalCollectionManager.Application.DTOs.RequestDtos;
 using PersonalCollectionManager.Application.DTOs.ResponseDtos;
 using PersonalCollectionManager.Application.Interfaces.IServices;
+using System;
+using System.Threading.Tasks;
 
 namespace PersonalCollectionManager.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v1/accounts")]
     [ApiController]
     public class AccountController : ControllerBase
     {
         private readonly IAccountService _accountService;
+
         public AccountController(IAccountService accountService)
         {
             _accountService = accountService;
         }
 
-
         [HttpPost("register")]
-        public async Task<IActionResult> Register(RegisterRequestDto user)
+        public async Task<IActionResult> Register([FromBody] RegisterRequestDto user)
         {
             var result = await _accountService.Register(user);
-
             return Ok(result);
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody]LoginRequestDTO request)
+        public async Task<IActionResult> Login([FromBody] LoginRequestDTO request)
         {
             var userDto = await _accountService.Login(request);
 
@@ -40,7 +39,7 @@ namespace PersonalCollectionManager.API.Controllers
         }
 
         [HttpPost("refresh-token")]
-        public async Task<IActionResult> RefreshToken(RefreshTokenRequestDto token)
+        public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequestDto token)
         {
             var userDto = await _accountService.GetRefreshToken(token);
 
@@ -52,8 +51,7 @@ namespace PersonalCollectionManager.API.Controllers
             return Ok(userDto);
         }
 
-
-        [HttpGet("get/user/id")]
+        [HttpGet("{id:guid}")]
         public async Task<IActionResult> GetUserById(Guid id)
         {
             var user = await _accountService.GetUserByIdAsync(id);
@@ -66,8 +64,8 @@ namespace PersonalCollectionManager.API.Controllers
             return Ok(user);
         }
 
-        [HttpGet("get/user/email")]
-        public async Task<IActionResult> GetUserByUsername(string email)
+        [HttpGet("by-email")]
+        public async Task<IActionResult> GetUserByEmail([FromQuery] string email)
         {
             var user = await _accountService.GetUserByUseremailAsync(email);
 
@@ -79,42 +77,41 @@ namespace PersonalCollectionManager.API.Controllers
             return Ok(user);
         }
 
-        [HttpGet("avaiable/usernames")]
-        public async Task<IActionResult> GetAvailableUsernames(string username)
+        [HttpGet("availability/username")]
+        public async Task<IActionResult> GetAvailableUsernames([FromQuery] string username)
         {
-            var availableUsernames = await _accountService.IsUsernameAvailableAsync(username);
-            
-            return Ok(availableUsernames);
+            var isAvailable = await _accountService.IsUsernameAvailableAsync(username);
+            return Ok(new { available = isAvailable });
         }
 
-        [HttpGet("avaiable/emails")]
-        public async Task<IActionResult> GetAvailableEmails(string email)
+        [HttpGet("availability/email")]
+        public async Task<IActionResult> GetAvailableEmails([FromQuery] string email)
         {
-            var availableEmails = await _accountService.IsEmailAvailableAsync(email);
-
-            return Ok(availableEmails);
+            var isAvailable = await _accountService.IsEmailAvailableAsync(email);
+            return Ok(new { available = isAvailable });
         }
 
-        [HttpPut("change/language")]
-        public async Task<IActionResult> ChangeTheme(Guid userId, string language)
+        [HttpPut("{userId:guid}/language")]
+        public async Task<IActionResult> ChangeLanguage([FromRoute] Guid userId, [FromQuery] string language)
         {
             var result = await _accountService.ChangeLanguageAsync(userId, language);
-            if(result == true)
+            if (result)
             {
                 return Ok(new { message = "Language updated successfully." });
             }
-            return Ok(new { message = "Language not updated." });
 
+            return Ok(new { message = "Language not updated." });
         }
 
-        [HttpPut("change/theme")]
-        public async Task<IActionResult> ChangeThem(Guid userId, bool theme)
+        [HttpPut("{userId:guid}/theme")]
+        public async Task<IActionResult> ChangeTheme([FromRoute] Guid userId, [FromQuery] bool theme)
         {
             var result = await _accountService.ChangeThemeAsync(userId, theme);
-            if (result == true)
+            if (result)
             {
                 return Ok(new { message = "Theme updated successfully." });
             }
+
             return Ok(new { message = "Theme not updated." });
         }
     }
