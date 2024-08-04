@@ -33,14 +33,14 @@ namespace PersonalCollectionManager.API.Controllers
             return Ok(users);
         }
 
-        [HttpPost("collections")]
+        [HttpPost("create/collection")]
         public async Task<IActionResult> CreateCollectionForUserAsync([FromBody] CollectionRequestDto collectionDto)
         {
             var response = await _collectionService.AddCollectionAsync(collectionDto);
             return Ok(response);
         }
 
-        [HttpPost("items")]
+        [HttpPost("create/item")]
         public async Task<IActionResult> CreateItemForCollectionAsync([FromBody] ItemRequestDto itemDto)
         {
             var response = await _itemService.AddItemAsync(itemDto);
