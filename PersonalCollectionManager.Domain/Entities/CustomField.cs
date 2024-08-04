@@ -1,33 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace PersonalCollectionManager.Domain.Entities
 {
-    public class Item
+    public class CustomField
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
 
         [Required]
-        [StringLength(100)]
         public string Name { get; set; }
 
-        public string ImgUrl { get; set; }
-        public string Description { get; set; }
-        public DateTime DateAdded { get; set; }
+        [Required]
+        public string FieldType { get; set; } // E.g., "text", "number", "date", etc.
 
         [Required]
         public Guid CollectionId { get; set; }
 
-        [ForeignKey("CollectionId")]
+        [ForeignKey(nameof(CollectionId))]
         public virtual Collection Collection { get; set; }
 
-        public virtual ICollection<ItemTag> ItemTags { get; set; }
-        public virtual ICollection<Comment> Comments { get; set; }
-        public virtual ICollection<Like> Likes { get; set; }
         public virtual ICollection<CustomFieldValue> CustomFieldValues { get; set; }
     }
 
