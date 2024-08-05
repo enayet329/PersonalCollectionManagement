@@ -15,12 +15,11 @@ namespace PersonalCollectionManager.Shared.Helpers
             CreateMap<Item, ItemDto>().ReverseMap();
             CreateMap<Like, LikeDto>().ReverseMap();
             CreateMap<Tag, TagDto>().ReverseMap();
-            //CreateMap<User, UserDto>().ReverseMap();
 
             CreateMap<User, UserDto>()
                 .ForMember(dest => dest.PrefrredLanguage, opt => opt.MapFrom(src => src.PreferredLanguage))
                 .ForMember(dest => dest.PreffrredThemeDark, opt => opt.MapFrom(src => src.PreferredThemeDark));
-           
+
             CreateMap<UserDto, User>()
                 .ForMember(dest => dest.PreferredLanguage, opt => opt.MapFrom(src => src.PrefrredLanguage))
                 .ForMember(dest => dest.PreferredThemeDark, opt => opt.MapFrom(src => src.PreffrredThemeDark));
@@ -28,7 +27,6 @@ namespace PersonalCollectionManager.Shared.Helpers
             // RequestDTOs to Domain Entities
             CreateMap<RegisterRequestDto, User>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
-                .ForMember(dest => dest.PreferredThemeDark, opt => opt.Ignore())
                 .ForMember(dest => dest.PreferredThemeDark, opt => opt.Ignore())
                 .ForMember(dest => dest.RefreshTokens, opt => opt.Ignore())
                 .ForMember(dest => dest.IsAdmin, opt => opt.Ignore())
@@ -42,7 +40,6 @@ namespace PersonalCollectionManager.Shared.Helpers
                 .ForMember(dest => dest.Items, opt => opt.Ignore());
 
             CreateMap<ItemRequestDto, Item>()
-                .ForMember(dest => dest.Id, opt => opt.Ignore())
                 .ForMember(dest => dest.Collection, opt => opt.Ignore())
                 .ForMember(dest => dest.Comments, opt => opt.Ignore())
                 .ForMember(dest => dest.Likes, opt => opt.Ignore());
@@ -67,6 +64,28 @@ namespace PersonalCollectionManager.Shared.Helpers
                 .ForMember(dest => dest.Likes, opt => opt.Ignore());
 
             CreateMap<Item, ItemUpdateRequestDto>();
+
+            // CustomField mappings
+            CreateMap<CustomField, CustomFieldDto>().ReverseMap();
+            CreateMap<CustomFieldCreateDto, CustomField>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore())
+                .ForMember(dest => dest.Collection, opt => opt.Ignore())
+                .ForMember(dest => dest.CustomFieldValues, opt => opt.Ignore());
+            CreateMap<CustomFieldUpdateDto, CustomField>()
+                .ForMember(dest => dest.Collection, opt => opt.Ignore())
+                .ForMember(dest => dest.CustomFieldValues, opt => opt.Ignore());
+            CreateMap<CustomField, CustomFieldUpdateDto>();
+
+            // CustomFieldValue mappings
+            CreateMap<CustomFieldValue, CustomFieldValueDto>().ReverseMap();
+            CreateMap<CustomFieldValueCreateDto, CustomFieldValue>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore())
+                .ForMember(dest => dest.CustomField, opt => opt.Ignore())
+                .ForMember(dest => dest.Item, opt => opt.Ignore());
+            CreateMap<CustomFieldValueUpdateDto, CustomFieldValue>()
+                .ForMember(dest => dest.CustomField, opt => opt.Ignore())
+                .ForMember(dest => dest.Item, opt => opt.Ignore());
+            CreateMap<CustomFieldValue, CustomFieldValueUpdateDto>();
         }
     }
 }
