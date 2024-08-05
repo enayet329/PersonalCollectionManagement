@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using PersonalCollectionManager.Application.DTOs.RequestDtos;
 using PersonalCollectionManager.Application.Interfaces.IServices;
@@ -27,22 +28,22 @@ namespace PersonalCollectionManager.API.Controllers
         [HttpPost]
         public async Task<IActionResult> AddCustomField([FromBody] IEnumerable<CustomFieldCreateDto> customField)
         {
-            await _customFieldService.AddCustomFieldAsync(customField);
-            return Ok();
+            var result = await _customFieldService.AddCustomFieldAsync(customField);
+            return Ok(result ? true : false);
         }
 
         [HttpPut]
         public async Task<IActionResult> UpdateCustomField([FromBody] IEnumerable<CustomFieldUpdateDto> customField)
         {
-            await _customFieldService.UpdateCustomFieldAsync(customField);
-            return Ok();
+            var result = await _customFieldService.UpdateCustomFieldAsync(customField);
+            return Ok(result ? true : false);
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCustomField(Guid id)
         {
-            await _customFieldService.DeleteCustomFieldAsync(id);
-            return Ok();
+            var result = await _customFieldService.DeleteCustomFieldAsync(id);
+            return Ok(result ? true : false);
         }
     }
 }
