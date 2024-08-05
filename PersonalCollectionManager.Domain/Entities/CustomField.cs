@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PersonalCollectionManager.Domain.Entities
 {
@@ -18,7 +14,7 @@ namespace PersonalCollectionManager.Domain.Entities
         public string Name { get; set; }
 
         [Required]
-        public string FieldType { get; set; } // E.g., "text", "number", "date", etc.
+        public string FieldType { get; set; }
 
         [Required]
         public Guid CollectionId { get; set; }
