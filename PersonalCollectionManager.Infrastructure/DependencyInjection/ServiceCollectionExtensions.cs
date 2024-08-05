@@ -22,7 +22,7 @@ namespace PersonalCollectionManager.Infrastructure.DependencyInjection
             services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(configuration.GetConnectionString("PersonalCollectionManagerDb"),
                 b => b.MigrationsAssembly(typeof(ServiceCollectionExtensions).Assembly.FullName))
-                .EnableSensitiveDataLogging()
+                //.EnableSensitiveDataLogging()
                 .LogTo(Console.WriteLine, LogLevel.Information));
 
             // Helpers
@@ -38,6 +38,8 @@ namespace PersonalCollectionManager.Infrastructure.DependencyInjection
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IItemTagRepository, ItemTagRepository>();
             services.AddScoped<IAuthRepository, AuthRepository>();
+            services.AddScoped<ICustomFieldRepository, CustomFieldRepository>();
+            services.AddScoped<ICustomFieldValueRepository, CustomFieldValueRepository>();
 
             // Services
             services.AddScoped<IAdminServices, AdminService>();
@@ -47,6 +49,8 @@ namespace PersonalCollectionManager.Infrastructure.DependencyInjection
             services.AddScoped<IItemService, ItemService>();
             services.AddScoped<ITagService, TagService>();
             services.AddScoped<ILikeService, LikeService>();
+            services.AddScoped<ICollectionService, CollectionService>();
+            services.AddScoped<ICustomFieldService, CustomFieldService>();
 
             // Authentication Service
             services.AddScoped<IJwtTokenService, JwtTokenService>();

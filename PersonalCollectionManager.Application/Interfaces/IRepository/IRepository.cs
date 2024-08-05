@@ -11,5 +11,8 @@ namespace PersonalCollectionManager.Application.Interfaces.IRepository
         Task<T> AddAsync(T entity);
         Task<T> Update(T entity);
         Task Remove(T entity);
+        Task AddRangeAsync(IEnumerable<T> entity);
+        Task RemoveRangeAsync(T entity);
+        Task<bool> UpdateRangeAsync(IEnumerable<T> entity);
     }
 }

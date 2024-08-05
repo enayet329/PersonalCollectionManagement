@@ -5,7 +5,7 @@ using PersonalCollectionManager.Application.Interfaces.IServices;
 
 namespace PersonalCollectionManager.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v1/likes")]
     [ApiController]
     public class LikeController : ControllerBase
     {
@@ -15,14 +15,14 @@ namespace PersonalCollectionManager.API.Controllers
             _like = like;
         }
 
-        [HttpPost("tagle/like")]
-        public async Task<IActionResult> TagleLikeAsync(LikeRequestDto request)
+        [HttpPost("toggle")]
+        public async Task<IActionResult> ToggleLikeAsync(LikeRequestDto request)
         {
            var result = await _like.ToggleLike(request);
             return Ok(result);
         }
 
-        [HttpPost("get/likes")]
+        [HttpGet("{itemId:guid}")]
         public async Task<IActionResult> GetLikesByItemIdAsync(Guid id)
         {
             var likes = await _like.GetAllLikeByItemId(id);

@@ -25,9 +25,10 @@ namespace PersonalCollectionManager.Domain.Entities
         [ForeignKey("CollectionId")]
         public virtual Collection Collection { get; set; }
 
-        public virtual ICollection<ItemTag> ItemTags { get; set; } = new List<ItemTag>();
-        public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
-        public virtual ICollection<Like> Likes { get; set; } = new List<Like>();
+        public virtual ICollection<ItemTag> ItemTags { get; set; }
+        public virtual ICollection<Comment> Comments { get; set; }
+        public virtual ICollection<Like> Likes { get; set; }
+        public virtual ICollection<CustomFieldValue> CustomFieldValues { get; set; }
     }
 
 }

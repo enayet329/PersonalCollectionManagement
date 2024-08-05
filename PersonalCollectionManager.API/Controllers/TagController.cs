@@ -7,7 +7,7 @@ using PersonalCollectionManager.Infrastructure.Services;
 
 namespace PersonalCollectionManager.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v1/tags")]
     [ApiController]
     public class TagController : ControllerBase
     {
@@ -17,14 +17,14 @@ namespace PersonalCollectionManager.API.Controllers
             _tagService = tagService;
         }
 
-        [HttpGet("get/Tags")]
+        [HttpGet]
         public async Task<ActionResult<IEnumerable<TagDto>>> GetAllTagsAsync()
         {
             var tags = await _tagService.GetAllTagAsync();
             return Ok(tags);
         }
 
-        [HttpGet("get/Tag/itemId")]
+        [HttpGet("item/{itemId:guid}")]
         public async Task<ActionResult<IEnumerable<TagDto>>> GetTagByItemIdAsync(Guid id)
         {
             var tag = await _tagService.GetTagsByItemIdAsync(id);
@@ -32,7 +32,7 @@ namespace PersonalCollectionManager.API.Controllers
             return Ok(tag);
         }
 
-        [HttpGet("get/Tag/id")]
+        [HttpGet("{id:guid}")]
         public async Task<ActionResult<TagDto>> GetTagAsync(Guid id)
         {
             var tag = await _tagService.GetTagByIdAsync(id);
@@ -43,21 +43,21 @@ namespace PersonalCollectionManager.API.Controllers
             return Ok(tag);
         }
 
-        [HttpPost("add/Tag")]
+        [HttpPost]
         public async Task<ActionResult<TagDto>> AddTagAsync(TagRequestDto tag)
         {
             var newTag = await _tagService.AddTagAsync(tag);
             return Ok(newTag);
         }
 
-        [HttpDelete("delete/Tag/id")]
+        [HttpDelete("{id:guid}")]
         public async Task<ActionResult> DeleteTagAsync(Guid id)
         {
             var result = await _tagService.DeleteTagAsync(id);
             return Ok(result);
         }
 
-        [HttpPut("update/Tag")]
+        [HttpPut("{id:guid}")]
         public async Task<ActionResult<TagDto>> UpdateTagAsync(TagDto tag)
         {
             var updatedTag = await _tagService.UpdateTagAsync(tag);

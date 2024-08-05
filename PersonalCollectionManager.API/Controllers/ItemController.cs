@@ -6,7 +6,7 @@ using PersonalCollectionManager.Application.Interfaces.IServices;
 
 namespace PersonalCollectionManager.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v1/items")]
     [ApiController]
     public class ItemController : ControllerBase
     {
@@ -16,56 +16,56 @@ namespace PersonalCollectionManager.API.Controllers
             _itemService = itemService;
         }
 
-        [HttpGet("get/items")]
+        [HttpGet]
         public async Task<ActionResult<IEnumerable<ItemDto>>> GetAllItemAsync()
         {
             var items = await _itemService.GetAllItemsAsync();
             return Ok(items);
         }
 
-        [HttpGet("get/items/tagName")]
+        [HttpGet("tag/{name}")]
         public async Task<ActionResult<IEnumerable<ItemDto>>> GetItemByTagIdAsync(string name)
         {
             var item = await _itemService.GetItemsByTagAsync(name);
             return Ok(item);
         }
 
-        [HttpGet("get/item/id")]
+        [HttpGet("{id:guid}")]
         public async Task<ActionResult<ItemDto>> GetItemByIdAsync(Guid id)
         {
             var item = await _itemService.GetItemByIdAsync(id);
             return Ok(item);
         }
 
-        [HttpGet("get/item/collecitonId")]
+        [HttpGet("collection/{collectionId:guid}")]
         public async Task<ActionResult<IEnumerable<ItemDto>>> GetItemByCollectionIdAsync(Guid id)
         {
             var item = await _itemService.GetAllItemByCollectionIdAsync(id);
             return Ok(item);
         }
 
-        [HttpGet("get/recent/items")]
+        [HttpGet("recent")]
         public async Task<ActionResult<IEnumerable<ItemDto>>> GetItemByNameAsync()
         {
             var item = await _itemService.GetRecentItemsAsync();
             return Ok(item);
         }
 
-        [HttpPost("add/item")]
+        [HttpPost]
         public async Task<IActionResult> AddItemAsync([FromBody] ItemRequestDto item)
         {
             var result = await _itemService.AddItemAsync(item);
             return Ok(result);
         }
 
-        [HttpPut("update/item")]
+        [HttpPut("{id:guid}")]
         public async Task<IActionResult> UpdateItemAsync([FromBody] ItemDto item)
         {
             var result = await _itemService.UpdateItemAsync(item);
             return Ok(result);
         }
 
-        [HttpDelete("delete/item/id")]
+        [HttpDelete("{id:guid}")]
         public async Task<IActionResult> DeleteItemAsync(Guid id)
         {
             var result = await _itemService.DeleteItemAsync(id);
