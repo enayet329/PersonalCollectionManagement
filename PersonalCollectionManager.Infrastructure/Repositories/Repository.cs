@@ -93,7 +93,7 @@ namespace PersonalCollectionManager.Infrastructure.Repositories
             try
             {
                 _context.Set<T>().Remove(entity);
-                _context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
             }
             catch (Exception ex)
             {
@@ -107,5 +107,48 @@ namespace PersonalCollectionManager.Infrastructure.Repositories
         {
             return await _context.Set<T>().FirstOrDefaultAsync(predicate);
         }
+
+        public async Task AddRangeAsync(IEnumerable<T> entity)
+        {
+            try
+            {
+                _context.Set<T>().AddRange(entity);
+                await _context.SaveChangesAsync();
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(ex, $"Error adding entity of type {typeof(T).Name}");
+            }
+        }
+
+        public async Task RemoveRangeAsync(T entity)
+        {
+            try
+            {
+                _context.RemoveRange(entity);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error removing entity of type {typeof(T).Name}");
+            }
+
+        }
+
+        public async Task<bool> UpdateRangeAsync(IEnumerable<T> entity)
+        {
+            try
+            {
+                _context.Set<T>().UpdateRange(entity);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(ex, $"Error updating entity of type {typeof(T).Name}");
+                throw;
+            }
+        }
+
     }
 }
