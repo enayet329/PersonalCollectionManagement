@@ -22,7 +22,7 @@ namespace PersonalCollectionManager.Infrastructure.DependencyInjection
             services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(configuration.GetConnectionString("PersonalCollectionManagerDb"),
                 b => b.MigrationsAssembly(typeof(ServiceCollectionExtensions).Assembly.FullName))
-                .EnableSensitiveDataLogging()
+                //.EnableSensitiveDataLogging()
                 .LogTo(Console.WriteLine, LogLevel.Information));
 
             // Helpers
