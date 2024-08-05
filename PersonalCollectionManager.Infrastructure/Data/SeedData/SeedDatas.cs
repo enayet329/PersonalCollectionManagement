@@ -100,7 +100,29 @@ public static class SeedData
             }
         );
 
-        // Seed Refresh Tokens
+        // Seed CustomFields
+        modelBuilder.Entity<CustomField>().HasData(
+            new CustomField
+            {
+                Id = Guid.Parse("99999999-9999-9999-9999-999999999999"),
+                Name = "Custom Field 1",
+                FieldType = "Text",
+                CollectionId = Guid.Parse("22222222-2222-2222-2222-222222222222")
+            }
+        );
+
+        // Seed CustomFieldValues
+        modelBuilder.Entity<CustomFieldValue>().HasData(
+            new CustomFieldValue
+            {
+                Id = Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
+                Value = "Custom Value 1",
+                CustomFieldId = Guid.Parse("99999999-9999-9999-9999-999999999999"),
+                ItemId = Guid.Parse("33333333-3333-3333-3333-333333333333")
+            }
+        );
+
+        // Seed RefreshTokens
         modelBuilder.Entity<RefreshToken>().HasData(
             new RefreshToken
             {
