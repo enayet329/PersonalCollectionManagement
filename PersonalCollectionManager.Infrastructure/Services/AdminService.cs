@@ -76,7 +76,7 @@ namespace PersonalCollectionManager.Infrastructure.Services
                 if (user != null && user.IsBlocked == false)
                 {
                     user.IsBlocked = true;
-                    _userRepository.Update(user);
+                    await _userRepository.Update(user);
 
                     return new OperationResult(true, "User blocked successfully.");
                 }
@@ -97,7 +97,7 @@ namespace PersonalCollectionManager.Infrastructure.Services
                 if (user != null && user.IsBlocked == true)
                 {
                     user.IsBlocked = false;
-                    _userRepository.Update(user);
+                    await _userRepository.Update(user);
 
                     return new OperationResult(true, "User unblocked successfully.");
                 }
@@ -116,7 +116,7 @@ namespace PersonalCollectionManager.Infrastructure.Services
                 var user = await _userRepository.GetByIdAsync(id);
                 if (user != null)
                 {
-                    _userRepository.Remove(user);
+                    await _userRepository.Remove(user);
 
                     return new OperationResult(true, "User deleted successfully.");
                 }
