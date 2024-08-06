@@ -24,15 +24,26 @@ namespace PersonalCollectionManager.API.Controllers
             return Ok(tags);
         }
 
-        [HttpGet("item/{itemId:guid}")]
-        public async Task<ActionResult<IEnumerable<TagDto>>> GetTagByItemIdAsync(Guid id)
+        [HttpGet("top")]
+        public async Task<ActionResult<IEnumerable<TagDto>>> GetPopularTagsAsync()
         {
-            var tag = await _tagService.GetTagsByItemIdAsync(id);
+            var tags = await _tagService.GetPopularTagsAsync();
+            if(tags == null)
+            {
+                return NotFound("No popular tags found");
+            }
+            return Ok(tags);
+        }
+
+        [HttpGet("item/{itemId}")]
+        public async Task<ActionResult<IEnumerable<TagDto>>> GetTagByItemIdAsync(Guid itemId)
+        {
+            var tag = await _tagService.GetTagsByItemIdAsync(itemId);
 
             return Ok(tag);
         }
 
-        [HttpGet("{id:guid}")]
+        [HttpGet("{id}")]
         public async Task<ActionResult<TagDto>> GetTagAsync(Guid id)
         {
             var tag = await _tagService.GetTagByIdAsync(id);

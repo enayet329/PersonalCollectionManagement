@@ -22,10 +22,10 @@ namespace PersonalCollectionManager.API.Controllers
             return Ok(result);
         }
 
-        [HttpGet("{itemId:guid}")]
-        public async Task<IActionResult> GetLikesByItemIdAsync(Guid id)
+        [HttpGet("{itemId}")]
+        public async Task<IActionResult> GetLikesByItemIdAsync(Guid itemId)
         {
-            var likes = await _like.GetAllLikeByItemId(id);
+            var likes = await _like.GetAllLikeByItemId(itemId);
             return Ok(likes);
         }
     }
