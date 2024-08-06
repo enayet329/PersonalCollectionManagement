@@ -1,55 +1,57 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using PersonalCollectionManager.Application.DTOs.RequestDtos;
 using PersonalCollectionManager.Application.DTOs.ResponseDtos;
 using PersonalCollectionManager.Application.Interfaces.IServices;
-using PersonalCollectionManager.Data.Repositories;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace PersonalCollectionManager.API.Controllers
 {
     [Route("api/v1/comments")]
-    [Authorize(policy: "AdminOrUser")]
     [ApiController]
     public class CommentController : ControllerBase
     {
         private readonly ICommentService _commentService;
+
         public CommentController(ICommentService commentService)
         {
             _commentService = commentService;
         }
 
-        [HttpGet("item/{id:guid}")]
-        public async Task<ActionResult<IEnumerable<CommentDto>>> GetAllComments(Guid id)
+        [HttpGet("item/{itemId:guid}")]
+        public async Task<ActionResult<IEnumerable<CommentDto>>> GetAllCommentsByItemId([FromRoute] Guid itemId)
         {
-            var comments = await _commentService.GetAllCommentByItemIdAsync(id);
+            var comments = await _commentService.GetAllCommentByItemIdAsync(itemId);
             return Ok(comments);
         }
 
-        [HttpGet("{id:guid}")]
-        public async Task<ActionResult<CommentDto>> GetCommentById(Guid id)
+        [HttpGet("{commentId:guid}")]
+        public async Task<ActionResult<CommentDto>> GetCommentById([FromRoute] Guid commentId)
         {
-            var comment = await _commentService.GetCommentByIdAsync(id);
+            var comment = await _commentService.GetCommentByIdAsync(commentId);
             return Ok(comment);
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddComment(CommentRequestDto comment)
+        public async Task<IActionResult> AddComment([FromBody] CommentRequestDto commentRequest)
         {
-            var newComment = await _commentService.AddCommentAsync(comment);
+            var newComment = await _commentService.AddCommentAsync(commentRequest);
             return Ok(newComment);
         }
-        [HttpDelete("{id:guid}")]
-        public async Task<IActionResult> DeleteComment(Guid id)
+
+        [HttpDelete("{commentId:guid}")]
+        public async Task<IActionResult> DeleteComment([FromRoute] Guid commentId)
         {
-            var result = await _commentService.DeleteCommentAsync(id);
+            var result = await _commentService.DeleteCommentAsync(commentId);
             return Ok(result);
         }
 
-        [HttpPut("{id:guid}")]
-        public async Task<IActionResult> UpdateComment(CommentDto comment)
+        [HttpPut("{commentId:guid}")]
+        public async Task<IActionResult> UpdateComment([FromRoute] Guid commentId, [FromBody] CommentDto commentUpdate)
         {
-            var result = await _commentService.UpdateCommentAsync(comment);
+            commentUpdate.Id = commentId;
+            var result = await _commentService.UpdateCommentAsync(commentUpdate);
             return Ok(result);
         }
     }

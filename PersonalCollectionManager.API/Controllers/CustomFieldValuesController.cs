@@ -1,51 +1,51 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using PersonalCollectionManager.Application.DTOs.RequestDtos;
 using PersonalCollectionManager.Application.Interfaces.IServices;
-using PersonalCollectionManager.Domain.Entities;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace PersonalCollectionManager.API.Controllers
 {
-    [Route("api/v1/custom-field-valus")]
-    [Authorize(policy: "AdminOrUser")]
+    [Route("api/v1/custom-field-values")]
+    [Authorize(Policy = "AdminOrUser")]
     [ApiController]
     public class CustomFieldValuesController : ControllerBase
     {
         private readonly ICustomFieldService _customFieldService;
+
         public CustomFieldValuesController(ICustomFieldService customFieldService)
         {
             _customFieldService = customFieldService;
         }
 
-
-        [HttpGet("{itemId}")]
-        public async Task<IActionResult> GetCustomFieldValues(Guid itemId)
+        [HttpGet("item/{itemId:guid}")]
+        public async Task<IActionResult> GetCustomFieldValuesByItemId([FromRoute] Guid itemId)
         {
             var customFieldValues = await _customFieldService.GetCustomFieldValuesByItemIdAsync(itemId);
             return Ok(customFieldValues);
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddCustomFieldValue([FromBody] IEnumerable<CustomFieldValueCreateDto> customFieldValue)
+        public async Task<IActionResult> AddCustomFieldValues([FromBody] IEnumerable<CustomFieldValueCreateDto> customFieldValues)
         {
-            var result = await _customFieldService.AddCustomFieldValueAsync(customFieldValue);
-            return Ok(result ? true : false);
+            var result = await _customFieldService.AddCustomFieldValueAsync(customFieldValues);
+            return Ok(result);
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateCustomFieldValue([FromBody] IEnumerable<CustomFieldValueUpdateDto> customFieldValue)
+        public async Task<IActionResult> UpdateCustomFieldValues([FromBody] IEnumerable<CustomFieldValueUpdateDto> customFieldValues)
         {
-            var result = await _customFieldService.UpdateCustomFieldValueAsync(customFieldValue);
-            return Ok(result ? true : false);
+            var result = await _customFieldService.UpdateCustomFieldValueAsync(customFieldValues);
+            return Ok(result);
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCustomFieldValue(Guid id)
+        [HttpDelete("{customFieldValueId:guid}")]
+        public async Task<IActionResult> DeleteCustomFieldValue([FromRoute] Guid customFieldValueId)
         {
-            var result = await _customFieldService.DeleteCustomFieldValueAsync(id);
-            return Ok(result ? true : false);
+            var result = await _customFieldService.DeleteCustomFieldValueAsync(customFieldValueId);
+            return Ok(result);
         }
     }
 }
