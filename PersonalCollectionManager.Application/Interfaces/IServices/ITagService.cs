@@ -10,9 +10,11 @@ namespace PersonalCollectionManager.Application.Interfaces.IServices
         // Add: new method to get all tags by item id
         Task<IEnumerable<TagDto>> GetTagsByItemIdAsync(Guid id);
         Task<IEnumerable<TagDto>> GetAllTagAsync();
+        Task<IEnumerable<TagDto>> GetPopularTagsAsync();
         Task<TagDto> GetTagByIdAsync(Guid id);
         Task<OperationResult> AddTagAsync(TagRequestDto tag);
         Task<OperationResult> UpdateTagAsync(TagDto tag);
         Task<OperationResult> DeleteTagAsync(Guid id);
+
     }
 }

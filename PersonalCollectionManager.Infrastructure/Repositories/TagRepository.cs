@@ -24,10 +24,18 @@ namespace PersonalCollectionManager.Data.Repositories
                 .ToListAsync();
         }
 
-        public Task<Tag?> GetTagWithItemTagAsync(Guid tagId)
+        public async Task<Tag?> GetTagWithItemTagAsync(Guid tagId)
         {
-            return _context.Set<Tag>()
+            return await _context.Set<Tag>()
                         .SingleOrDefaultAsync(t => t.Id == tagId);
+        }
+
+        public async Task<IEnumerable<Tag>> GetTopTagsAsync()
+        {
+            return await _context.Set<Tag>()
+                .OrderByDescending(t => t.ItemTags.Count)
+                .Take(10)
+                .ToListAsync();
         }
     }
 }
