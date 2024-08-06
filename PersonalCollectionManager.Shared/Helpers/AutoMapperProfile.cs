@@ -10,12 +10,16 @@ namespace PersonalCollectionManager.Shared.Helpers
         public AutoMapperProfile()
         {
             // ResponseDTOs to Domain Entities
-            CreateMap<Collection, CollectionDto>().ReverseMap();
+            CreateMap<Collection, CollectionDto>()
+                .ForMember(dest => dest.ItemCount, opt => opt.MapFrom(src => src.Items.Count))
+                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.Username))
+                .ReverseMap();
+
             CreateMap<Comment, CommentDto>().ReverseMap();
             CreateMap<Item, ItemDto>().ReverseMap();
             CreateMap<Like, LikeDto>().ReverseMap();
             CreateMap<Tag, TagDto>().ReverseMap();
-            CreateMap<ItemAlgoliaDto,ItemDto>().ReverseMap();
+            CreateMap<ItemAlgoliaDto, ItemDto>().ReverseMap();
 
             CreateMap<User, UserDto>()
                 .ForMember(dest => dest.PrefrredLanguage, opt => opt.MapFrom(src => src.PreferredLanguage))
