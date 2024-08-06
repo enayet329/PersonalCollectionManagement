@@ -5,10 +5,12 @@ using PersonalCollectionManager.Application.Interfaces.IServices;
 using System.Collections.Generic;
 using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 
 namespace PersonalCollectionManager.API.Controllers
 {
     [Route("api/v1/collections")]
+    [Authorize(policy: "AdminOrUser")]
     [ApiController]
     public class CollectionController : ControllerBase
     {

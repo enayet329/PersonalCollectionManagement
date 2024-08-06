@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using PersonalCollectionManager.Application.DTOs.RequestDtos;
@@ -9,6 +10,7 @@ using PersonalCollectionManager.Infrastructure.Services;
 namespace PersonalCollectionManager.API.Controllers
 {
     [Route("api/custom-field")]
+    [Authorize(policy: "AdminOrUser")]
     [ApiController]
     public class CustomFieldsController : ControllerBase
     {

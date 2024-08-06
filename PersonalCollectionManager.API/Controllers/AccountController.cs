@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PersonalCollectionManager.Application.DTOs.RequestDtos;
 using PersonalCollectionManager.Application.DTOs.ResponseDtos;
 using PersonalCollectionManager.Application.Interfaces.IServices;
@@ -8,6 +9,7 @@ using System.Threading.Tasks;
 namespace PersonalCollectionManager.API.Controllers
 {
     [Route("api/v1/accounts")]
+    [Authorize(policy: "AdminOrUser")]
     [ApiController]
     public class AccountController : ControllerBase
     {

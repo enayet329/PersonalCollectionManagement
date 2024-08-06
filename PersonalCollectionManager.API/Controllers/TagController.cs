@@ -1,4 +1,5 @@
 ﻿
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PersonalCollectionManager.Application.DTOs.RequestDtos;
 using PersonalCollectionManager.Application.DTOs.ResponseDtos;
@@ -8,6 +9,7 @@ using PersonalCollectionManager.Infrastructure.Services;
 namespace PersonalCollectionManager.API.Controllers
 {
     [Route("api/v1/tags")]
+    [Authorize(policy: "AdminOrUser")]
     [ApiController]
     public class TagController : ControllerBase
     {

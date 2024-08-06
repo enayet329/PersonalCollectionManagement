@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PersonalCollectionManager.Application.DTOs.RequestDtos;
 using PersonalCollectionManager.Application.DTOs.ResponseDtos;
@@ -8,6 +9,7 @@ using PersonalCollectionManager.Data.Repositories;
 namespace PersonalCollectionManager.API.Controllers
 {
     [Route("api/v1/comments")]
+    [Authorize(policy: "AdminOrUser")]
     [ApiController]
     public class CommentController : ControllerBase
     {
