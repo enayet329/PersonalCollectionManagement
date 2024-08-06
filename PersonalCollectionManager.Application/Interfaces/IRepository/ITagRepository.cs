@@ -7,6 +7,7 @@ namespace PersonalCollectionManager.Application.Interfaces.IRepository
     {
         Task<IEnumerable<Tag>> GetByItemId(Guid id);
         Task<Tag> GetTagWithItemTagAsync(Guid tagId);
+        Task<IEnumerable<Tag>> GetTopTagsAsync();
 
     }
 }

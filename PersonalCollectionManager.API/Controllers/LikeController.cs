@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using PersonalCollectionManager.Application.DTOs.RequestDtos;
 using PersonalCollectionManager.Application.Interfaces.IServices;
+using System;
+using System.Threading.Tasks;
 
 namespace PersonalCollectionManager.API.Controllers
 {
@@ -9,23 +10,24 @@ namespace PersonalCollectionManager.API.Controllers
     [ApiController]
     public class LikeController : ControllerBase
     {
-        private readonly ILikeService _like;
-        public LikeController(ILikeService like)
+        private readonly ILikeService _likeService;
+
+        public LikeController(ILikeService likeService)
         {
-            _like = like;
+            _likeService = likeService;
         }
 
         [HttpPost("toggle")]
-        public async Task<IActionResult> ToggleLikeAsync(LikeRequestDto request)
+        public async Task<IActionResult> ToggleLikeAsync([FromBody] LikeRequestDto request)
         {
-           var result = await _like.ToggleLike(request);
+            var result = await _likeService.ToggleLike(request);
             return Ok(result);
         }
 
-        [HttpGet("{itemId:guid}")]
-        public async Task<IActionResult> GetLikesByItemIdAsync(Guid id)
-        {
-            var likes = await _like.GetAllLikeByItemId(id);
+        [HttpGet("{itemId}")]
+        public async Task<IActionResult> GetLikesByItemIdAsync(Guid itemId)
+            {
+            var likes = await _likeService.GetAllLikeByItemId(itemId);
             return Ok(likes);
         }
     }

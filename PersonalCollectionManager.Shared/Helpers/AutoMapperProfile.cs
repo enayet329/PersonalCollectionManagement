@@ -9,12 +9,21 @@ namespace PersonalCollectionManager.Shared.Helpers
     {
         public AutoMapperProfile()
         {
-            // ResponseDTOs to Domain Entities
-            CreateMap<Collection, CollectionDto>().ReverseMap();
+            // Custom mapping ResponseDTOs to Domain Entities
+            CreateMap<Collection, CollectionDto>()
+                .ForMember(dest => dest.ItemCount, opt => opt.MapFrom(src => src.Items.Count))
+                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.Username))
+                .ReverseMap();
+
+            CreateMap<Item, ItemDto>()
+                .ForMember(dest => dest.CollectionName, opt => opt.MapFrom(src => src.Collection.Name))
+                .ForMember(dest => dest.CollectionId, opt => opt.MapFrom(src => src.Collection.Id))
+                .ReverseMap();
+
             CreateMap<Comment, CommentDto>().ReverseMap();
-            CreateMap<Item, ItemDto>().ReverseMap();
             CreateMap<Like, LikeDto>().ReverseMap();
             CreateMap<Tag, TagDto>().ReverseMap();
+            CreateMap<ItemAlgoliaDto, ItemDto>().ReverseMap();
 
             CreateMap<User, UserDto>()
                 .ForMember(dest => dest.PrefrredLanguage, opt => opt.MapFrom(src => src.PreferredLanguage))
@@ -86,6 +95,7 @@ namespace PersonalCollectionManager.Shared.Helpers
                 .ForMember(dest => dest.CustomField, opt => opt.Ignore())
                 .ForMember(dest => dest.Item, opt => opt.Ignore());
             CreateMap<CustomFieldValue, CustomFieldValueUpdateDto>();
+
         }
     }
 }

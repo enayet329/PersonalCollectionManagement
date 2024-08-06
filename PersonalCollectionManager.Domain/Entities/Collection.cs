@@ -1,4 +1,5 @@
-﻿
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -18,6 +19,10 @@ namespace PersonalCollectionManager.Domain.Entities
         public virtual User User { get; set; }
         public virtual ICollection<Item> Items { get; set; }
         public virtual ICollection<CustomField> CustomFields { get; set; }
-    }
 
+        [NotMapped]
+        public string UserName { get; set; }
+        [NotMapped]
+        public int ItemCount => Items?.Count ?? 0;
+    }
 }

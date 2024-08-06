@@ -18,31 +18,35 @@ namespace PersonalCollectionManager.Data.Repositories
 
         public async Task<IEnumerable<Item>> GetAllItemsAsync()
         {
-            return await _context.Set<Item>().ToListAsync();
+            return await _context.Set<Item>()
+                .Include(i => i.Collection)
+                .ToListAsync();
         }
 
         public async Task<IEnumerable<Item>> GetItemsByCollectionIdAsync(Guid id)
         {
             return await _context.Set<Item>()
-               .Where(i => i.Collection.Id == id)
+               .Include(i => i.Collection)
+               .Where(i => i.CollectionId == id)
                .ToListAsync();
         }
 
         public async Task<IEnumerable<Item>> GetItemsByTagAsync(string tagName)
         {
             return await _context.Set<Tag>()
-                .Where(it => it.Name == tagName) 
-                .SelectMany(it => it.ItemTags.Select(itemTag => itemTag.Item))
+                .Where(t => t.Name == tagName)
+                .SelectMany(t => t.ItemTags.Select(itemTag => itemTag.Item))
+                .Include(i => i.Collection)
                 .ToListAsync();
         }
-
 
         public async Task<IEnumerable<Item>> GetRecentItemsAsync()
         {
             return await _context.Set<Item>()
-               .OrderByDescending(i => i.DateAdded)
-               .Take(10)
-               .ToListAsync();
+                .Include(i => i.Collection)
+                .OrderByDescending(i => i.DateAdded)
+                .Take(10)
+                .ToListAsync();
         }
 
         public async Task AddItemWithTagsAsync(Item item, List<Guid> tagIds)

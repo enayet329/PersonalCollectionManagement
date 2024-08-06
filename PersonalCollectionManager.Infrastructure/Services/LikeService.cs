@@ -45,13 +45,13 @@ namespace PersonalCollectionManager.Infrastructure.Services
 
                 if (like == null)
                 {
-                    _likeRepository.AddAsync(likeToAdd);
+                    await _likeRepository.AddAsync(likeToAdd);
                     return new OperationResult(true, "Like added successfully.");
                 }
                 else
                 {
-                    _likeRepository.Remove(like);
-                    return new OperationResult(true, "Like removed successfully.");
+                    await _likeRepository.Remove(like);
+                    return new OperationResult(false, "Like removed successfully.");
                 }
             }
             catch (Exception ex)

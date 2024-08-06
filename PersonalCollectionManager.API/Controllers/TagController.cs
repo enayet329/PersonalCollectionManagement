@@ -1,9 +1,10 @@
-﻿
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using PersonalCollectionManager.Application.DTOs.RequestDtos;
 using PersonalCollectionManager.Application.DTOs.ResponseDtos;
 using PersonalCollectionManager.Application.Interfaces.IServices;
-using PersonalCollectionManager.Infrastructure.Services;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace PersonalCollectionManager.API.Controllers
 {
@@ -12,6 +13,7 @@ namespace PersonalCollectionManager.API.Controllers
     public class TagController : ControllerBase
     {
         private readonly ITagService _tagService;
+
         public TagController(ITagService tagService)
         {
             _tagService = tagService;
@@ -24,46 +26,72 @@ namespace PersonalCollectionManager.API.Controllers
             return Ok(tags);
         }
 
-        [HttpGet("item/{itemId:guid}")]
-        public async Task<ActionResult<IEnumerable<TagDto>>> GetTagByItemIdAsync(Guid id)
+        [HttpGet("top")]
+        public async Task<ActionResult<IEnumerable<TagDto>>> GetPopularTagsAsync()
         {
-            var tag = await _tagService.GetTagsByItemIdAsync(id);
+            var tags = await _tagService.GetPopularTagsAsync();
+            if (tags == null || !tags.Any())
+            {
+                return NotFound(new { message = "No popular tags found" });
+            }
+            return Ok(tags);
+        }
 
-            return Ok(tag);
+        [HttpGet("item/{itemId:guid}")]
+        public async Task<ActionResult<IEnumerable<TagDto>>> GetTagsByItemIdAsync([FromRoute] Guid itemId)
+        {
+            var tags = await _tagService.GetTagsByItemIdAsync(itemId);
+            if (tags == null || !tags.Any())
+            {
+                return NotFound(new { message = "No tags found for this item." });
+            }
+            return Ok(tags);
         }
 
         [HttpGet("{id:guid}")]
-        public async Task<ActionResult<TagDto>> GetTagAsync(Guid id)
+        public async Task<ActionResult<TagDto>> GetTagByIdAsync([FromRoute] Guid id)
         {
             var tag = await _tagService.GetTagByIdAsync(id);
             if (tag == null)
             {
-                return NotFound("Tag not found");
+                return NotFound(new { message = "Tag not found." });
             }
             return Ok(tag);
         }
 
         [HttpPost]
-        public async Task<ActionResult<TagDto>> AddTagAsync(TagRequestDto tag)
+        public async Task<ActionResult<TagDto>> AddTagAsync([FromBody] TagRequestDto tagRequest)
         {
-            var newTag = await _tagService.AddTagAsync(tag);
+            var newTag = await _tagService.AddTagAsync(tagRequest);
             return Ok(newTag);
         }
 
         [HttpDelete("{id:guid}")]
-        public async Task<ActionResult> DeleteTagAsync(Guid id)
+        public async Task<IActionResult> DeleteTagAsync([FromRoute] Guid id)
         {
             var result = await _tagService.DeleteTagAsync(id);
-            return Ok(result);
+            if (result == null)
+            {
+                return NotFound(new { message = "Tag not found." });
+            }
+            return NoContent();
         }
 
         [HttpPut("{id:guid}")]
-        public async Task<ActionResult<TagDto>> UpdateTagAsync(TagDto tag)
+        public async Task<IActionResult> UpdateTagAsync([FromRoute] Guid id, [FromBody] TagDto tagDto)
         {
-            var updatedTag = await _tagService.UpdateTagAsync(tag);
+            if (id != tagDto.Id)
+            {
+                return BadRequest(new { message = "ID mismatch." });
+            }
+
+            var updatedTag = await _tagService.UpdateTagAsync(tagDto);
+            if (updatedTag == null)
+            {
+                return NotFound(new { message = "Tag not found." });
+            }
+
             return Ok(updatedTag);
         }
-
-
     }
 }

@@ -3,15 +3,20 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.35122.118
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PersonalCollectionManager.API", "PersonalCollectionManager.API\PersonalCollectionManager.API.csproj", "{87AB0F18-D6D3-4252-B864-FD1F52B48E91}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PersonalCollectionManager.API", "PersonalCollectionManager.API\PersonalCollectionManager.API.csproj", "{87AB0F18-D6D3-4252-B864-FD1F52B48E91}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PersonalCollectionManager.Application", "PersonalCollectionManager.Application\PersonalCollectionManager.Application.csproj", "{CE9B03C2-CCF0-4034-AE55-41EB7306454D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PersonalCollectionManager.Application", "PersonalCollectionManager.Application\PersonalCollectionManager.Application.csproj", "{CE9B03C2-CCF0-4034-AE55-41EB7306454D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PersonalCollectionManager.Domain", "PersonalCollectionManager.Domain\PersonalCollectionManager.Domain.csproj", "{2DDB587F-48B6-4F04-A134-811AF04D9B88}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PersonalCollectionManager.Domain", "PersonalCollectionManager.Domain\PersonalCollectionManager.Domain.csproj", "{2DDB587F-48B6-4F04-A134-811AF04D9B88}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PersonalCollectionManager.Infrastructure", "PersonalCollectionManager.Infrastructure\PersonalCollectionManager.Infrastructure.csproj", "{D9696E8D-FAE8-4E65-A9BA-7324456CB64B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PersonalCollectionManager.Infrastructure", "PersonalCollectionManager.Infrastructure\PersonalCollectionManager.Infrastructure.csproj", "{D9696E8D-FAE8-4E65-A9BA-7324456CB64B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PersonalCollectionManager.Shared", "PersonalCollectionManager.Shared\PersonalCollectionManager.Shared.csproj", "{20054379-B317-4944-9785-426D3E05AF65}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PersonalCollectionManager.Shared", "PersonalCollectionManager.Shared\PersonalCollectionManager.Shared.csproj", "{20054379-B317-4944-9785-426D3E05AF65}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SQL Query", "SQL Query", "{3FA9F4D2-C003-4B53-ABBF-0625D744F8A6}"
+	ProjectSection(SolutionItems) = preProject
+		sql.txt = sql.txt
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

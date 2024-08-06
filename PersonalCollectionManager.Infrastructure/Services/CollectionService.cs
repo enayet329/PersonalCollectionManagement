@@ -42,7 +42,7 @@ namespace PersonalCollectionManager.Infrastructure.Services
             try
             {
                 var collection = await _collectionRepository.GetByIdAsync(id);
-                _collectionRepository.Remove(collection);
+                await _collectionRepository.Remove(collection);
 
                 return  new OperationResult(true, "Collection Deleting successfully");
             }
@@ -112,7 +112,6 @@ namespace PersonalCollectionManager.Infrastructure.Services
             }
         }
 
-        // TODO: Implement this method
         public async Task<IEnumerable<CollectionDto>> GetLargestCollecitonAsync()
         {
             try

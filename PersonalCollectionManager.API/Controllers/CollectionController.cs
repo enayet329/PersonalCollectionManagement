@@ -27,16 +27,16 @@ namespace PersonalCollectionManager.API.Controllers
         }
 
         [HttpGet("largest")]
-        public async Task<ActionResult<IEnumerable<CollectionDto>>> GetLargestCollection()
+        public async Task<ActionResult<IEnumerable<CollectionDto>>> GetLargestCollections()
         {
             var collections = await _collectionService.GetLargestCollecitonAsync();
             return Ok(collections);
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddCollection([FromBody] CollectionRequestDto collection)
+        public async Task<IActionResult> AddCollection([FromBody] CollectionRequestDto collectionRequest)
         {
-            var result = await _collectionService.AddCollectionAsync(collection);
+            var result = await _collectionService.AddCollectionAsync(collectionRequest);
             return Ok(result);
         }
 
@@ -73,10 +73,11 @@ namespace PersonalCollectionManager.API.Controllers
             return Ok(collections);
         }
 
-        [HttpPut]
-        public async Task<IActionResult> UpdateCollection([FromBody] CollectionDto collection)
+        [HttpPut("{id:guid}")]
+        public async Task<IActionResult> UpdateCollection([FromRoute] Guid id, [FromBody] CollectionDto collectionUpdate)
         {
-            var result = await _collectionService.UpdateCollectionAsync(collection);
+            collectionUpdate.Id = id;
+            var result = await _collectionService.UpdateCollectionAsync(collectionUpdate);
             return Ok(result);
         }
     }

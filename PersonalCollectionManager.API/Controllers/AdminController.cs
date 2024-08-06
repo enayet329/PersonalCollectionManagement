@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace PersonalCollectionManager.API.Controllers
 {
     [ApiController]
-    [Authorize(policy: "AdminOnly")]
+    [Authorize(Policy = "AdminOnly")]
     [Route("api/v1/admin")]
     public class AdminController : ControllerBase
     {
@@ -33,15 +33,15 @@ namespace PersonalCollectionManager.API.Controllers
             return Ok(users);
         }
 
-        [HttpPost("create/collection")]
-        public async Task<IActionResult> CreateCollectionForUserAsync([FromBody] CollectionRequestDto collectionDto)
+        [HttpPost("collections")]
+        public async Task<IActionResult> CreateCollectionAsync([FromBody] CollectionRequestDto collectionDto)
         {
             var response = await _collectionService.AddCollectionAsync(collectionDto);
             return Ok(response);
         }
 
-        [HttpPost("create/item")]
-        public async Task<IActionResult> CreateItemForCollectionAsync([FromBody] ItemRequestDto itemDto)
+        [HttpPost("items")]
+        public async Task<IActionResult> CreateItemAsync([FromBody] ItemRequestDto itemDto)
         {
             var response = await _itemService.AddItemAsync(itemDto);
             return Ok(response);
@@ -58,7 +58,7 @@ namespace PersonalCollectionManager.API.Controllers
             return Ok(user);
         }
 
-        [HttpGet("users/by-email")]
+        [HttpGet("users/email")]
         public async Task<IActionResult> GetUserByEmail([FromQuery] string email)
         {
             var user = await _adminService.GetUserByEmailAsync(email);
@@ -69,15 +69,15 @@ namespace PersonalCollectionManager.API.Controllers
             return Ok(user);
         }
 
-        [HttpPut("users/{id:guid}/admin")]
-        public async Task<IActionResult> UpdateUserAsAdmin([FromRoute] Guid id)
+        [HttpPut("users/{id:guid}/roles/admin")]
+        public async Task<IActionResult> AddAdminRole([FromRoute] Guid id)
         {
             var user = await _adminService.AddAdminRoleAsync(id);
             return Ok(user);
         }
 
-        [HttpPatch("users/{id:guid}/admin")]
-        public async Task<IActionResult> RemoveUserAsAdmin([FromRoute] Guid id)
+        [HttpPatch("users/{id:guid}/roles/admin")]
+        public async Task<IActionResult> RemoveAdminRole([FromRoute] Guid id)
         {
             var user = await _adminService.RemoveAdminRoleAsync(id);
             return Ok(user);
