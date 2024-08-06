@@ -15,6 +15,7 @@ namespace PersonalCollectionManager.Shared.Helpers
             CreateMap<Item, ItemDto>().ReverseMap();
             CreateMap<Like, LikeDto>().ReverseMap();
             CreateMap<Tag, TagDto>().ReverseMap();
+            CreateMap<ItemAlgoliaDto,ItemDto>().ReverseMap();
 
             CreateMap<User, UserDto>()
                 .ForMember(dest => dest.PrefrredLanguage, opt => opt.MapFrom(src => src.PreferredLanguage))
