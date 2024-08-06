@@ -73,9 +73,6 @@ namespace PersonalCollectionManager.Infrastructure.Services
                 return new OperationResult(false, "Error deleting tag.");
             }
         }
-
-
-
         public async Task<IEnumerable<TagDto>> GetAllTagAsync()
         {
             try
@@ -132,6 +129,19 @@ namespace PersonalCollectionManager.Infrastructure.Services
             {
                 _logger.LogError(ex, "Error updating tag.");
                 return new OperationResult(false, "Error updating tag.");
+            }
+        }
+
+        public async Task<IEnumerable<TagDto>> GetPopularTagsAsync()
+        {
+            try
+            {
+                return _mapper.Map<IEnumerable<TagDto>>(await _tagRepository.GetTopTagsAsync());
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting popular tags.");
+                return null;
             }
         }
     }
