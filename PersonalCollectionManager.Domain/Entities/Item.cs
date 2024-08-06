@@ -19,6 +19,9 @@ namespace PersonalCollectionManager.Domain.Entities
         public string Description { get; set; }
         public DateTime DateAdded { get; set; }
 
+        [NotMapped]
+        public string CollectionName { get; set; }
+
         [Required]
         public Guid CollectionId { get; set; }
 
