@@ -55,6 +55,9 @@ namespace PersonalCollectionManager.Infrastructure.DependencyInjection
             // Authentication Service
             services.AddScoped<IJwtTokenService, JwtTokenService>();
 
+            // Algolia Search Service
+            services.AddScoped<AlgoliaService>();
+
 
             return services;
         }
