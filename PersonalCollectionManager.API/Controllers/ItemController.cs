@@ -5,6 +5,7 @@ using PersonalCollectionManager.Application.DTOs.ResponseDtos;
 using PersonalCollectionManager.Application.Interfaces.IServices;
 using System;
 using System.Collections.Generic;
+using System.Reflection.Metadata.Ecma335;
 using System.Threading.Tasks;
 
 namespace PersonalCollectionManager.API.Controllers
@@ -14,11 +15,22 @@ namespace PersonalCollectionManager.API.Controllers
     public class ItemController : ControllerBase
     {
         private readonly IItemService _itemService;
-
-        public ItemController(IItemService itemService)
+        private readonly AlgoliaService _algoliaService;
+        public ItemController(IItemService itemService, AlgoliaService algoliaService)
         {
             _itemService = itemService;
+            _algoliaService = algoliaService;
         }
+
+        [HttpGet("search/{query}")]
+        public async Task<ActionResult<IEnumerable<ItemDto>>> SearchItemsAsync([FromRoute] string query)
+        {
+            var items = await _algoliaService.SearchAsync<ItemDto>(query);
+            
+            var result = items.Hits.ToList();
+            return Ok(result);
+        }
+
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ItemDto>>> GetAllItemsAsync()
@@ -67,7 +79,16 @@ namespace PersonalCollectionManager.API.Controllers
         public async Task<IActionResult> AddItemAsync([FromBody] ItemRequestDto itemRequest)
         {
             var result = await _itemService.AddItemAsync(itemRequest);
-            return CreatedAtAction(nameof(GetItemByIdAsync), new { id = result.Id }, result);
+
+            if (result == null)
+            {
+                return NotFound(new { message = "Item not found." });
+            }
+
+            await _algoliaService.UpdateItemAsync(result, result.Id.ToString());
+
+
+            return Ok(result);
         }
 
         [HttpPut("{id:guid}")]
@@ -83,6 +104,9 @@ namespace PersonalCollectionManager.API.Controllers
             {
                 return NotFound(new { message = "Item not found." });
             }
+
+            await _algoliaService.UpdateItemAsync(result, result.Id.ToString());
+
             return Ok(result);
         }
 
@@ -94,7 +118,10 @@ namespace PersonalCollectionManager.API.Controllers
             {
                 return NotFound(new { message = "Item not found." });
             }
-            return NoContent();
+
+            await _algoliaService.DeleteItemAsync(id.ToString());
+
+            return Ok(result);
         }
     }
 }
