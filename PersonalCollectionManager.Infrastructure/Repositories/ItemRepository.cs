@@ -39,16 +39,6 @@ namespace PersonalCollectionManager.Data.Repositories
                 .Include(i => i.Collection)
                 .ToListAsync();
         }
-
-        public async Task<IEnumerable<Item>> GetRecentItemsAsync()
-        {
-            return await _context.Set<Item>()
-                .Include(i => i.Collection)
-                .OrderByDescending(i => i.DateAdded)
-                .Take(10)
-                .ToListAsync();
-        }
-
         public async Task AddItemWithTagsAsync(Item item, List<Guid> tagIds)
         {
             foreach (var tagId in tagIds)
@@ -58,6 +48,16 @@ namespace PersonalCollectionManager.Data.Repositories
 
             await _context.Items.AddAsync(item);
             await _context.SaveChangesAsync();
+        }
+        public async Task<IEnumerable<Item>> GetRecentItemsAsync()
+        {
+            return await _context.Set<Item>()
+               .Include(i => i.Collection)
+               .Include(i => i.ItemTags)
+                   .ThenInclude(it => it.Tag)
+               .OrderByDescending(i => i.DateAdded)
+               .Take(10)
+               .ToListAsync();
         }
     }
 }
