@@ -19,14 +19,14 @@ namespace PersonalCollectionManager.API.Controllers
             _commentService = commentService;
         }
 
-        [HttpGet("item/{itemId:guid}")]
+        [HttpGet("itemId")]
         public async Task<ActionResult<IEnumerable<CommentDto>>> GetAllCommentsByItemId([FromRoute] Guid itemId)
         {
             var comments = await _commentService.GetAllCommentByItemIdAsync(itemId);
             return Ok(comments);
         }
 
-        [HttpGet("{commentId:guid}")]
+        [HttpGet("get/Id")]
         public async Task<ActionResult<CommentDto>> GetCommentById([FromRoute] Guid commentId)
         {
             var comment = await _commentService.GetCommentByIdAsync(commentId);
@@ -40,14 +40,14 @@ namespace PersonalCollectionManager.API.Controllers
             return Ok(newComment);
         }
 
-        [HttpDelete("{commentId:guid}")]
+        [HttpDelete("delete/commentId")]
         public async Task<IActionResult> DeleteComment([FromRoute] Guid commentId)
         {
             var result = await _commentService.DeleteCommentAsync(commentId);
             return Ok(result);
         }
 
-        [HttpPut("{commentId:guid}")]
+        [HttpPut("update")]
         public async Task<IActionResult> UpdateComment([FromRoute] Guid commentId, [FromBody] CommentDto commentUpdate)
         {
             commentUpdate.Id = commentId;

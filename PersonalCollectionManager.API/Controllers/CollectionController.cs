@@ -33,21 +33,21 @@ namespace PersonalCollectionManager.API.Controllers
             return Ok(collections);
         }
 
-        [HttpPost]
+        [HttpPost("add")]
         public async Task<IActionResult> AddCollection([FromBody] CollectionRequestDto collectionRequest)
         {
             var result = await _collectionService.AddCollectionAsync(collectionRequest);
             return Ok(result);
         }
 
-        [HttpDelete("{id:guid}")]
+        [HttpDelete("delete/id")]
         public async Task<IActionResult> DeleteCollection([FromRoute] Guid id)
         {
             var result = await _collectionService.DeleteCollectionAsync(id);
             return Ok(result);
         }
 
-        [HttpGet("{id:guid}")]
+        [HttpGet("get/id")]
         public async Task<IActionResult> GetCollectionById([FromRoute] Guid id)
         {
             var collection = await _collectionService.GetCollectionByIdAsync(id);
@@ -60,7 +60,7 @@ namespace PersonalCollectionManager.API.Controllers
             return Ok(collection);
         }
 
-        [HttpGet("user/{userId:guid}")]
+        [HttpGet("get/userId")]
         public async Task<IActionResult> GetCollectionsByUserId([FromRoute] Guid userId)
         {
             var collections = await _collectionService.GetAllCollectionsByUserIdAsync(userId);
@@ -73,7 +73,7 @@ namespace PersonalCollectionManager.API.Controllers
             return Ok(collections);
         }
 
-        [HttpPut("{id:guid}")]
+        [HttpPut("update/id")]
         public async Task<IActionResult> UpdateCollection([FromRoute] Guid id, [FromBody] CollectionDto collectionUpdate)
         {
             collectionUpdate.Id = id;

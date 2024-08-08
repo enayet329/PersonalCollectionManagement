@@ -47,7 +47,7 @@ namespace PersonalCollectionManager.API.Controllers
             return Ok(response);
         }
 
-        [HttpGet("users/{id:guid}")]
+        [HttpGet("user/id")]
         public async Task<IActionResult> GetUserById([FromRoute] Guid id)
         {
             var user = await _adminService.GetUserByIdAsync(id);
@@ -58,7 +58,7 @@ namespace PersonalCollectionManager.API.Controllers
             return Ok(user);
         }
 
-        [HttpGet("users/email")]
+        [HttpGet("user/email")]
         public async Task<IActionResult> GetUserByEmail([FromQuery] string email)
         {
             var user = await _adminService.GetUserByEmailAsync(email);
@@ -69,35 +69,35 @@ namespace PersonalCollectionManager.API.Controllers
             return Ok(user);
         }
 
-        [HttpPut("users/{id:guid}/roles/admin")]
+        [HttpPut("user/roles/admin")]
         public async Task<IActionResult> AddAdminRole([FromRoute] Guid id)
         {
             var user = await _adminService.AddAdminRoleAsync(id);
             return Ok(user);
         }
 
-        [HttpPatch("users/{id:guid}/roles/admin")]
+        [HttpPatch("user/roles/admin")]
         public async Task<IActionResult> RemoveAdminRole([FromRoute] Guid id)
         {
             var user = await _adminService.RemoveAdminRoleAsync(id);
             return Ok(user);
         }
 
-        [HttpDelete("users/{id:guid}")]
+        [HttpDelete("delete/user")]
         public async Task<IActionResult> DeleteUser([FromRoute] Guid id)
         {
             var user = await _adminService.DeleteUserAsync(id);
             return Ok(user);
         }
 
-        [HttpPut("users/{id:guid}/block")]
+        [HttpPut("user/block")]
         public async Task<IActionResult> BlockUser([FromRoute] Guid id)
         {
             var response = await _adminService.BlockUserAsync(id);
             return Ok(response);
         }
 
-        [HttpPut("users/{id:guid}/unblock")]
+        [HttpPut("users/unblock")]
         public async Task<IActionResult> UnblockUser([FromRoute] Guid id)
         {
             var response = await _adminService.UnblockUserAsync(id);

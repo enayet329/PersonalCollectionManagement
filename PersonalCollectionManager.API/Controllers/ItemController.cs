@@ -22,7 +22,7 @@ namespace PersonalCollectionManager.API.Controllers
             _algoliaService = algoliaService;
         }
 
-        [HttpGet("search/{query}")]
+        [HttpGet("search/query")]
         public async Task<ActionResult<IEnumerable<ItemDto>>> SearchItemsAsync([FromRoute] string query)
         {
             var items = await _algoliaService.SearchAsync<ItemDto>(query);
@@ -32,21 +32,21 @@ namespace PersonalCollectionManager.API.Controllers
         }
 
 
-        [HttpGet]
+        [HttpGet("all")]
         public async Task<ActionResult<IEnumerable<ItemDto>>> GetAllItemsAsync()
         {
             var items = await _itemService.GetAllItemsAsync();
             return Ok(items);
         }
 
-        [HttpGet("tag/{name}")]
+        [HttpGet("get/tagName")]
         public async Task<ActionResult<IEnumerable<ItemDto>>> GetItemsByTagAsync([FromRoute] string name)
         {
             var items = await _itemService.GetItemsByTagAsync(name);
             return Ok(items);
         }
 
-        [HttpGet("{id:guid}")]
+        [HttpGet("get/id")]
         public async Task<ActionResult<ItemDto>> GetItemByIdAsync([FromRoute] Guid id)
         {
             var item = await _itemService.GetItemByIdAsync(id);
@@ -57,7 +57,7 @@ namespace PersonalCollectionManager.API.Controllers
             return Ok(item);
         }
 
-        [HttpGet("collection/{collectionId:guid}")]
+        [HttpGet("get/collectionId")]
         public async Task<ActionResult<IEnumerable<ItemDto>>> GetItemsByCollectionIdAsync([FromRoute] Guid collectionId)
         {
             var items = await _itemService.GetAllItemByCollectionIdAsync(collectionId);
@@ -75,7 +75,7 @@ namespace PersonalCollectionManager.API.Controllers
             return Ok(items);
         }
 
-        [HttpPost]
+        [HttpPost("add")]
         public async Task<IActionResult> AddItemAsync([FromBody] ItemRequestDto itemRequest)
         {
             var result = await _itemService.AddItemAsync(itemRequest);
@@ -91,7 +91,7 @@ namespace PersonalCollectionManager.API.Controllers
             return Ok(result);
         }
 
-        [HttpPut("{id:guid}")]
+        [HttpPut("update/id/item")]
         public async Task<IActionResult> UpdateItemAsync([FromRoute] Guid id, [FromBody] ItemDto itemDto)
         {
             if (id != itemDto.Id)
@@ -110,7 +110,7 @@ namespace PersonalCollectionManager.API.Controllers
             return Ok(result);
         }
 
-        [HttpDelete("{id:guid}")]
+        [HttpDelete("delete/id")]
         public async Task<IActionResult> DeleteItemAsync([FromRoute] Guid id)
         {
             var result = await _itemService.DeleteItemAsync(id);

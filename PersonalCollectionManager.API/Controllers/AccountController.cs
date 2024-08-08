@@ -52,7 +52,7 @@ namespace PersonalCollectionManager.API.Controllers
             return Ok(userDto);
         }
 
-        [HttpGet("{id:guid}")]
+        [HttpGet("user/id")]
         public async Task<IActionResult> GetUserById([FromRoute] Guid id)
         {
             var user = await _accountService.GetUserByIdAsync(id);
@@ -65,7 +65,7 @@ namespace PersonalCollectionManager.API.Controllers
             return Ok(user);
         }
 
-        [HttpGet("email")]
+        [HttpGet("user/email")]
         public async Task<IActionResult> GetUserByEmail([FromQuery] string email)
         {
             var user = await _accountService.GetUserByUseremailAsync(email);
@@ -93,7 +93,7 @@ namespace PersonalCollectionManager.API.Controllers
         }
 
         [Authorize(Policy = "AdminOrUser")]
-        [HttpPut("{userId:guid}/language")]
+        [HttpPut("language/userId")]
         public async Task<IActionResult> UpdateLanguage([FromRoute] Guid userId, [FromQuery] string language)
         {
             var result = await _accountService.ChangeLanguageAsync(userId, language);
@@ -106,7 +106,7 @@ namespace PersonalCollectionManager.API.Controllers
         }
 
         [Authorize(Policy = "AdminOrUser")]
-        [HttpPut("{userId:guid}/theme")]
+        [HttpPut("theme/userId")]
         public async Task<IActionResult> UpdateTheme([FromRoute] Guid userId, [FromQuery] bool theme)
         {
             var result = await _accountService.ChangeThemeAsync(userId, theme);

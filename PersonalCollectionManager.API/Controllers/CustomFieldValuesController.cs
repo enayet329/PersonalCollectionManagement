@@ -20,28 +20,28 @@ namespace PersonalCollectionManager.API.Controllers
             _customFieldService = customFieldService;
         }
 
-        [HttpGet("item/{itemId:guid}")]
+        [HttpGet("itemId")]
         public async Task<IActionResult> GetCustomFieldValuesByItemId([FromRoute] Guid itemId)
         {
             var customFieldValues = await _customFieldService.GetCustomFieldValuesByItemIdAsync(itemId);
             return Ok(customFieldValues);
         }
 
-        [HttpPost]
+        [HttpPost("add")]
         public async Task<IActionResult> AddCustomFieldValues([FromBody] IEnumerable<CustomFieldValueCreateDto> customFieldValues)
         {
             var result = await _customFieldService.AddCustomFieldValueAsync(customFieldValues);
             return Ok(result);
         }
 
-        [HttpPut]
+        [HttpPut("update")]
         public async Task<IActionResult> UpdateCustomFieldValues([FromBody] IEnumerable<CustomFieldValueUpdateDto> customFieldValues)
         {
             var result = await _customFieldService.UpdateCustomFieldValueAsync(customFieldValues);
             return Ok(result);
         }
 
-        [HttpDelete("{customFieldValueId:guid}")]
+        [HttpDelete("delete/id")]
         public async Task<IActionResult> DeleteCustomFieldValue([FromRoute] Guid customFieldValueId)
         {
             var result = await _customFieldService.DeleteCustomFieldValueAsync(customFieldValueId);
