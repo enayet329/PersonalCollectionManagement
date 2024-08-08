@@ -38,7 +38,7 @@ namespace PersonalCollectionManager.API.Controllers
         }
 
         [HttpGet("itemId")]
-        public async Task<ActionResult<IEnumerable<TagDto>>> GetTagsByItemIdAsync([FromRoute] Guid itemId)
+        public async Task<ActionResult<IEnumerable<TagDto>>> GetTagsByItemIdAsync(Guid itemId)
         {
             var tags = await _tagService.GetTagsByItemIdAsync(itemId);
             if (tags == null || !tags.Any())
@@ -49,7 +49,7 @@ namespace PersonalCollectionManager.API.Controllers
         }
 
         [HttpGet("id")]
-        public async Task<ActionResult<TagDto>> GetTagByIdAsync([FromRoute] Guid id)
+        public async Task<ActionResult<TagDto>> GetTagByIdAsync(Guid id)
         {
             var tag = await _tagService.GetTagByIdAsync(id);
             if (tag == null)
@@ -67,7 +67,7 @@ namespace PersonalCollectionManager.API.Controllers
         }
 
         [HttpDelete("delete/id")]
-        public async Task<IActionResult> DeleteTagAsync([FromRoute] Guid id)
+        public async Task<IActionResult> DeleteTagAsync(Guid id)
         {
             var result = await _tagService.DeleteTagAsync(id);
             if (result == null)
@@ -78,7 +78,7 @@ namespace PersonalCollectionManager.API.Controllers
         }
 
         [HttpPut("update/id/tag")]
-        public async Task<IActionResult> UpdateTagAsync([FromRoute] Guid id, [FromBody] TagDto tagDto)
+        public async Task<IActionResult> UpdateTagAsync( Guid id, [FromBody] TagDto tagDto)
         {
             if (id != tagDto.Id)
             {

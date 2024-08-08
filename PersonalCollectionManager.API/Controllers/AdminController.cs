@@ -48,7 +48,7 @@ namespace PersonalCollectionManager.API.Controllers
         }
 
         [HttpGet("user/id")]
-        public async Task<IActionResult> GetUserById([FromRoute] Guid id)
+        public async Task<IActionResult> GetUserById(Guid id)
         {
             var user = await _adminService.GetUserByIdAsync(id);
             if (user == null)
@@ -59,7 +59,7 @@ namespace PersonalCollectionManager.API.Controllers
         }
 
         [HttpGet("user/email")]
-        public async Task<IActionResult> GetUserByEmail([FromQuery] string email)
+        public async Task<IActionResult> GetUserByEmail(string email)
         {
             var user = await _adminService.GetUserByEmailAsync(email);
             if (user == null)
@@ -70,35 +70,35 @@ namespace PersonalCollectionManager.API.Controllers
         }
 
         [HttpPut("user/roles/admin")]
-        public async Task<IActionResult> AddAdminRole([FromRoute] Guid id)
+        public async Task<IActionResult> AddAdminRole( Guid id)
         {
             var user = await _adminService.AddAdminRoleAsync(id);
             return Ok(user);
         }
 
         [HttpPatch("user/roles/admin")]
-        public async Task<IActionResult> RemoveAdminRole([FromRoute] Guid id)
+        public async Task<IActionResult> RemoveAdminRole( Guid id)
         {
             var user = await _adminService.RemoveAdminRoleAsync(id);
             return Ok(user);
         }
 
         [HttpDelete("delete/user")]
-        public async Task<IActionResult> DeleteUser([FromRoute] Guid id)
+        public async Task<IActionResult> DeleteUser( Guid id)
         {
             var user = await _adminService.DeleteUserAsync(id);
             return Ok(user);
         }
 
         [HttpPut("user/block")]
-        public async Task<IActionResult> BlockUser([FromRoute] Guid id)
+        public async Task<IActionResult> BlockUser( Guid id)
         {
             var response = await _adminService.BlockUserAsync(id);
             return Ok(response);
         }
 
         [HttpPut("users/unblock")]
-        public async Task<IActionResult> UnblockUser([FromRoute] Guid id)
+        public async Task<IActionResult> UnblockUser(Guid id)
         {
             var response = await _adminService.UnblockUserAsync(id);
             return Ok(response);

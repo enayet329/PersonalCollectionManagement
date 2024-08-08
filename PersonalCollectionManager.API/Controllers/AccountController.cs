@@ -53,7 +53,7 @@ namespace PersonalCollectionManager.API.Controllers
         }
 
         [HttpGet("user/id")]
-        public async Task<IActionResult> GetUserById([FromRoute] Guid id)
+        public async Task<IActionResult> GetUserById(Guid id)
         {
             var user = await _accountService.GetUserByIdAsync(id);
 
@@ -66,7 +66,7 @@ namespace PersonalCollectionManager.API.Controllers
         }
 
         [HttpGet("user/email")]
-        public async Task<IActionResult> GetUserByEmail([FromQuery] string email)
+        public async Task<IActionResult> GetUserByEmail(string email)
         {
             var user = await _accountService.GetUserByUseremailAsync(email);
 
@@ -79,14 +79,14 @@ namespace PersonalCollectionManager.API.Controllers
         }
 
         [HttpGet("availability/username")]
-        public async Task<IActionResult> IsUsernameAvailable([FromQuery] string username)
+        public async Task<IActionResult> IsUsernameAvailable(string username)
         {
             var isAvailable = await _accountService.IsUsernameAvailableAsync(username);
             return Ok(new { available = isAvailable });
         }
 
         [HttpGet("availability/email")]
-        public async Task<IActionResult> IsEmailAvailable([FromQuery] string email)
+        public async Task<IActionResult> IsEmailAvailable(string email)
         {
             var isAvailable = await _accountService.IsEmailAvailableAsync(email);
             return Ok(new { available = isAvailable });
@@ -94,7 +94,7 @@ namespace PersonalCollectionManager.API.Controllers
 
         [Authorize(Policy = "AdminOrUser")]
         [HttpPut("language/userId")]
-        public async Task<IActionResult> UpdateLanguage([FromRoute] Guid userId, [FromQuery] string language)
+        public async Task<IActionResult> UpdateLanguage(Guid userId, string language)
         {
             var result = await _accountService.ChangeLanguageAsync(userId, language);
             if (result)
@@ -107,7 +107,7 @@ namespace PersonalCollectionManager.API.Controllers
 
         [Authorize(Policy = "AdminOrUser")]
         [HttpPut("theme/userId")]
-        public async Task<IActionResult> UpdateTheme([FromRoute] Guid userId, [FromQuery] bool theme)
+        public async Task<IActionResult> UpdateTheme(Guid userId, bool theme)
         {
             var result = await _accountService.ChangeThemeAsync(userId, theme);
             if (result)

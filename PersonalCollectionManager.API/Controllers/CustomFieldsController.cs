@@ -21,7 +21,7 @@ namespace PersonalCollectionManager.API.Controllers
         }
 
         [HttpGet("collectionId")]
-        public async Task<IActionResult> GetCustomFieldsByCollectionId([FromRoute] Guid collectionId)
+        public async Task<IActionResult> GetCustomFieldsByCollectionId(Guid collectionId)
         {
             var customFields = await _customFieldService.GetCustomFieldsByCollectionIdAsync(collectionId);
             return Ok(customFields);
@@ -42,7 +42,7 @@ namespace PersonalCollectionManager.API.Controllers
         }
 
         [HttpDelete("delete/id")]
-        public async Task<IActionResult> DeleteCustomField([FromRoute] Guid customFieldId)
+        public async Task<IActionResult> DeleteCustomField( Guid customFieldId)
         {
             var result = await _customFieldService.DeleteCustomFieldAsync(customFieldId);
             return Ok(result);
