@@ -37,8 +37,8 @@ namespace PersonalCollectionManager.API.Controllers
             return Ok(tags);
         }
 
-        [HttpGet("item/{itemId:guid}")]
-        public async Task<ActionResult<IEnumerable<TagDto>>> GetTagsByItemIdAsync([FromRoute] Guid itemId)
+        [HttpGet("itemId")]
+        public async Task<ActionResult<IEnumerable<TagDto>>> GetTagsByItemIdAsync(Guid itemId)
         {
             var tags = await _tagService.GetTagsByItemIdAsync(itemId);
             if (tags == null || !tags.Any())
@@ -48,8 +48,8 @@ namespace PersonalCollectionManager.API.Controllers
             return Ok(tags);
         }
 
-        [HttpGet("{id:guid}")]
-        public async Task<ActionResult<TagDto>> GetTagByIdAsync([FromRoute] Guid id)
+        [HttpGet("id")]
+        public async Task<ActionResult<TagDto>> GetTagByIdAsync(Guid id)
         {
             var tag = await _tagService.GetTagByIdAsync(id);
             if (tag == null)
@@ -59,15 +59,15 @@ namespace PersonalCollectionManager.API.Controllers
             return Ok(tag);
         }
 
-        [HttpPost]
+        [HttpPost("add")]
         public async Task<ActionResult<TagDto>> AddTagAsync([FromBody] TagRequestDto tagRequest)
         {
             var newTag = await _tagService.AddTagAsync(tagRequest);
             return Ok(newTag);
         }
 
-        [HttpDelete("{id:guid}")]
-        public async Task<IActionResult> DeleteTagAsync([FromRoute] Guid id)
+        [HttpDelete("delete/id")]
+        public async Task<IActionResult> DeleteTagAsync(Guid id)
         {
             var result = await _tagService.DeleteTagAsync(id);
             if (result == null)
@@ -77,8 +77,8 @@ namespace PersonalCollectionManager.API.Controllers
             return NoContent();
         }
 
-        [HttpPut("{id:guid}")]
-        public async Task<IActionResult> UpdateTagAsync([FromRoute] Guid id, [FromBody] TagDto tagDto)
+        [HttpPut("update/id/tag")]
+        public async Task<IActionResult> UpdateTagAsync( Guid id, [FromBody] TagDto tagDto)
         {
             if (id != tagDto.Id)
             {

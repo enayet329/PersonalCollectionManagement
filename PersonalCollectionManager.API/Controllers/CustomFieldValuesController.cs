@@ -20,29 +20,29 @@ namespace PersonalCollectionManager.API.Controllers
             _customFieldService = customFieldService;
         }
 
-        [HttpGet("item/{itemId:guid}")]
-        public async Task<IActionResult> GetCustomFieldValuesByItemId([FromRoute] Guid itemId)
+        [HttpGet("itemId")]
+        public async Task<IActionResult> GetCustomFieldValuesByItemId(Guid itemId)
         {
             var customFieldValues = await _customFieldService.GetCustomFieldValuesByItemIdAsync(itemId);
             return Ok(customFieldValues);
         }
 
-        [HttpPost]
+        [HttpPost("add")]
         public async Task<IActionResult> AddCustomFieldValues([FromBody] IEnumerable<CustomFieldValueCreateDto> customFieldValues)
         {
             var result = await _customFieldService.AddCustomFieldValueAsync(customFieldValues);
             return Ok(result);
         }
 
-        [HttpPut]
+        [HttpPut("update")]
         public async Task<IActionResult> UpdateCustomFieldValues([FromBody] IEnumerable<CustomFieldValueUpdateDto> customFieldValues)
         {
             var result = await _customFieldService.UpdateCustomFieldValueAsync(customFieldValues);
             return Ok(result);
         }
 
-        [HttpDelete("{customFieldValueId:guid}")]
-        public async Task<IActionResult> DeleteCustomFieldValue([FromRoute] Guid customFieldValueId)
+        [HttpDelete("delete/id")]
+        public async Task<IActionResult> DeleteCustomFieldValue(Guid customFieldValueId)
         {
             var result = await _customFieldService.DeleteCustomFieldValueAsync(customFieldValueId);
             return Ok(result);

@@ -9,5 +9,6 @@
         public DateTime DateAdded { get; set; }
         public string CollectionName { get; set; }
         public Guid CollectionId { get; set; }
+        public List<string> TagNames { get; set; }
     }
 }

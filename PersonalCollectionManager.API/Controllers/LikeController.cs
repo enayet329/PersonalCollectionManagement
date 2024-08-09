@@ -24,7 +24,7 @@ namespace PersonalCollectionManager.API.Controllers
             return Ok(result);
         }
 
-        [HttpGet("{itemId}")]
+        [HttpGet("itemId")]
         public async Task<IActionResult> GetLikesByItemIdAsync(Guid itemId)
             {
             var likes = await _likeService.GetAllLikeByItemId(itemId);
