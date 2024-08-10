@@ -16,10 +16,10 @@ namespace PersonalCollectionManager.Shared.Helpers
                 .ReverseMap();
 
             CreateMap<Item, ItemDto>()
-               .ForMember(dest => dest.CollectionName, opt => opt.MapFrom(src => src.Collection.Name))
-               .ForMember(dest => dest.CollectionId, opt => opt.MapFrom(src => src.Collection.Id))
-               .ForMember(dest => dest.TagNames, opt => opt.MapFrom(src => src.ItemTags.Select(it => it.Tag.Name)))
-               .ReverseMap();
+                .ForMember(dest => dest.CollectionName, opt => opt.MapFrom(src => src.Collection.Name))
+                .ForMember(dest => dest.CollectionId, opt => opt.MapFrom(src => src.Collection.Id))
+                .ForMember(dest => dest.TagNames, opt => opt.MapFrom(src => src.ItemTags.Select(it => it.Tag.Name)))
+                .ReverseMap();
 
             CreateMap<Comment, CommentDto>().ReverseMap();
             CreateMap<Like, LikeDto>().ReverseMap();
@@ -27,8 +27,8 @@ namespace PersonalCollectionManager.Shared.Helpers
             CreateMap<ItemAlgoliaDto, ItemDto>().ReverseMap();
 
             CreateMap<User, UserDto>()
-                .ForMember(dest => dest.PrefrredLanguage, opt => opt.MapFrom(src => src.PreferredLanguage))
-                .ForMember(dest => dest.PreffrredThemeDark, opt => opt.MapFrom(src => src.PreferredThemeDark))
+                .ForMember(dest => dest.PrefrredLanguage, opt => opt.MapFrom(src => src.PreferredLanguage)) // Fixed property name
+                .ForMember(dest => dest.PreffrredThemeDark, opt => opt.MapFrom(src => src.PreferredThemeDark)) // Fixed property name
                 .ReverseMap();
 
             // RequestDTOs to Domain Entities
