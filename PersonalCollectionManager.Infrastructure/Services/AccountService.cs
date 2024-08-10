@@ -93,10 +93,10 @@ namespace PersonalCollectionManager.Infrastructure.Services
                     {
                         return new OperationResult(false, "Error saving refresh token.");
                     }
-                    return new OperationResult(true, "Login successful", accessToken, refreshToken, user.PreferredLanguage,user.PreferredThemeDark);
+                    return new OperationResult(true, "Login successful",accessToken, refrshToken.Token, user.PreferredLanguage, user.PreferredThemeDark);
                 }
 
-                return new OperationResult(true, "Login successful", accessToken, refrshToken.Token, user.PreferredLanguage, user.PreferredThemeDark);
+                return new OperationResult(true, "Login successful",accessToken, refrshToken.Token, user.PreferredLanguage, user.PreferredThemeDark);
 
             }
             catch (Exception ex)
@@ -205,8 +205,7 @@ namespace PersonalCollectionManager.Infrastructure.Services
                 {
                     return new OperationResult(false, "Error updating refresh token.");
                 }
-
-                return new OperationResult(true, "Access token refreshed successfully.", accessToken, newRefreshToken);
+                return new OperationResult(true, "Login successful", user.Id, accessToken, newRefreshToken, user.PreferredLanguage, user.PreferredThemeDark, user.IsAdmin);
             }
             catch (Exception ex)
             {
