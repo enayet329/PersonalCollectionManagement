@@ -92,7 +92,6 @@ namespace PersonalCollectionManager.API.Controllers
             return Ok(new { available = isAvailable });
         }
 
-        [Authorize(Policy = "AdminOrUser")]
         [HttpPut("language/userId")]
         public async Task<IActionResult> UpdateLanguage(Guid userId, string language)
         {
@@ -105,7 +104,6 @@ namespace PersonalCollectionManager.API.Controllers
             return BadRequest(new { message = "Language not updated." });
         }
 
-        [Authorize(Policy = "AdminOrUser")]
         [HttpPut("theme/userId")]
         public async Task<IActionResult> UpdateTheme(Guid userId, bool theme)
         {
@@ -115,7 +113,7 @@ namespace PersonalCollectionManager.API.Controllers
                 return Ok(new { message = "Theme updated successfully." });
             }
 
-            return BadRequest(new { message = "Theme not updated." });
+            return BadRequest(new { message = "Error" });
         }
     }
 }
