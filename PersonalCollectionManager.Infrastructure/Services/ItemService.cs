@@ -93,7 +93,7 @@ namespace PersonalCollectionManager.Infrastructure.Services
         {
             try
             {
-                var user = await _itemRepository.GetByIdAsync(id);
+                var user = await _itemRepository.GetItemsById(id);
                 return _mapper.Map<ItemDto>(user);
             }
             catch (Exception ex)
