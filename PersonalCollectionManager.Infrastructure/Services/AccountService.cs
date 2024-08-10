@@ -205,7 +205,7 @@ namespace PersonalCollectionManager.Infrastructure.Services
                 {
                     return new OperationResult(false, "Error updating refresh token.");
                 }
-                return new OperationResult(true, "Login successful", user.Id, accessToken, newRefreshToken, user.PreferredLanguage, user.PreferredThemeDark, user.IsAdmin);
+                return new OperationResult(true, "Login successful", accessToken, newRefreshToken, user.PreferredLanguage, user.PreferredThemeDark);
             }
             catch (Exception ex)
             {
