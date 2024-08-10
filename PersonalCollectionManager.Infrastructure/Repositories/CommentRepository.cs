@@ -17,7 +17,11 @@ namespace PersonalCollectionManager.Data.Repositories
 
         public async Task<IEnumerable<Comment>> GetCommentsByItemAsync(Guid itemId)
         {
-            return await _context.Set<Comment>().Where(c => c.ItemId == itemId).ToListAsync();
+            return await _context.Set<Comment>()
+                .Include(u => u.User)
+                .Where(c => c.ItemId == itemId)
+                .ToListAsync();
+
         }
 
     }

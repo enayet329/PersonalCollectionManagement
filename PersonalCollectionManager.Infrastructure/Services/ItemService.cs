@@ -65,8 +65,8 @@ namespace PersonalCollectionManager.Infrastructure.Services
         {
             try
             {
-                var user = await _itemRepository.GetItemsByCollectionIdAsync(id);
-                return _mapper.Map<IEnumerable<ItemDto>>(user);
+                var item = await _itemRepository.GetItemsByCollectionIdAsync(id);
+                return item;
             }
             catch (Exception ex)
             {
@@ -93,7 +93,7 @@ namespace PersonalCollectionManager.Infrastructure.Services
         {
             try
             {
-                var user = await _itemRepository.GetByIdAsync(id);
+                var user = await _itemRepository.GetItemsById(id);
                 return _mapper.Map<ItemDto>(user);
             }
             catch (Exception ex)
@@ -132,12 +132,12 @@ namespace PersonalCollectionManager.Infrastructure.Services
             }
         }
 
-        public async Task<ItemDto> UpdateItemAsync(ItemDto item)
+        public async Task<ItemDto> UpdateItemAsync(ItemUpdateRequestDto item)
         {
             try
             {
-                var user = _mapper.Map<Item>(item);
-                var result = await _itemRepository.Update(user);
+                var items = _mapper.Map<Item>(item);
+                var result = await _itemRepository.Update(items);
                 return _mapper.Map<ItemDto>(result);
             }
             catch (Exception ex)

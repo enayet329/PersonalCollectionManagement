@@ -89,6 +89,26 @@ namespace PersonalCollectionManager.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "CustomFields",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    FieldType = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    CollectionId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CustomFields", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CustomFields_Collections_CollectionId",
+                        column: x => x.CollectionId,
+                        principalTable: "Collections",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Items",
                 columns: table => new
                 {
@@ -135,6 +155,31 @@ namespace PersonalCollectionManager.Infrastructure.Migrations
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CustomFieldValues",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Value = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CustomFieldId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ItemId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CustomFieldValues", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CustomFieldValues_CustomFields_CustomFieldId",
+                        column: x => x.CustomFieldId,
+                        principalTable: "CustomFields",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CustomFieldValues_Items_ItemId",
+                        column: x => x.ItemId,
+                        principalTable: "Items",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -196,8 +241,8 @@ namespace PersonalCollectionManager.Infrastructure.Migrations
                 columns: new[] { "Id", "Email", "ImageURL", "IsAdmin", "IsBlocked", "PasswordHash", "PreferredLanguage", "PreferredThemeDark", "Username" },
                 values: new object[,]
                 {
-                    { new Guid("11111111-1111-1111-1111-111111111111"), "user1@example.com", "https://example.com/user1.jpg", false, false, "$2a$10$irUycdjwCU.yXpW/wzfbmuUIZEnHuqkKz7VKZ2DEeFuDl4aUmTZ7e", "en", false, "user1" },
-                    { new Guid("d2c6e7b4-4a76-4b1e-8d8f-2b9f2f7e0e77"), "admin@example.com", "https://example.com/admin.jpg", true, false, "$2a$10$tZt6npOCgGVoeWtoihCoMOn3cM2GSfpPCS.dAfVYM6x4voeU1uNwO", "en", false, "admin" }
+                    { new Guid("11111111-1111-1111-1111-111111111111"), "user1@example.com", "https://example.com/user1.jpg", false, false, "$2a$10$o.HSLeVqZRU1Zz2.IrhD5uv/iXJQESe.aqKkhrLSTShiCCx603022", "en", false, "user1" },
+                    { new Guid("d2c6e7b4-4a76-4b1e-8d8f-2b9f2f7e0e77"), "admin@example.com", "https://example.com/admin.jpg", true, false, "$2a$10$S6Yv3L0fM5DoHfqzACeXUuLmEm5FUdVEA36uRZ2P8z3HzEEUAEKoK", "en", false, "admin" }
                 });
 
             migrationBuilder.InsertData(
@@ -210,19 +255,29 @@ namespace PersonalCollectionManager.Infrastructure.Migrations
                 columns: new[] { "Id", "Created", "Expires", "Revoked", "Token", "UserId" },
                 values: new object[,]
                 {
-                    { new Guid("77777777-7777-7777-7777-777777777777"), new DateTime(2024, 8, 3, 13, 2, 13, 308, DateTimeKind.Utc).AddTicks(147), new DateTime(2024, 8, 10, 13, 2, 13, 308, DateTimeKind.Utc).AddTicks(140), null, "sampleRefreshToken1", new Guid("11111111-1111-1111-1111-111111111111") },
-                    { new Guid("88888888-8888-8888-8888-888888888888"), new DateTime(2024, 8, 3, 13, 2, 13, 308, DateTimeKind.Utc).AddTicks(150), new DateTime(2024, 8, 10, 13, 2, 13, 308, DateTimeKind.Utc).AddTicks(149), null, "sampleRefreshToken2", new Guid("d2c6e7b4-4a76-4b1e-8d8f-2b9f2f7e0e77") }
+                    { new Guid("77777777-7777-7777-7777-777777777777"), new DateTime(2024, 8, 5, 15, 24, 21, 887, DateTimeKind.Utc).AddTicks(3296), new DateTime(2024, 8, 12, 15, 24, 21, 887, DateTimeKind.Utc).AddTicks(3288), null, "sampleRefreshToken1", new Guid("11111111-1111-1111-1111-111111111111") },
+                    { new Guid("88888888-8888-8888-8888-888888888888"), new DateTime(2024, 8, 5, 15, 24, 21, 887, DateTimeKind.Utc).AddTicks(3303), new DateTime(2024, 8, 12, 15, 24, 21, 887, DateTimeKind.Utc).AddTicks(3302), null, "sampleRefreshToken2", new Guid("d2c6e7b4-4a76-4b1e-8d8f-2b9f2f7e0e77") }
                 });
+
+            migrationBuilder.InsertData(
+                table: "CustomFields",
+                columns: new[] { "Id", "CollectionId", "FieldType", "Name" },
+                values: new object[] { new Guid("99999999-9999-9999-9999-999999999999"), new Guid("22222222-2222-2222-2222-222222222222"), "Text", "Custom Field 1" });
 
             migrationBuilder.InsertData(
                 table: "Items",
                 columns: new[] { "Id", "CollectionId", "DateAdded", "Description", "ImgUrl", "Name" },
-                values: new object[] { new Guid("33333333-3333-3333-3333-333333333333"), new Guid("22222222-2222-2222-2222-222222222222"), new DateTime(2024, 8, 3, 13, 2, 13, 307, DateTimeKind.Utc).AddTicks(9926), "First item", "https://example.com/item1.jpg", "Item 1" });
+                values: new object[] { new Guid("33333333-3333-3333-3333-333333333333"), new Guid("22222222-2222-2222-2222-222222222222"), new DateTime(2024, 8, 5, 15, 24, 21, 887, DateTimeKind.Utc).AddTicks(2332), "First item", "https://example.com/item1.jpg", "Item 1" });
 
             migrationBuilder.InsertData(
                 table: "Comments",
                 columns: new[] { "Id", "Content", "CreatedAt", "ItemId", "UserId" },
-                values: new object[] { new Guid("55555555-5555-5555-5555-555555555555"), "First comment", new DateTime(2024, 8, 3, 13, 2, 13, 308, DateTimeKind.Utc).AddTicks(49), new Guid("33333333-3333-3333-3333-333333333333"), new Guid("11111111-1111-1111-1111-111111111111") });
+                values: new object[] { new Guid("55555555-5555-5555-5555-555555555555"), "First comment", new DateTime(2024, 8, 5, 15, 24, 21, 887, DateTimeKind.Utc).AddTicks(2566), new Guid("33333333-3333-3333-3333-333333333333"), new Guid("11111111-1111-1111-1111-111111111111") });
+
+            migrationBuilder.InsertData(
+                table: "CustomFieldValues",
+                columns: new[] { "Id", "CustomFieldId", "ItemId", "Value" },
+                values: new object[] { new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"), new Guid("99999999-9999-9999-9999-999999999999"), new Guid("33333333-3333-3333-3333-333333333333"), "Custom Value 1" });
 
             migrationBuilder.InsertData(
                 table: "ItemTags",
@@ -260,6 +315,28 @@ namespace PersonalCollectionManager.Infrastructure.Migrations
                 name: "IX_Comments_UserId",
                 table: "Comments",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CustomFields_CollectionId",
+                table: "CustomFields",
+                column: "CollectionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CustomFields_Id",
+                table: "CustomFields",
+                column: "Id",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CustomFieldValues_CustomFieldId",
+                table: "CustomFieldValues",
+                column: "CustomFieldId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CustomFieldValues_ItemId",
+                table: "CustomFieldValues",
+                column: "ItemId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Items_CollectionId",
@@ -319,6 +396,9 @@ namespace PersonalCollectionManager.Infrastructure.Migrations
                 name: "Comments");
 
             migrationBuilder.DropTable(
+                name: "CustomFieldValues");
+
+            migrationBuilder.DropTable(
                 name: "ItemTags");
 
             migrationBuilder.DropTable(
@@ -326,6 +406,9 @@ namespace PersonalCollectionManager.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "RefreshTokens");
+
+            migrationBuilder.DropTable(
+                name: "CustomFields");
 
             migrationBuilder.DropTable(
                 name: "Tags");

@@ -92,12 +92,8 @@ namespace PersonalCollectionManager.API.Controllers
         }
 
         [HttpPut("update/id/item")]
-        public async Task<IActionResult> UpdateItemAsync(Guid id, [FromBody] ItemDto itemDto)
+        public async Task<IActionResult> UpdateItemAsync([FromBody] ItemUpdateRequestDto itemDto)
         {
-            if (id != itemDto.Id)
-            {
-                return BadRequest(new { message = "Item ID in the path and body do not match." });
-            }
 
             var result = await _itemService.UpdateItemAsync(itemDto);
             if (result == null)
