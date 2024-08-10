@@ -36,7 +36,25 @@ namespace PersonalCollectionManager.Infrastructure.Services
             
         }
 
-        public async Task<OperationResult> ToggleLike(LikeRequestDto likeRequestDto)
+        public async Task<OperationResult> IsItemLiked(LikeRequestDto likeRequest)
+        {
+            try
+            {
+                var like = await _likeRepository.GetLikeByUserIdAndItemId(likeRequest);
+                if(like == null)
+                {
+                    return new OperationResult(false, "Item not liked.");
+                }
+                return new OperationResult(like != null ? true : false, "Item liked");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in IsItemLiked");
+                return new OperationResult(false, "Error in IsItemLiked");
+            }
+        }
+
+        public async Task<LikeResponseDto> ToggleLike(LikeRequestDto likeRequestDto)
         {
             try
             {
@@ -46,18 +64,20 @@ namespace PersonalCollectionManager.Infrastructure.Services
                 if (like == null)
                 {
                     await _likeRepository.AddAsync(likeToAdd);
-                    return new OperationResult(true, "Like added successfully.");
+                    var likeCount = await GetAllLikeByItemId(likeRequestDto.ItemId);
+                    return new LikeResponseDto(true, "Like added successfully.", likeCount);
                 }
                 else
                 {
                     await _likeRepository.Remove(like);
-                    return new OperationResult(false, "Like removed successfully.");
+                    var likeCount = await GetAllLikeByItemId(likeRequestDto.ItemId);
+                    return new LikeResponseDto(false, "Like removed successfully.", likeCount);
                 }
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error in ToggleLike");
-                return new OperationResult(false, "Error in ToggleLike");
+                return new LikeResponseDto(false, "Error in ToggleLike", 0);
             }
         }
     }

@@ -15,6 +15,22 @@ namespace PersonalCollectionManager.Data.Repositories
         public LikeRepository(AppDbContext context, ILogger<Repository<Like>> logger)
             : base(context, logger) { }
 
+        public async Task<bool> CheckIfUserLikedItem(Guid itemId, Guid userId)
+        {
+            try
+            {
+                var isLike = await _context.Set<Like>().FirstOrDefaultAsync(l => l.ItemId == itemId && l.UserId == userId);
+
+                return isLike!= null;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error checking if user liked item");
+                throw;
+            }
+        }
+        
+
         public async Task<Like?> GetLikeByUserIdAndItemId(LikeRequestDto requestDto)
         {
             try

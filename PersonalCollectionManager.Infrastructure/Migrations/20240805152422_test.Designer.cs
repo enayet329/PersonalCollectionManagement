@@ -12,7 +12,7 @@ using PersonalCollectionManager.Infrastructure.Data;
 namespace PersonalCollectionManager.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240803130213_test")]
+    [Migration("20240805152422_test")]
     partial class test
     {
         /// <inheritdoc />
@@ -106,9 +106,82 @@ namespace PersonalCollectionManager.Infrastructure.Migrations
                         {
                             Id = new Guid("55555555-5555-5555-5555-555555555555"),
                             Content = "First comment",
-                            CreatedAt = new DateTime(2024, 8, 3, 13, 2, 13, 308, DateTimeKind.Utc).AddTicks(49),
+                            CreatedAt = new DateTime(2024, 8, 5, 15, 24, 21, 887, DateTimeKind.Utc).AddTicks(2566),
                             ItemId = new Guid("33333333-3333-3333-3333-333333333333"),
                             UserId = new Guid("11111111-1111-1111-1111-111111111111")
+                        });
+                });
+
+            modelBuilder.Entity("PersonalCollectionManager.Domain.Entities.CustomField", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CollectionId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("FieldType")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CollectionId");
+
+                    b.HasIndex("Id")
+                        .IsUnique();
+
+                    b.ToTable("CustomFields");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("99999999-9999-9999-9999-999999999999"),
+                            CollectionId = new Guid("22222222-2222-2222-2222-222222222222"),
+                            FieldType = "Text",
+                            Name = "Custom Field 1"
+                        });
+                });
+
+            modelBuilder.Entity("PersonalCollectionManager.Domain.Entities.CustomFieldValue", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CustomFieldId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ItemId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomFieldId")
+                        .IsUnique();
+
+                    b.HasIndex("ItemId");
+
+                    b.ToTable("CustomFieldValues");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
+                            CustomFieldId = new Guid("99999999-9999-9999-9999-999999999999"),
+                            ItemId = new Guid("33333333-3333-3333-3333-333333333333"),
+                            Value = "Custom Value 1"
                         });
                 });
 
@@ -151,7 +224,7 @@ namespace PersonalCollectionManager.Infrastructure.Migrations
                         {
                             Id = new Guid("33333333-3333-3333-3333-333333333333"),
                             CollectionId = new Guid("22222222-2222-2222-2222-222222222222"),
-                            DateAdded = new DateTime(2024, 8, 3, 13, 2, 13, 307, DateTimeKind.Utc).AddTicks(9926),
+                            DateAdded = new DateTime(2024, 8, 5, 15, 24, 21, 887, DateTimeKind.Utc).AddTicks(2332),
                             Description = "First item",
                             ImgUrl = "https://example.com/item1.jpg",
                             Name = "Item 1"
@@ -242,16 +315,16 @@ namespace PersonalCollectionManager.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("77777777-7777-7777-7777-777777777777"),
-                            Created = new DateTime(2024, 8, 3, 13, 2, 13, 308, DateTimeKind.Utc).AddTicks(147),
-                            Expires = new DateTime(2024, 8, 10, 13, 2, 13, 308, DateTimeKind.Utc).AddTicks(140),
+                            Created = new DateTime(2024, 8, 5, 15, 24, 21, 887, DateTimeKind.Utc).AddTicks(3296),
+                            Expires = new DateTime(2024, 8, 12, 15, 24, 21, 887, DateTimeKind.Utc).AddTicks(3288),
                             Token = "sampleRefreshToken1",
                             UserId = new Guid("11111111-1111-1111-1111-111111111111")
                         },
                         new
                         {
                             Id = new Guid("88888888-8888-8888-8888-888888888888"),
-                            Created = new DateTime(2024, 8, 3, 13, 2, 13, 308, DateTimeKind.Utc).AddTicks(150),
-                            Expires = new DateTime(2024, 8, 10, 13, 2, 13, 308, DateTimeKind.Utc).AddTicks(149),
+                            Created = new DateTime(2024, 8, 5, 15, 24, 21, 887, DateTimeKind.Utc).AddTicks(3303),
+                            Expires = new DateTime(2024, 8, 12, 15, 24, 21, 887, DateTimeKind.Utc).AddTicks(3302),
                             Token = "sampleRefreshToken2",
                             UserId = new Guid("d2c6e7b4-4a76-4b1e-8d8f-2b9f2f7e0e77")
                         });
@@ -338,7 +411,7 @@ namespace PersonalCollectionManager.Infrastructure.Migrations
                             ImageURL = "https://example.com/admin.jpg",
                             IsAdmin = true,
                             IsBlocked = false,
-                            PasswordHash = "$2a$10$tZt6npOCgGVoeWtoihCoMOn3cM2GSfpPCS.dAfVYM6x4voeU1uNwO",
+                            PasswordHash = "$2a$10$S6Yv3L0fM5DoHfqzACeXUuLmEm5FUdVEA36uRZ2P8z3HzEEUAEKoK",
                             PreferredLanguage = "en",
                             PreferredThemeDark = false,
                             Username = "admin"
@@ -350,7 +423,7 @@ namespace PersonalCollectionManager.Infrastructure.Migrations
                             ImageURL = "https://example.com/user1.jpg",
                             IsAdmin = false,
                             IsBlocked = false,
-                            PasswordHash = "$2a$10$irUycdjwCU.yXpW/wzfbmuUIZEnHuqkKz7VKZ2DEeFuDl4aUmTZ7e",
+                            PasswordHash = "$2a$10$o.HSLeVqZRU1Zz2.IrhD5uv/iXJQESe.aqKkhrLSTShiCCx603022",
                             PreferredLanguage = "en",
                             PreferredThemeDark = false,
                             Username = "user1"
@@ -385,6 +458,36 @@ namespace PersonalCollectionManager.Infrastructure.Migrations
                     b.Navigation("Item");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("PersonalCollectionManager.Domain.Entities.CustomField", b =>
+                {
+                    b.HasOne("PersonalCollectionManager.Domain.Entities.Collection", "Collection")
+                        .WithMany("CustomFields")
+                        .HasForeignKey("CollectionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Collection");
+                });
+
+            modelBuilder.Entity("PersonalCollectionManager.Domain.Entities.CustomFieldValue", b =>
+                {
+                    b.HasOne("PersonalCollectionManager.Domain.Entities.CustomField", "CustomField")
+                        .WithMany("CustomFieldValues")
+                        .HasForeignKey("CustomFieldId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PersonalCollectionManager.Domain.Entities.Item", "Item")
+                        .WithMany("CustomFieldValues")
+                        .HasForeignKey("ItemId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("CustomField");
+
+                    b.Navigation("Item");
                 });
 
             modelBuilder.Entity("PersonalCollectionManager.Domain.Entities.Item", b =>
@@ -449,12 +552,21 @@ namespace PersonalCollectionManager.Infrastructure.Migrations
 
             modelBuilder.Entity("PersonalCollectionManager.Domain.Entities.Collection", b =>
                 {
+                    b.Navigation("CustomFields");
+
                     b.Navigation("Items");
+                });
+
+            modelBuilder.Entity("PersonalCollectionManager.Domain.Entities.CustomField", b =>
+                {
+                    b.Navigation("CustomFieldValues");
                 });
 
             modelBuilder.Entity("PersonalCollectionManager.Domain.Entities.Item", b =>
                 {
                     b.Navigation("Comments");
+
+                    b.Navigation("CustomFieldValues");
 
                     b.Navigation("ItemTags");
 

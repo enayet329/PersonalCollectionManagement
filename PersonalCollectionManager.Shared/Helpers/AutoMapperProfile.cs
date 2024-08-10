@@ -22,7 +22,8 @@ namespace PersonalCollectionManager.Shared.Helpers
                 .ReverseMap();
 
             CreateMap<Comment, CommentDto>()
-                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.Username));
+                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.Username))
+                .ForMember(dest => dest.UserProfileImgeUrl, opt => opt.MapFrom(src => src.User.ImageURL));
                  
 
 

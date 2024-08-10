@@ -30,5 +30,12 @@ namespace PersonalCollectionManager.API.Controllers
             var likes = await _likeService.GetAllLikeByItemId(itemId);
             return Ok(likes);
         }
+
+        [HttpPost("IsItemLiked")]
+        public async Task<IActionResult> IsItemLikedAsync(LikeRequestDto request)
+        {
+            var isLiked = await _likeService.IsItemLiked(request);
+            return Ok(isLiked);
+        }
     }
 }
