@@ -21,7 +21,11 @@ namespace PersonalCollectionManager.Shared.Helpers
                 .ForMember(dest => dest.TagNames, opt => opt.MapFrom(src => src.ItemTags.Select(it => it.Tag.Name)))
                 .ReverseMap();
 
-            CreateMap<Comment, CommentDto>().ReverseMap();
+            CreateMap<Comment, CommentDto>()
+                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.Username));
+                 
+
+
             CreateMap<Like, LikeDto>().ReverseMap();
             CreateMap<Tag, TagDto>().ReverseMap();
             CreateMap<ItemAlgoliaDto, ItemDto>().ReverseMap();
