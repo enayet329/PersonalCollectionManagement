@@ -9,5 +9,6 @@ namespace PersonalCollectionManager.Application.Interfaces.IRepository
     {
         Task<Like> GetLikeByUserIdAndItemId(LikeRequestDto requestDto);
         Task<int> GetLikesByItemId(Guid itemId);
+        Task<bool> CheckIfUserLikedItem(Guid itemId, Guid userId);
     }
 }
