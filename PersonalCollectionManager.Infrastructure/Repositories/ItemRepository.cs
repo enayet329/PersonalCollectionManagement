@@ -72,5 +72,37 @@ namespace PersonalCollectionManager.Data.Repositories
                .Take(10)
                .ToListAsync();
         }
+
+        public async Task<ItemDto?> GetItemsById(Guid itemId)
+        {
+                return await _context.Set<Item>()
+                    .Include(i => i.Collection)
+                    .Include(i => i.ItemTags) 
+                        .ThenInclude(it => it.Tag)
+                    .Where(i => i.Id == itemId)
+                    .Select(i => new ItemDto
+                    {
+                        Id = i.Id,
+                        Name = i.Name,
+                        ImgUrl = i.ImgUrl,
+                        Description = i.Description,
+                        DateAdded = i.DateAdded,
+                        CollectionId = i.CollectionId,
+                        CollectionName = i.Collection.Name,
+                        Likes = i.Likes.Count(),
+                        TagNames = i.ItemTags
+                                .Select(it => it.Tag.Name)
+                                .FirstOrDefault() == null
+                                 ? new List<string>()
+                                 : new List<string> { i.ItemTags.Select(it => it.Tag.Name).FirstOrDefault() }
+                    }
+            
+                     )
+                    .SingleOrDefaultAsync();
+        }
+
+
     }
+
 }
+
