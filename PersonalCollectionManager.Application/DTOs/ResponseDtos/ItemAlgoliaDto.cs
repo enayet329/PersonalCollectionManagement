@@ -8,6 +8,9 @@
         public string Description { get; set; }
         public string ImgUrl { get; set; }
         public DateTime DateAdded { get; set; }
+        public string CollectionName { get; set; }
         public Guid CollectionId { get; set; }
+        public List<string> TagNames { get; set; }
+        public int Likes { get; set; }
     }
 }
