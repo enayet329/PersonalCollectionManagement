@@ -18,7 +18,7 @@ namespace PersonalCollectionManager.Infrastructure.Services
         private readonly IItemTagRepository _itemTagRepository;
         private readonly IMapper _mapper;
         private readonly ILogger<ItemService> _logger;
-        public ItemService(IItemRepository itemRepository,IItemTagRepository itemTagRepository,IMapper mapper, ILogger<ItemService> logger)
+        public ItemService(IItemRepository itemRepository, IItemTagRepository itemTagRepository, IMapper mapper, ILogger<ItemService> logger)
         {
             _itemRepository = itemRepository;
             _itemTagRepository = itemTagRepository;
@@ -32,7 +32,9 @@ namespace PersonalCollectionManager.Infrastructure.Services
             {
                 var items = _mapper.Map<Item>(item);
                 items.DateAdded = DateTime.Now;
-                var result = await _itemRepository.AddAsync(items);
+                await _itemRepository.AddAsync(items);
+
+                var result = await _itemRepository.GetItemsById(items.Id);
                 return _mapper.Map<ItemDto>(result);
             }
             catch (Exception ex)
@@ -121,7 +123,7 @@ namespace PersonalCollectionManager.Infrastructure.Services
         {
             try
             {
-                var item =await _itemRepository.GetRecentItemsAsync();
+                var item = await _itemRepository.GetRecentItemsAsync();
 
                 return _mapper.Map<IEnumerable<ItemDto>>(item);
             }
@@ -137,7 +139,9 @@ namespace PersonalCollectionManager.Infrastructure.Services
             try
             {
                 var items = _mapper.Map<Item>(item);
-                var result = await _itemRepository.Update(items);
+                await _itemRepository.Update(items);
+                
+                var result = await _itemRepository.GetItemsById(items.Id);
                 return _mapper.Map<ItemDto>(result);
             }
             catch (Exception ex)
