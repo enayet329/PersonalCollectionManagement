@@ -8,6 +8,7 @@
         public string ImageURL { get; set; }
         public string PrefrredLanguage { get; set; }
         public bool PreffrredThemeDark { get; set; }
+        public DateTime JoinedAt { get; set; }
         public bool IsAdmin { get; set; }
         public bool IsBlocked { get; set; }
     }
