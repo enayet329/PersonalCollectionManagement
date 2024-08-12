@@ -8,6 +8,7 @@ CREATE TABLE Users (
     PreferredThemeDark BIT DEFAULT 0,
     IsAdmin BIT DEFAULT 0,
     IsBlocked BIT DEFAULT 0
+    JoinedAt DATETIME2,
 );
 
 CREATE UNIQUE INDEX IX_Users_Username ON Users(Username);
