@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -22,8 +23,17 @@ namespace PersonalCollectionManager.Infrastructure.DependencyInjection
             services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(configuration.GetConnectionString("PersonalCollectionManagerDb"),
                 b => b.MigrationsAssembly(typeof(ServiceCollectionExtensions).Assembly.FullName))
-                //.EnableSensitiveDataLogging()
                 .LogTo(Console.WriteLine, LogLevel.Information));
+
+            services.AddSingleton<IDbContextFactory<AppDbContext>>(sp =>
+            {
+                var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
+                optionsBuilder.UseSqlServer(configuration.GetConnectionString("PersonalCollectionManagerDb"),
+                    b => b.MigrationsAssembly(typeof(ServiceCollectionExtensions).Assembly.FullName))
+                    .LogTo(Console.WriteLine, LogLevel.Information);
+
+                return new PooledDbContextFactory<AppDbContext>(optionsBuilder.Options);
+            });
 
             // Helpers
             services.AddAutoMapper(typeof(AutoMapperProfile));
