@@ -108,16 +108,19 @@ namespace PersonalCollectionManager.Infrastructure.Repositories
             return await _context.Set<T>().FirstOrDefaultAsync(predicate);
         }
 
-        public async Task AddRangeAsync(IEnumerable<T> entity)
+        public async Task<IEnumerable<T>> AddRangeAsync(IEnumerable<T> entities)
         {
             try
             {
-                _context.Set<T>().AddRange(entity);
+                await _context.Set<T>().AddRangeAsync(entities);
                 await _context.SaveChangesAsync();
+
+                return entities;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                _logger.LogError(ex, $"Error adding entity of type {typeof(T).Name}");
+                _logger.LogError(ex, $"Error adding entities of type {typeof(T).Name}");
+                return null;
             }
         }
 
@@ -134,21 +137,32 @@ namespace PersonalCollectionManager.Infrastructure.Repositories
             }
 
         }
-
-        public async Task<bool> UpdateRangeAsync(IEnumerable<T> entity)
+        public async Task<bool> UpdateRangeAsync(IEnumerable<T> entities)
         {
             try
             {
-                _context.Set<T>().UpdateRange(entity);
+                _context.Set<T>().UpdateRange(entities);
                 await _context.SaveChangesAsync();
                 return true;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                _logger.LogError(ex, $"Error updating entity of type {typeof(T).Name}");
-                throw;
+                _logger.LogError(ex, $"Error updating entities of type {typeof(T).Name}");
+                return false;
             }
         }
 
+        public Task<int> SaveChangesAsync()
+        {
+            try
+            {
+                return _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error saving changes to database");
+                throw;
+            }
+        }
     }
 }
