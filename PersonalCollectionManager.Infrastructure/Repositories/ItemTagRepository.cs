@@ -29,6 +29,11 @@ namespace PersonalCollectionManager.Infrastructure.Repositories
             _context.SaveChanges();
         }
 
+        public async Task<IEnumerable<ItemTag>> getTagsByItemAsync(Guid itemId)
+        {
+            return await _context.ItemTags.Where(it => it.ItemId == itemId).ToListAsync();
+        }
+
         public void RemoveTagFromItem(Guid itemId, Guid tagId)
         {
             var itemTag = _context.ItemTags
