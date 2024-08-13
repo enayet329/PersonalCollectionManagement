@@ -22,6 +22,8 @@ namespace PersonalCollectionManager.Domain.Entities
         public bool IsAdmin { get; set; } = false;
         public bool IsBlocked { get; set; } = false;
 
+        public DateTime JoinedAt { get; set; } = DateTime.Now;
+
         public virtual ICollection<Collection> Collections { get; set; }
         public virtual ICollection<Comment> Comments { get; set; }
         public virtual ICollection<Like> Likes { get; set; }

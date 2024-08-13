@@ -49,6 +49,7 @@ namespace PersonalCollectionManager.Infrastructure.Services
                 user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(userDTO.PasswordHash);
                 user.PreferredThemeDark = false;
                 user.PreferredLanguage = "en";
+                user.JoinedAt = DateTime.Now;
 
                 await _userRepository.AddAsync(user);
                 return new OperationResult(true, "User registered successfully.");

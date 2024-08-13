@@ -12,25 +12,27 @@ public static class SeedData
             {
                 Id = Guid.Parse("d2c6e7b4-4a76-4b1e-8d8f-2b9f2f7e0e77"),
                 Username = "admin",
-                Email = "admin@example.com",
-                PasswordHash = BCrypt.Net.BCrypt.HashPassword("Admin@1234"),
+                Email = "admin@gmail.com",
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword("admin"),
                 ImageURL = "https://example.com/admin.jpg",
                 PreferredLanguage = "en",
                 PreferredThemeDark = false,
                 IsAdmin = true,
-                IsBlocked = false
+                IsBlocked = false,
+                JoinedAt = DateTime.UtcNow
             },
             new User
             {
                 Id = Guid.Parse("11111111-1111-1111-1111-111111111111"),
                 Username = "user1",
                 Email = "user1@example.com",
-                PasswordHash = BCrypt.Net.BCrypt.HashPassword("User@1234"),
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword("User"),
                 ImageURL = "https://example.com/user1.jpg",
                 PreferredLanguage = "en",
                 PreferredThemeDark = false,
                 IsAdmin = false,
-                IsBlocked = false
+                IsBlocked = false,
+                JoinedAt = DateTime.UtcNow
             }
         );
 
