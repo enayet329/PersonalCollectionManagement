@@ -117,7 +117,23 @@ namespace PersonalCollectionManager.Infrastructure.Services
         {
             try
             {
+
+                var itemId = tag.ElementAtOrDefault(0)?.ItemId;
+
+                if (itemId == null || itemId == Guid.Empty)
+                {
+                    return new OperationResult(false, "Error adding tag - Invalid Item ID.");
+                }
+
+                var item = await _itemRepository.GetItemsById(itemId.Value);
+
+                if (item == null)
+                {
+                    return new OperationResult(false, $"Error adding tag - Item with ID {itemId} not found.");
+                }
+
                 var tagEntities = _mapper.Map<IEnumerable<Tag>>(tag);
+
                 var result = await _tagRepository.AddRangeAsync(tagEntities);
 
                 var itemTags = new List<ItemTag>();
@@ -132,7 +148,12 @@ namespace PersonalCollectionManager.Infrastructure.Services
                 }
 
                 var resultItemTags = await _itemTagRepository.AddRangeAsync(itemTags);
-                Console.WriteLine(resultItemTags);
+
+                if (result == null || !result.Any())
+                {
+                    return new OperationResult(false, "Error adding tag.");
+                }
+
                 return new OperationResult(true, "Tag added successfully.");
             }
             catch (Exception ex)
