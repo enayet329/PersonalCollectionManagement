@@ -19,6 +19,7 @@ namespace PersonalCollectionManager.Infrastructure.Data
         public DbSet<RefreshToken> RefreshTokens { get; set; }
         public DbSet<CustomField> CustomFields { get; set; }
         public DbSet<CustomFieldValue> CustomFieldValues { get; set; }
+        public DbSet<Category> categories { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
