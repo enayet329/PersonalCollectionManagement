@@ -47,6 +47,14 @@ namespace PersonalCollectionManager.Infrastructure.Services
             try
             {
                 var customFieldValues = _mapper.Map<IEnumerable<CustomFieldValue>>(customFieldValueDtos);
+                var collectionId = customFieldValueDtos.ElementAtOrDefault(0)?.CustomFieldId;
+
+                if (collectionId == null)
+                {
+                    return false;
+                }
+
+                var customField = _customFieldRepository.GetByCollectionIdAsync(collectionId.Value);
                 await _customFieldValueRepository.AddRangeAsync(customFieldValues);
                 return true;
             }
