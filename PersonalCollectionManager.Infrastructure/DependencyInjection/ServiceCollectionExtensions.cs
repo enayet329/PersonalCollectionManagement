@@ -50,6 +50,7 @@ namespace PersonalCollectionManager.Infrastructure.DependencyInjection
             services.AddScoped<IAuthRepository, AuthRepository>();
             services.AddScoped<ICustomFieldRepository, CustomFieldRepository>();
             services.AddScoped<ICustomFieldValueRepository, CustomFieldValueRepository>();
+            services.AddScoped<ICategoryRepository, CategoryRepository>();
 
             // Services
             services.AddScoped<IAdminServices, AdminService>();
@@ -61,6 +62,7 @@ namespace PersonalCollectionManager.Infrastructure.DependencyInjection
             services.AddScoped<ILikeService, LikeService>();
             services.AddScoped<ICollectionService, CollectionService>();
             services.AddScoped<ICustomFieldService, CustomFieldService>();
+            services.AddScoped<ICategoryService, CategoryService>();
 
             // Authentication Service
             services.AddScoped<IJwtTokenService, JwtTokenService>();
