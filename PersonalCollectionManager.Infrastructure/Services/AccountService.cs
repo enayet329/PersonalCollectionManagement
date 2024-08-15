@@ -35,10 +35,6 @@ namespace PersonalCollectionManager.Infrastructure.Services
         {
             try
             {
-                if (await IsUsernameAvailableAsync(userDTO.Username))
-                {
-                    return new OperationResult(false, "Username already taken.");
-                }
 
                 if (await IsEmailAvailableAsync(userDTO.Email))
                 {
@@ -94,10 +90,10 @@ namespace PersonalCollectionManager.Infrastructure.Services
                     {
                         return new OperationResult(false, "Error saving refresh token.");
                     }
-                    return new OperationResult(true, "Login successful",accessToken, refrshToken.Token, user.PreferredLanguage, user.PreferredThemeDark);
+                    return new OperationResult(true, "Login successful", accessToken, refrshToken.Token, user.PreferredLanguage, user.PreferredThemeDark);
                 }
 
-                return new OperationResult(true, "Login successful",accessToken, refrshToken.Token, user.PreferredLanguage, user.PreferredThemeDark);
+                return new OperationResult(true, "Login successful", accessToken, refrshToken.Token, user.PreferredLanguage, user.PreferredThemeDark);
 
             }
             catch (Exception ex)
@@ -106,6 +102,7 @@ namespace PersonalCollectionManager.Infrastructure.Services
                 return new OperationResult(false, "Error during user login.");
             }
         }
+
 
         public async Task<UserDto> GetUserByIdAsync(Guid id)
         {
@@ -167,8 +164,24 @@ namespace PersonalCollectionManager.Infrastructure.Services
         {
             try
             {
-                var user = _mapper.Map<User>(userDto);
-                await _userRepository.Update(user);
+                var user = await _userRepository.GetByIdAsync(userDto.Id);
+
+                if (user == null)
+                {
+                    return new OperationResult(false, "User not found.");
+                }
+                user.PreferredThemeDark = userDto.PreffrredThemeDark;
+                user.PreferredThemeDark = userDto.PreffrredThemeDark;
+                user.Username = userDto.Username;
+                user.ImageURL = userDto.ImageURL;
+                user.PasswordHash = user.PasswordHash;
+
+                var result = await _userRepository.Update(user);
+
+                if (result == null)
+                {
+                    return new OperationResult(false, "Error updating user.");
+                }
                 return new OperationResult(true, "User updated successfully.");
             }
             catch (Exception ex)
@@ -201,8 +214,8 @@ namespace PersonalCollectionManager.Infrastructure.Services
                 refreshTokenEntity.Expires = DateTime.Now.AddDays(7);
 
                 var result = await _authRepository.Update(refreshTokenEntity);
-                
-                if(result == null)
+
+                if (result == null)
                 {
                     return new OperationResult(false, "Error updating refresh token.");
                 }
@@ -215,7 +228,7 @@ namespace PersonalCollectionManager.Infrastructure.Services
             }
         }
 
-        public async Task<bool> ChangeThemeAsync(Guid userId,bool isDarkMode)
+        public async Task<bool> ChangeThemeAsync(Guid userId, bool isDarkMode)
         {
             try
             {
