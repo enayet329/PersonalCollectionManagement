@@ -29,22 +29,6 @@ namespace PersonalCollectionManager.Infrastructure.Services
         }
 
 
-        public async Task<OperationResult> AddTagAsync(TagRequestDto tag)
-        {
-            try
-            {
-                var tagEntity = _mapper.Map<Tag>(tag);
-                var result = await _tagRepository.AddAsync(tagEntity);
-                _itemTagRepository.AddTagToItem(tag.ItemId, result.Id);
-                return new OperationResult(true, "Tag added successfully.");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error adding tag.");
-                return new OperationResult(false, "Error adding tag.");
-            }
-        }
-
         public async Task<OperationResult> DeleteTagAsync(Guid id)
         {
             try
@@ -116,22 +100,6 @@ namespace PersonalCollectionManager.Infrastructure.Services
             }
         }
 
-        public async Task<OperationResult> UpdateTagAsync(TagDto tag)
-        {
-            try
-            {
-                var tagEntity = _mapper.Map<Tag>(tag);
-                await _tagRepository.Update(tagEntity);
-
-                return new OperationResult(true, "Tag updated successfully.");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error updating tag.");
-                return new OperationResult(false, "Error updating tag.");
-            }
-        }
-
         public async Task<IEnumerable<TagDto>> GetPopularTagsAsync()
         {
             try
@@ -142,6 +110,92 @@ namespace PersonalCollectionManager.Infrastructure.Services
             {
                 _logger.LogError(ex, "Error getting popular tags.");
                 return null;
+            }
+        }
+
+        public async Task<OperationResult> AddTagAsync(IEnumerable<TagRequestDto> tag)
+        {
+            try
+            {
+
+                var itemId = tag.ElementAtOrDefault(0)?.ItemId;
+
+                if (itemId == null || itemId == Guid.Empty)
+                {
+                    return new OperationResult(false, "Error adding tag - Invalid Item ID.");
+                }
+
+                var item = await _itemRepository.GetItemsById(itemId.Value);
+
+                if (item == null)
+                {
+                    return new OperationResult(false, $"Error adding tag - Item with ID {itemId} not found.");
+                }
+
+                var tagEntities = _mapper.Map<IEnumerable<Tag>>(tag);
+
+                var result = await _tagRepository.AddRangeAsync(tagEntities);
+
+                var itemTags = new List<ItemTag>();
+                var tagIds = result.Select(t => t.Id).ToList();
+
+                for (int i = 0; i < tagEntities.Count(); i++)
+                {
+                    var tagEntity = tagEntities.ElementAt(i);
+                    var tagId = tagIds[i];
+
+                    itemTags.Add(new ItemTag { ItemId = tag.ElementAt(i).ItemId, TagId = tagId });
+                }
+
+                var resultItemTags = await _itemTagRepository.AddRangeAsync(itemTags);
+
+                if (result == null || !result.Any())
+                {
+                    return new OperationResult(false, "Error adding tag.");
+                }
+
+                return new OperationResult(true, "Tag added successfully.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error adding tag.");
+                return new OperationResult(false, "Error adding tag.");
+            }
+        }
+
+
+        public async Task<OperationResult> UpdateTagAsync(Guid itemId, IEnumerable<TagDto> tags)
+        {
+            try
+            {
+                var tagEntities = _mapper.Map<IEnumerable<Tag>>(tags);
+                var itemTags = await _itemTagRepository.getTagsByItemAsync(itemId);
+                var existingTags = itemTags.Select(t => t.TagId ).ToList();
+                var newTags = tagEntities.Select(t => t.Id).ToList();
+                var tagsToRemove = existingTags.Except(newTags).ToList();
+                var tagsToAdd = newTags.Except(tagsToRemove).ToList();
+
+                foreach (var tagId in tagsToRemove)
+                {
+                    _itemTagRepository.RemoveTagFromItem(itemId, tagId);
+                    await _itemRepository.SaveChangesAsync();
+                }
+
+                foreach (var tag in tagEntities)
+                {
+                    if (tagsToAdd.Contains(tag.Id))
+                    {
+                        await _tagRepository.UpdateRangeAsync(tagEntities);
+                        await _itemRepository.SaveChangesAsync();
+                    }
+                }
+
+                return new OperationResult(true, "Tag updated successfully.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error updating tag.");
+                return new OperationResult(false, "Error updating tag.");
             }
         }
     }

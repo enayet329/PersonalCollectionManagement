@@ -11,5 +11,6 @@ namespace PersonalCollectionManager.Application.Interfaces.IRepository
     {
         void AddTagToItem(Guid itemId, Guid tagId);
         void RemoveTagFromItem(Guid itemId, Guid tagId);
+        Task<IEnumerable<ItemTag>> getTagsByItemAsync(Guid itemId);
     }
 }

@@ -7,13 +7,12 @@ namespace PersonalCollectionManager.Application.Interfaces.IServices
 {
     public interface ITagService 
     {
-        // Add: new method to get all tags by item id
         Task<IEnumerable<TagDto>> GetTagsByItemIdAsync(Guid id);
         Task<IEnumerable<TagDto>> GetAllTagAsync();
         Task<IEnumerable<TagDto>> GetPopularTagsAsync();
         Task<TagDto> GetTagByIdAsync(Guid id);
-        Task<OperationResult> AddTagAsync(TagRequestDto tag);
-        Task<OperationResult> UpdateTagAsync(TagDto tag);
+        Task<OperationResult> AddTagAsync(IEnumerable<TagRequestDto> tag);
+        Task<OperationResult> UpdateTagAsync(Guid itemId, IEnumerable<TagDto> tags);
         Task<OperationResult> DeleteTagAsync(Guid id);
 
     }
