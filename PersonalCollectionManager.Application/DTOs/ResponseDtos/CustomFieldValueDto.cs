@@ -10,8 +10,9 @@ namespace PersonalCollectionManager.Application.DTOs.ResponseDtos
     public class CustomFieldValueDto
     {
         public Guid Id { get; set; }
-        public string Value { get; set; }
+        public string? Value { get; set; }
         public Guid CustomFieldId { get; set; }
         public Guid ItemId { get; set; }
+        public string? customFieldName { get; set; }
     }
 }

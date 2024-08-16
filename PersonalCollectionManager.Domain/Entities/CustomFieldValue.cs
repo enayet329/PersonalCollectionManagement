@@ -8,9 +8,7 @@ namespace PersonalCollectionManager.Domain.Entities
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
-
-        [Required]
-        public string Value { get; set; }
+        public string? Value { get; set; }
 
         [Required]
         public Guid CustomFieldId { get; set; }

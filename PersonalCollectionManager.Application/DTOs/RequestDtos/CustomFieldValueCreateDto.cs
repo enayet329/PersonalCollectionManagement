@@ -9,7 +9,7 @@ namespace PersonalCollectionManager.Application.DTOs.RequestDtos
 {
     public class CustomFieldValueCreateDto
     {
-        public string Value { get; set; }
+        public string? Value { get; set; }
         public Guid CustomFieldId { get; set; }
         public Guid ItemId { get; set; }
     }
