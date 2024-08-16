@@ -61,6 +61,11 @@ namespace PersonalCollectionManager.Infrastructure.Services
         {
             try
             {
+                if (loginRequestDTO == null)
+                {
+                    return new OperationResult(false, "Login request cannot be null.");
+                }
+
                 var user = await _userRepository.FirstOrDefaultAsync(u => u.Email == loginRequestDTO.Email);
 
                 if (user == null || !BCrypt.Net.BCrypt.Verify(loginRequestDTO.Password, user.PasswordHash))
@@ -68,19 +73,18 @@ namespace PersonalCollectionManager.Infrastructure.Services
                     return new OperationResult(false, "Invalid email or password.");
                 }
 
-                var refrshToken = await _authRepository.GetRefreshToken(user.Id);
+                var refreshToken = await _authRepository.GetRefreshToken(user.Id);
                 var accessToken = _jwtTokenService.GenerateToken(user);
 
-                if (refrshToken == null || refrshToken.IsExpired)
+                if (refreshToken == null || refreshToken.IsExpired)
                 {
-
-                    var refreshToken = _jwtTokenService.GenerateRefreshToken();
+                    var newRefreshToken = _jwtTokenService.GenerateRefreshToken();
 
                     var refreshTokenEntity = new RefreshToken
                     {
-                        Token = refreshToken,
+                        Token = newRefreshToken,
                         UserId = user.Id,
-                        Expires = DateTime.Now.AddDays(7),
+                        Expires = DateTime.UtcNow.AddDays(7),
                         Created = DateTime.UtcNow,
                     };
 
@@ -90,21 +94,22 @@ namespace PersonalCollectionManager.Infrastructure.Services
                     {
                         return new OperationResult(false, "Error saving refresh token.");
                     }
-                    return new OperationResult(true, "Login successful", accessToken, refrshToken.Token, user.PreferredLanguage, user.PreferredThemeDark);
+
+                    return new OperationResult(true, "Login successful", accessToken, newRefreshToken, user.PreferredLanguage, user.PreferredThemeDark);
                 }
 
-                return new OperationResult(true, "Login successful", accessToken, refrshToken.Token, user.PreferredLanguage, user.PreferredThemeDark);
-
+                return new OperationResult(true, "Login successful", accessToken, refreshToken.Token, user.PreferredLanguage, user.PreferredThemeDark);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error during user login.");
-                return new OperationResult(false, "Error during user login.");
+                return new OperationResult(false, "An error occurred during login.");
             }
         }
+    
 
 
-        public async Task<UserDto> GetUserByIdAsync(Guid id)
+    public async Task<UserDto> GetUserByIdAsync(Guid id)
         {
             try
             {
