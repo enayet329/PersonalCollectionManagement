@@ -21,6 +21,8 @@ namespace PersonalCollectionManager.Data.Repositories
         {
             return await _context.Set<Item>()
                 .Include(i => i.Collection)
+                .Include(i => i.ItemTags)
+                .ThenInclude(i => i.Tag)
                 .ToListAsync();
         }
 
