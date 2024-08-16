@@ -89,7 +89,9 @@ namespace PersonalCollectionManager.Shared.Helpers
             CreateMap<CustomField, CustomFieldUpdateDto>();
 
             // CustomFieldValue mappings
-            CreateMap<CustomFieldValue, CustomFieldValueDto>().ReverseMap();
+            CreateMap<CustomFieldValue, CustomFieldValueDto>()
+                .ForMember(dest => dest.CustomFieldId, opt => opt.MapFrom(src => src.CustomField.Id))
+                .ForMember(dest => dest.customFieldName, opt => opt.MapFrom(src => src.CustomField.Name));
             CreateMap<CustomFieldValueCreateDto, CustomFieldValue>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
                 .ForMember(dest => dest.CustomField, opt => opt.Ignore())
