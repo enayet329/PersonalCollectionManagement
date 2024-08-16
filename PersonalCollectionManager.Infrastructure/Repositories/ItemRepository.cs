@@ -77,34 +77,64 @@ namespace PersonalCollectionManager.Data.Repositories
 
         public async Task<ItemDto?> GetItemsById(Guid itemId)
         {
-                return await _context.Set<Item>()
-                    .Include(i => i.Collection)
-                    .Include(i => i.ItemTags) 
-                        .ThenInclude(it => it.Tag)
-                    .Where(i => i.Id == itemId)
-                    .Select(i => new ItemDto
-                    {
-                        Id = i.Id,
-                        Name = i.Name,
-                        ImgUrl = i.ImgUrl,
-                        Description = i.Description,
-                        DateAdded = i.DateAdded,
-                        CollectionId = i.CollectionId,
-                        CollectionName = i.Collection.Name,
-                        Likes = i.Likes.Count(),
-                        TagNames = i.ItemTags
-                                .Select(it => it.Tag.Name)
-                                .FirstOrDefault() == null
-                                 ? new List<string>()
-                                 : new List<string> { i.ItemTags.Select(it => it.Tag.Name).FirstOrDefault() }
-                    }
-            
-                     )
-                    .SingleOrDefaultAsync();
+            return await _context.Set<Item>()
+                .Include(i => i.Collection)
+                .Include(i => i.ItemTags)
+                    .ThenInclude(it => it.Tag)
+                .Where(i => i.Id == itemId)
+                .Select(i => new ItemDto
+                {
+                    Id = i.Id,
+                    Name = i.Name,
+                    ImgUrl = i.ImgUrl,
+                    Description = i.Description,
+                    DateAdded = i.DateAdded,
+                    CollectionId = i.CollectionId,
+                    CollectionName = i.Collection.Name,
+                    Likes = i.Likes.Count(),
+                    TagNames = i.ItemTags
+                            .Select(it => it.Tag.Name)
+                            .FirstOrDefault() == null
+                             ? new List<string>()
+                             : new List<string> { i.ItemTags.Select(it => it.Tag.Name).FirstOrDefault() }
+                }
+
+                 )
+                .SingleOrDefaultAsync();
+        }
+
+        public async Task<bool> DeleteItemAsync(Guid itemId)
+        {
+            try
+            {
+                var item = await _context.Items
+                    .Include(i => i.CustomFieldValues)
+                    .SingleOrDefaultAsync(i => i.Id == itemId);
+
+                if (item == null)
+                {
+                    return false;
+                }
+
+                if (item.CustomFieldValues != null && item.CustomFieldValues.Any())
+                {
+                    _context.CustomFieldValues.RemoveRange(item.CustomFieldValues);
+                }
+
+                _context.Items.Remove(item);
+
+
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error deleting item with ID: {itemId}");
+                return false;
+            }
         }
 
 
     }
-
 }
 
