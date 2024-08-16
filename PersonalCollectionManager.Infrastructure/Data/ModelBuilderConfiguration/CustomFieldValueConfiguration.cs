@@ -10,10 +10,9 @@ namespace PersonalCollectionManager.Infrastructure.Data.ModelBuilderConfiguratio
         {
             builder.HasKey(cfv => cfv.Id);
 
-            builder.HasIndex(cfv => cfv.CustomFieldId).IsUnique();
 
             builder.Property(cfv => cfv.Value)
-                .IsRequired();
+                .IsRequired(false);
 
             builder.HasOne(cfv => cfv.CustomField)
                 .WithMany(cf => cf.CustomFieldValues)
