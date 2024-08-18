@@ -110,3 +110,20 @@ CREATE TABLE Categories {
     Id UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
     NAME NVARCHAR(255) NOT NULL,
 }
+
+INSERT INTO Categories (Id, NAME) VALUES
+(NEWID(), N'Electronics'),
+(NEWID(), N'Furniture'),
+(NEWID(), N'Clothing'),
+(NEWID(), N'Tools'),
+(NEWID(), N'Jewelry'),
+(NEWID(), N'Sports Equipment'),
+(NEWID(), N'Toys'),
+(NEWID(), N'Home Appliances'),
+(NEWID(), N'Office Supplies'),
+(NEWID(), N'Automobiles'),
+(NEWID(), N'Garden & Outdoors'),
+(NEWID(), N'Health & Personal Care'),
+(NEWID(), N'Beauty Products'),
+(NEWID(), N'Pet Supplies'),
+(NEWID(), N'Groceries');
