@@ -129,7 +129,7 @@ namespace PersonalCollectionManager.Infrastructure.Services
         }
 
 
-        public async Task<CollectionDto> UpdateCollectionAsync(CollectionDto collectionDTO)
+        public async Task<CollectionDto> UpdateCollectionAsync(CollectionUpdateDto collectionDTO)
         {
             try
             {
