@@ -6,7 +6,8 @@ public class TagConfiguration : IEntityTypeConfiguration<Tag>
 {
     public void Configure(EntityTypeBuilder<Tag> builder)
     {
-        builder.HasIndex(t => t.Id).IsUnique();
+
+        builder.HasIndex(t => t.Name).IsUnique();
 
         builder.Property(t => t.Name)
             .HasMaxLength(50)
