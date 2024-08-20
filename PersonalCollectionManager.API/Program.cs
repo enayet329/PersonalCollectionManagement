@@ -47,7 +47,7 @@ var jwtAudience = jwtSettings["Audience"];
 
 if (string.IsNullOrEmpty(jwtKey) || string.IsNullOrEmpty(jwtIssuer) || string.IsNullOrEmpty(jwtAudience))
 {
-    // Consider logging a warning here instead of throwing an exception
+
     throw new InvalidOperationException("JWT settings are missing in appsettings.json");
 }
 
@@ -67,7 +67,8 @@ builder.Services.AddAuthentication(options =>
         ValidateIssuerSigningKey = true,
         ValidIssuer = jwtIssuer,
         ValidAudience = jwtAudience,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
+        ClockSkew = TimeSpan.Zero
     };
 });
 
