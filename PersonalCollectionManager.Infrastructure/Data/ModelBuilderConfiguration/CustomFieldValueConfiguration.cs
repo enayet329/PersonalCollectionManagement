@@ -14,11 +14,11 @@ public class CustomFieldValueConfiguration : IEntityTypeConfiguration<CustomFiel
         builder.HasOne(cfv => cfv.CustomField)
             .WithMany(cf => cf.CustomFieldValues)
             .HasForeignKey(cfv => cfv.CustomFieldId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.Cascade); 
 
         builder.HasOne(cfv => cfv.Item)
-                   .WithMany(i => i.CustomFieldValues)
-                   .HasForeignKey(cfv => cfv.ItemId)
-                   .OnDelete(DeleteBehavior.NoAction);
+            .WithMany(i => i.CustomFieldValues)
+            .HasForeignKey(cfv => cfv.ItemId)
+            .OnDelete(DeleteBehavior.NoAction); 
     }
 }
