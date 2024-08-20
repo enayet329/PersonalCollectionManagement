@@ -96,7 +96,8 @@ namespace PersonalCollectionManager.Data.Repositories
                             .Select(it => it.Tag.Name)
                             .FirstOrDefault() == null
                              ? new List<string>()
-                             : new List<string> { i.ItemTags.Select(it => it.Tag.Name).FirstOrDefault() }
+                             : new List<string> { i.ItemTags.Select(it => it.Tag.Name).FirstOrDefault() },
+                   userId = i.Collection.UserId
                 }
 
                  )
