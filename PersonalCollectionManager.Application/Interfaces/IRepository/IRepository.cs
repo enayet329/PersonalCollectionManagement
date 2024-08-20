@@ -12,7 +12,7 @@ namespace PersonalCollectionManager.Application.Interfaces.IRepository
         Task<T> Update(T entity);
         Task Remove(T entity);
         Task<IEnumerable<T>> AddRangeAsync(IEnumerable<T> entities);
-        Task RemoveRangeAsync(T entity);
+        Task RemoveRangeAsync(IEnumerable<T> entity);
         Task<bool> UpdateRangeAsync(IEnumerable<T> entity);
         Task<int> SaveChangesAsync();
     }
