@@ -14,7 +14,9 @@ namespace PersonalCollectionManager.Infrastructure.Repositories
         {
             try
             {
-                return await _context.Set<CustomFieldValue>().Where(x => x.ItemId == itemId).ToListAsync();
+                return await _context.Set<CustomFieldValue>()
+                    .Include(x => x.CustomField)
+                    .Where(x => x.ItemId == itemId).ToListAsync();
             }
             catch (Exception ex)
             {

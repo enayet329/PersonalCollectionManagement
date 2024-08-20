@@ -11,5 +11,6 @@
         public Guid CollectionId { get; set; }
         public List<string> TagNames { get; set; }
         public int Likes { get; set; }
+        public Guid userId {  get; set; }
     }
 }

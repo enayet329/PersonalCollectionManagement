@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 namespace PersonalCollectionManager.API.Controllers
 {
     [Route("api/v1/items")]
+    [Authorize(Policy = "AdminOrUser")]
     [ApiController]
     public class ItemController : ControllerBase
     {
@@ -23,6 +24,7 @@ namespace PersonalCollectionManager.API.Controllers
         }
 
         [HttpGet("search/query")]
+        [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<ItemDto>>> SearchItemsAsync(string query)
         {
             var items = await _algoliaService.SearchAsync<ItemDto>(query);
@@ -33,6 +35,7 @@ namespace PersonalCollectionManager.API.Controllers
 
 
         [HttpGet("all")]
+        [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<ItemDto>>> GetAllItemsAsync()
         {
             var items = await _itemService.GetAllItemsAsync();
@@ -69,6 +72,7 @@ namespace PersonalCollectionManager.API.Controllers
         }
 
         [HttpGet("recent")]
+        [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<ItemDto>>> GetRecentItemsAsync()
         {
             var items = await _itemService.GetRecentItemsAsync();
@@ -82,7 +86,7 @@ namespace PersonalCollectionManager.API.Controllers
 
             if (result == null)
             {
-                return NotFound(new { message = "Item not found." });
+                return NotFound(new { message = "Error adding item." });
             }
 
             await _algoliaService.UpdateItemAsync(result, result.Id.ToString());
@@ -91,7 +95,7 @@ namespace PersonalCollectionManager.API.Controllers
             return Ok(result);
         }
 
-        [HttpPut("update/id/item")]
+        [HttpPut("update")]
         public async Task<IActionResult> UpdateItemAsync([FromBody] ItemUpdateRequestDto itemDto)
         {
 

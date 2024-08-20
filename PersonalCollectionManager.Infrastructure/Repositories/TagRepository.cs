@@ -16,26 +16,66 @@ namespace PersonalCollectionManager.Data.Repositories
         public TagRepository(AppDbContext context, ILogger<Repository<Tag>> logger)
             : base(context, logger) { }
 
+        public async Task<IEnumerable<Tag>> GatAllTagsAsync()
+        {
+            try
+            {
+                return await _context.Set<Tag>()
+                    .GroupBy(t => t.Name)
+                    .Select(g => g.First())
+                    .ToListAsync();
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(ex, "Error getting all tags.");
+                throw;
+            }
+        }
+
         public async Task<IEnumerable<Tag>> GetByItemId(Guid id)
         {
-            return await _context.Set<ItemTag>()
-                .Where(it => it.ItemId == id)
-                .Select(it => it.Tag)
-                .ToListAsync();
+            try
+            {
+                return await _context.Set<ItemTag>()
+                            .Where(it => it.ItemId == id)
+                            .Select(it => it.Tag)
+                            .ToListAsync();
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(ex, "Error getting tags by item id.");
+                throw;
+            }
         }
 
         public async Task<Tag?> GetTagWithItemTagAsync(Guid tagId)
         {
-            return await _context.Set<Tag>()
+            try
+            {
+                return await _context.Set<Tag>()
                         .SingleOrDefaultAsync(t => t.Id == tagId);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting tag with item tag.");
+                throw;
+            }
         }
 
         public async Task<IEnumerable<Tag>> GetTopTagsAsync()
         {
-            return await _context.Set<Tag>()
-                .OrderByDescending(t => t.ItemTags.Count)
-                .Take(10)
-                .ToListAsync();
+            try
+            {
+                return await _context.Set<Tag>()
+                            .OrderByDescending(t => t.ItemTags.Count)
+                            .Take(10)
+                            .ToListAsync();
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(ex, "Error getting top tags.");
+                throw;
+            }
         }
     }
 }

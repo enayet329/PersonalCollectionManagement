@@ -37,7 +37,7 @@ namespace PersonalCollectionManager.API.Controllers
         [HttpPut("update")]
         public async Task<IActionResult> UpdateCustomFields([FromBody] IEnumerable<CustomFieldUpdateDto> customFields)
         {
-            var result = await _customFieldService.UpdateCustomFieldAsync(customFields);
+            var result = await _customFieldService.UpdateCustomFieldsAsync(customFields);
             return Ok(result);
         }
 

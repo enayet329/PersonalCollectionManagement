@@ -14,11 +14,13 @@ namespace PersonalCollectionManager.Shared.Helpers
                 .ForMember(dest => dest.ItemCount, opt => opt.MapFrom(src => src.Items.Count))
                 .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.Username))
                 .ReverseMap();
+            CreateMap<CollectionUpdateDto, Collection>().ReverseMap();
 
             CreateMap<Item, ItemDto>()
                 .ForMember(dest => dest.CollectionName, opt => opt.MapFrom(src => src.Collection.Name))
                 .ForMember(dest => dest.CollectionId, opt => opt.MapFrom(src => src.Collection.Id))
                 .ForMember(dest => dest.TagNames, opt => opt.MapFrom(src => src.ItemTags.Select(it => it.Tag.Name)))
+                .ForMember(dest => dest.userId, opt => opt.MapFrom(src => src.Collection.UserId))
                 .ReverseMap();
 
             CreateMap<Comment, CommentDto>()
@@ -89,7 +91,11 @@ namespace PersonalCollectionManager.Shared.Helpers
             CreateMap<CustomField, CustomFieldUpdateDto>();
 
             // CustomFieldValue mappings
-            CreateMap<CustomFieldValue, CustomFieldValueDto>().ReverseMap();
+            CreateMap<CustomFieldValue, CustomFieldValueDto>()
+                .ForMember(dest => dest.CustomFieldId, opt => opt.MapFrom(src => src.CustomField.Id))
+                .ForMember(dest => dest.customFieldName, opt => opt.MapFrom(src => src.CustomField.Name))
+                .ForMember(dest => dest.fieldType, opt => opt.MapFrom(src => src.CustomField.FieldType));
+
             CreateMap<CustomFieldValueCreateDto, CustomFieldValue>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
                 .ForMember(dest => dest.CustomField, opt => opt.Ignore())

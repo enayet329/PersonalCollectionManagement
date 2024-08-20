@@ -14,5 +14,6 @@ namespace PersonalCollectionManager.Application.DTOs.ResponseDtos
         public Guid CustomFieldId { get; set; }
         public Guid ItemId { get; set; }
         public string? customFieldName { get; set; }
+        public string? fieldType { get; set; }
     }
 }

@@ -45,26 +45,28 @@ namespace PersonalCollectionManager.Infrastructure.AuthenticationServices
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var claims = new List<Claim>
-        {
-            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(ClaimTypes.Name, user.Username),
-            new Claim(ClaimTypes.Email, user.Email),
-            new Claim(ClaimTypes.Role, user.IsAdmin ? "Admin" : "User"),
-            new Claim("isBlocked", user.IsBlocked.ToString()),
-            new Claim("PreferredLanguage", user.PreferredLanguage),
-            new Claim("PreferredThemeDark", user.PreferredThemeDark ? "true" : "false")
-        };
-
-            if (!int.TryParse(_configuration["JwtSettings:ExpiryTimeMinutes"], out int expiryInMinutes))
             {
-                expiryInMinutes = 30;
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Name, user.Username),
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.Role, user.IsAdmin ? "Admin" : "User"),
+                new Claim("isBlocked", user.IsBlocked.ToString()),
+                new Claim("PreferredLanguage", user.PreferredLanguage),
+                new Claim("PreferredThemeDark", user.PreferredThemeDark ? "true" : "false")
+            };
+
+            var expiryTimeConfig = _configuration["JwtSettings:ExpiryTimeSeconds"];
+
+            if (!int.TryParse(expiryTimeConfig, out int expiryInSecond))
+            {
+                expiryInSecond = 3600;
             }
 
             var token = new JwtSecurityToken(
                 _configuration["JwtSettings:Issuer"],
                 _configuration["JwtSettings:Audience"],
                 claims,
-                expires: DateTime.Now.AddMinutes(expiryInMinutes),
+                expires: DateTime.UtcNow.AddSeconds(expiryInSecond),
                 signingCredentials: credentials
             );
 

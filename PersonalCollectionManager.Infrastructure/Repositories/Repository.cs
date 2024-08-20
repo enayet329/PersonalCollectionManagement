@@ -124,7 +124,7 @@ namespace PersonalCollectionManager.Infrastructure.Repositories
             }
         }
 
-        public async Task RemoveRangeAsync(T entity)
+        public async Task RemoveRangeAsync(IEnumerable<T> entity)
         {
             try
             {

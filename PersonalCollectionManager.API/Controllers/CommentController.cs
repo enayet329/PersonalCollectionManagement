@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PersonalCollectionManager.Application.DTOs.RequestDtos;
 using PersonalCollectionManager.Application.DTOs.ResponseDtos;
 using PersonalCollectionManager.Application.Interfaces.IServices;
@@ -10,6 +11,7 @@ namespace PersonalCollectionManager.API.Controllers
 {
     [Route("api/v1/comments")]
     [ApiController]
+    [Authorize(Policy = "AdminOrUser")]
     public class CommentController : ControllerBase
     {
         private readonly ICommentService _commentService;

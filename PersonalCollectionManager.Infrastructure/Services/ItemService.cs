@@ -48,12 +48,11 @@ namespace PersonalCollectionManager.Infrastructure.Services
         {
             try
             {
-                var user = await _itemRepository.GetByIdAsync(id);
-                if (user == null)
+                var item = await _itemRepository.DeleteItemAsync(id);
+                if(item == false)
                 {
-                    return new OperationResult(false, "Item not found");
+                    return new OperationResult(false, "Error deleting item");
                 }
-                await _itemRepository.Remove(user);
                 return new OperationResult(true, "Item deleted successfully");
             }
             catch (Exception ex)

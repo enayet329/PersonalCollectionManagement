@@ -46,23 +46,29 @@ namespace PersonalCollectionManager.Infrastructure.Services
         {
             try
             {
+                if (customFieldValueDtos == null || !customFieldValueDtos.Any())
+                {
+                    _logger.LogWarning("No custom field values provided.");
+                    return false;
+                }
+
+                var customFieldId = customFieldValueDtos.ElementAt(0)?.CustomFieldId;
+                if (customFieldId == null)
+                {
+                    _logger.LogWarning("CustomFieldId is null.");
+                    return false;
+                }
+
+                var customFieldExists = await _customFieldRepository.FindAsync(x => x.Id == customFieldId);
+                if (customFieldExists == null)
+                {
+                    _logger.LogWarning($"Custom field with ID {customFieldId} does not exist.");
+                    return false;
+                }
+
                 var customFieldValues = _mapper.Map<IEnumerable<CustomFieldValue>>(customFieldValueDtos);
-                var collectionId = customFieldValueDtos.ElementAtOrDefault(0)?.CustomFieldId;
-
-                await _customFieldRepository.SaveChangesAsync();
-
-                if (collectionId == null)
-                {
-                    return false;
-                }
-
-                var customField = _customFieldRepository.GetByCollectionIdAsync(collectionId.Value);
-                if (customField == null)
-                {
-                    return false;
-                }
-                await _customFieldValueRepository.SaveChangesAsync();
                 await _customFieldValueRepository.AddRangeAsync(customFieldValues);
+                await _customFieldValueRepository.SaveChangesAsync();
                 return true;
             }
             catch (Exception ex)
@@ -71,6 +77,7 @@ namespace PersonalCollectionManager.Infrastructure.Services
                 throw;
             }
         }
+
 
         public async Task<bool> DeleteCustomFieldAsync(Guid id)
         {
@@ -137,13 +144,37 @@ namespace PersonalCollectionManager.Infrastructure.Services
                 throw;
             }
         }
-
-        public async Task<bool> UpdateCustomFieldAsync(IEnumerable<CustomFieldUpdateDto> customFieldDtos)
+        public async Task<bool> UpdateCustomFieldsAsync(IEnumerable<CustomFieldUpdateDto> customFieldDtos)
         {
             try
             {
                 var customFields = _mapper.Map<IEnumerable<CustomField>>(customFieldDtos);
-                await _customFieldRepository.UpdateRangeAsync(customFields);
+                var existingCustomFields = await _customFieldRepository.GetAllAsync(); 
+
+                var customFieldIdsToUpdate = customFields.Select(cf => cf.Id).ToList();
+                var existingCustomFieldIds = existingCustomFields.Select(cf => cf.Id).ToList();
+
+      
+                var customFieldsToDelete = existingCustomFieldIds.Except(customFieldIdsToUpdate).ToList();
+                foreach (var id in customFieldsToDelete)
+                {
+                    await DeleteCustomFieldAsync(id);
+                }
+
+        
+                foreach (var customField in customFields)
+                {
+                    if (existingCustomFieldIds.Contains(customField.Id))
+                    {
+                        await _customFieldRepository.Update(customField);
+                    }
+                    else
+                    {
+                        await _customFieldRepository.AddAsync(customField);
+                    }
+                }
+
+                await _customFieldRepository.SaveChangesAsync();
                 return true;
             }
             catch (Exception ex)
@@ -152,6 +183,7 @@ namespace PersonalCollectionManager.Infrastructure.Services
                 throw;
             }
         }
+
 
         public async Task<bool> UpdateCustomFieldValueAsync(IEnumerable<CustomFieldValueUpdateDto> customFieldValueDtos)
         {
