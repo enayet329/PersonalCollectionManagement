@@ -35,7 +35,7 @@ namespace PersonalCollectionManager.API.Controllers
         }
 
         [HttpPut("update")]
-        public async Task<IActionResult> UpdateCustomFieldValues([FromBody] IEnumerable<CustomFieldValueUpdateDto> customFieldValues)
+        public async Task<IActionResult> UpdateCustomFieldValues( Guid itemId,[FromBody] IEnumerable<CustomFieldValueUpdateDto> customFieldValues)
         {
             var result = await _customFieldService.UpdateCustomFieldValueAsync(customFieldValues);
             return Ok(result);

@@ -10,6 +10,7 @@ namespace PersonalCollectionManager.API.Controllers
 {
     [Route("api/v1/accounts")]
     [ApiController]
+
     public class AccountController : ControllerBase
     {
         private readonly IAccountService _accountService;
@@ -39,6 +40,14 @@ namespace PersonalCollectionManager.API.Controllers
             return Ok(userDto);
         }
 
+        [HttpPut("update")]
+        [Authorize(Policy = "AdminOrUser")]
+        public async Task<IActionResult> Update([FromBody] UserDto updateRequest)
+        {
+            var result = await _accountService.UpdateUser(updateRequest);
+            return Ok(result);
+        }
+
         [HttpPost("refresh-token")]
         public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequestDto refreshTokenRequest)
         {
@@ -53,6 +62,7 @@ namespace PersonalCollectionManager.API.Controllers
         }
 
         [HttpGet("user/id")]
+        [Authorize(Policy = "AdminOrUser")]
         public async Task<IActionResult> GetUserById(Guid id)
         {
             var user = await _accountService.GetUserByIdAsync(id);
@@ -66,6 +76,7 @@ namespace PersonalCollectionManager.API.Controllers
         }
 
         [HttpGet("user/email")]
+        [Authorize(Policy = "AdminOrUser")]
         public async Task<IActionResult> GetUserByEmail(string email)
         {
             var user = await _accountService.GetUserByUseremailAsync(email);
@@ -93,6 +104,7 @@ namespace PersonalCollectionManager.API.Controllers
         }
 
         [HttpPut("language/userId")]
+        [Authorize(Policy = "AdminOrUser")]
         public async Task<IActionResult> UpdateLanguage(Guid userId, string language)
         {
             var result = await _accountService.ChangeLanguageAsync(userId, language);
@@ -105,6 +117,7 @@ namespace PersonalCollectionManager.API.Controllers
         }
 
         [HttpPut("theme/userId")]
+        [Authorize(Policy = "AdminOrUser")]
         public async Task<IActionResult> UpdateTheme(Guid userId, bool theme)
         {
             var result = await _accountService.ChangeThemeAsync(userId, theme);

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PersonalCollectionManager.Application.DTOs.RequestDtos;
 using PersonalCollectionManager.Application.Interfaces.IServices;
 using System;
@@ -8,6 +9,7 @@ namespace PersonalCollectionManager.API.Controllers
 {
     [Route("api/v1/likes")]
     [ApiController]
+    [Authorize(Policy = "AdminOrUser")]
     public class LikeController : ControllerBase
     {
         private readonly ILikeService _likeService;

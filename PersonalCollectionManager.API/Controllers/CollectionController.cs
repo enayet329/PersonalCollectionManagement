@@ -5,21 +5,27 @@ using PersonalCollectionManager.Application.Interfaces.IServices;
 using System.Collections.Generic;
 using System;
 using System.Threading.Tasks;
+using PersonalCollectionManager.Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 
 namespace PersonalCollectionManager.API.Controllers
 {
     [Route("api/v1/collections")]
     [ApiController]
+    [Authorize(Policy = "AdminOrUser")]
     public class CollectionController : ControllerBase
     {
         private readonly ICollectionService _collectionService;
+        private readonly ICategoryService _categoryService;
 
-        public CollectionController(ICollectionService collectionService)
+        public CollectionController(ICollectionService collectionService, ICategoryService categoryService)
         {
             _collectionService = collectionService;
+            _categoryService = categoryService;
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<CollectionDto>>> GetAllCollections()
         {
             var collections = await _collectionService.GetAllCollectionsAsync();
@@ -27,6 +33,7 @@ namespace PersonalCollectionManager.API.Controllers
         }
 
         [HttpGet("largest")]
+        [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<CollectionDto>>> GetLargestCollections()
         {
             var collections = await _collectionService.GetLargestCollecitonAsync();
@@ -74,11 +81,19 @@ namespace PersonalCollectionManager.API.Controllers
         }
 
         [HttpPut("update/id")]
-        public async Task<IActionResult> UpdateCollection(Guid id, [FromBody] CollectionDto collectionUpdate)
+        public async Task<IActionResult> UpdateCollection([FromBody] CollectionUpdateDto collectionUpdate)
         {
-            collectionUpdate.Id = id;
             var result = await _collectionService.UpdateCollectionAsync(collectionUpdate);
             return Ok(result);
         }
+
+
+        [HttpGet("get/categories")]
+        public async Task<IActionResult> GetCategories()
+        {
+            var categories = await _categoryService.GetCategories();
+            return Ok(categories);
+        }
+
     }
 }
