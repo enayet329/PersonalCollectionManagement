@@ -69,14 +69,14 @@ namespace PersonalCollectionManager.API.Controllers
             return Ok(user);
         }
 
-        [HttpPut("user/roles/admin")]
+        [HttpPut("user/upgrade/admin")]
         public async Task<IActionResult> AddAdminRole( Guid id)
         {
             var user = await _adminService.AddAdminRoleAsync(id);
             return Ok(user);
         }
 
-        [HttpPatch("user/roles/admin")]
+        [HttpPut("user/downgrade/admin")]
         public async Task<IActionResult> RemoveAdminRole( Guid id)
         {
             var user = await _adminService.RemoveAdminRoleAsync(id);
