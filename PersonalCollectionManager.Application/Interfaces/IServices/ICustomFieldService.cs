@@ -9,7 +9,7 @@ namespace PersonalCollectionManager.Application.Interfaces.IServices
     {
         Task<IEnumerable<CustomFieldDto>> GetCustomFieldsByCollectionIdAsync(Guid collectionId);
         Task<bool> AddCustomFieldAsync(IEnumerable<CustomFieldCreateDto> customField);
-        Task<bool> UpdateCustomFieldsAsync(IEnumerable<CustomFieldUpdateDto> customFieldDtos);
+        Task<bool> UpdateCustomFieldsAsync(Guid collectionId, IEnumerable<CustomFieldUpdateDto> customFieldDtos);
         Task<bool> DeleteCustomFieldAsync(Guid id);
 
         Task<IEnumerable<CustomFieldValueDto>> GetCustomFieldValuesByItemIdAsync(Guid itemId);
