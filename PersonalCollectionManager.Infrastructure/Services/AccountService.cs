@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using PersonalCollectionManager.Application.DTOs;
 using PersonalCollectionManager.Application.DTOs.RequestDtos;
@@ -19,14 +20,22 @@ namespace PersonalCollectionManager.Infrastructure.Services
         private readonly IUserRepository _userRepository;
         private readonly IAuthRepository _authRepository;
         private readonly IJwtTokenService _jwtTokenService;
+        private readonly IConfiguration _configuration;
         private readonly IMapper _mapper;
         private readonly ILogger<AccountService> _logger;
 
-        public AccountService(IUserRepository userRepository, IAuthRepository authRepository, IJwtTokenService jwtTokenService, IMapper mapper, ILogger<AccountService> logger)
+        public AccountService(
+            IUserRepository userRepository, 
+            IAuthRepository authRepository, 
+            IJwtTokenService jwtTokenService, 
+            IConfiguration configuration,
+            IMapper mapper, 
+            ILogger<AccountService> logger)
         {
             _userRepository = userRepository;
             _authRepository = authRepository;
             _jwtTokenService = jwtTokenService;
+            _configuration = configuration;
             _mapper = mapper;
             _logger = logger;
         }
@@ -68,7 +77,7 @@ namespace PersonalCollectionManager.Infrastructure.Services
 
                 var user = await _userRepository.FirstOrDefaultAsync(u => u.Email == loginRequestDTO.Email);
 
-                if(user == null)
+                if (user == null)
                 {
                     return new OperationResult(false, "User doesn't exisit.");
                 }
@@ -84,12 +93,13 @@ namespace PersonalCollectionManager.Infrastructure.Services
                 if (refreshToken == null || refreshToken.IsExpired)
                 {
                     var newRefreshToken = _jwtTokenService.GenerateRefreshToken();
+                    var expiryTimeDays = _configuration.GetSection("JwtSettings:RefreshTokenExpiryDays").Value;
 
                     var refreshTokenEntity = new RefreshToken
                     {
                         Token = newRefreshToken,
                         UserId = user.Id,
-                        Expires = DateTime.UtcNow.AddDays(7),
+                        Expires = DateTime.UtcNow.AddDays(int.Parse(expiryTimeDays!)),
                         Created = DateTime.UtcNow,
                     };
 
