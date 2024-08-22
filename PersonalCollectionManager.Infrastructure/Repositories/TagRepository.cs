@@ -16,6 +16,36 @@ namespace PersonalCollectionManager.Data.Repositories
         public TagRepository(AppDbContext context, ILogger<Repository<Tag>> logger)
             : base(context, logger) { }
 
+        public async Task<IEnumerable<Tag>> AddTagsAsync(IEnumerable<string> tagNames, Guid itemId)
+        {
+            var existingTags = await _context.Set<Tag>()
+                .Where(t => tagNames.Contains(t.Name.ToLower()))
+                .ToListAsync();
+
+            var newTagNames = tagNames.Except(existingTags.Select(t => t.Name.ToLower())).ToList();
+            var newTags = newTagNames.Select(name => new Tag { Name = name }).ToList();
+
+            if (newTags.Any())
+            {
+                await _context.Set<Tag>().AddRangeAsync(newTags);
+                await _context.SaveChangesAsync();
+            }
+
+            var allTags = existingTags.Concat(newTags).ToList();
+
+            var itemTags = allTags.Select(tag => new ItemTag
+            {
+                ItemId = itemId,
+                TagId = tag.Id
+            });
+
+            await _context.Set<ItemTag>().AddRangeAsync(itemTags);
+            await _context.SaveChangesAsync();
+
+            return allTags;
+        }
+
+
         public async Task<IEnumerable<Tag>> GatAllTagsAsync()
         {
             try
@@ -77,5 +107,45 @@ namespace PersonalCollectionManager.Data.Repositories
                 throw;
             }
         }
+
+        public async Task UpdateTagsForItemAsync(Guid itemId, IEnumerable<string> tagNames)
+        {
+            var currentItemTags = await _context.Set<ItemTag>()
+                .Include(it => it.Tag) 
+                .Where(it => it.ItemId == itemId)
+                .ToListAsync();
+
+            var tagsToRemove = currentItemTags
+                .Where(it => it.Tag != null && it.Tag.Name != null && !tagNames.Contains(it.Tag.Name.ToLower()))
+                .ToList();
+
+            if (tagsToRemove.Any())
+            {
+                _context.Set<ItemTag>().RemoveRange(tagsToRemove);
+            }
+
+            var existingTags = await _context.Set<Tag>()
+                .Where(t => tagNames.Contains(t.Name.ToLower()))
+                .ToListAsync();
+
+            var newTagNames = tagNames.Except(existingTags.Select(t => t.Name.ToLower())).ToList();
+            var newTags = newTagNames.Select(name => new Tag { Name = name }).ToList();
+
+            if (newTags.Any())
+            {
+                await _context.Set<Tag>().AddRangeAsync(newTags);
+                await _context.SaveChangesAsync();
+            }
+
+            var allTags = existingTags.Concat(newTags).ToList();
+
+            var newItemTags = allTags
+                .Where(t => !currentItemTags.Any(it => it.TagId == t.Id))
+                .Select(t => new ItemTag { ItemId = itemId, TagId = t.Id });
+
+            await _context.Set<ItemTag>().AddRangeAsync(newItemTags);
+            await _context.SaveChangesAsync();
+        }
+
     }
 }
