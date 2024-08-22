@@ -137,7 +137,7 @@ namespace PersonalCollectionManager.Infrastructure.Services
                 if (user != null && user.IsAdmin == false)
                 {
                     user.IsAdmin = true;
-                    _userRepository.Update(user);
+                    await _userRepository.Update(user);
 
 
                     return new OperationResult(true, "User is Admin.");
