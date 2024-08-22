@@ -68,9 +68,14 @@ namespace PersonalCollectionManager.Infrastructure.Services
 
                 var user = await _userRepository.FirstOrDefaultAsync(u => u.Email == loginRequestDTO.Email);
 
-                if (user == null || !BCrypt.Net.BCrypt.Verify(loginRequestDTO.Password, user.PasswordHash))
+                if(user == null)
                 {
-                    return new OperationResult(false, "Invalid email or password.");
+                    return new OperationResult(false, "User doesn't exisit.");
+                }
+
+                if (!BCrypt.Net.BCrypt.Verify(loginRequestDTO.Password, user.PasswordHash))
+                {
+                    return new OperationResult(false, "Invalid Password.");
                 }
 
                 var refreshToken = await _authRepository.GetRefreshToken(user.Id);
@@ -106,10 +111,9 @@ namespace PersonalCollectionManager.Infrastructure.Services
                 return new OperationResult(false, "An error occurred during login.");
             }
         }
-    
 
 
-    public async Task<UserDto> GetUserByIdAsync(Guid id)
+        public async Task<UserDto> GetUserByIdAsync(Guid id)
         {
             try
             {
