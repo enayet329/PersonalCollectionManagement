@@ -218,21 +218,22 @@ namespace PersonalCollectionManager.Infrastructure.Services
             {
                 var principal = _jwtTokenService.GetPrincipalFromToken(refreshToken.AccessToken);
                 var userId = principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-                var refreshTokenEntity = await _authRepository.GetRefreshToken(Guid.Parse(userId));
+                var refreshTokenEntity = await _authRepository.GetRefreshToken(Guid.Parse(userId!));
 
                 if (refreshTokenEntity == null || refreshTokenEntity.Token != refreshToken.RefreshToken || refreshTokenEntity.IsExpired)
                 {
                     return new OperationResult(false, "Invalid refresh token.");
                 }
 
-                var user = _mapper.Map<User>(await GetUserByIdAsync(Guid.Parse(userId)));
+                var user = _mapper.Map<User>(await GetUserByIdAsync(Guid.Parse(userId!)));
 
                 var accessToken = _jwtTokenService.GenerateToken(user);
                 var newRefreshToken = _jwtTokenService.GenerateRefreshToken();
 
+                var expiryTimeDays = _configuration.GetSection("JwtSettings:RefreshTokenExpiryDays").Value;
                 refreshTokenEntity.Token = newRefreshToken;
                 refreshTokenEntity.Created = DateTime.UtcNow;
-                refreshTokenEntity.Expires = DateTime.Now.AddDays(7);
+                refreshTokenEntity.Expires = DateTime.Now.AddDays(int.Parse(expiryTimeDays!));
 
                 var result = await _authRepository.Update(refreshTokenEntity);
 
