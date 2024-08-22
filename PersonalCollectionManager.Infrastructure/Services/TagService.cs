@@ -111,35 +111,10 @@ namespace PersonalCollectionManager.Infrastructure.Services
                     return new OperationResult(false, "Error adding tag - Invalid Item ID.");
                 }
 
-                var newTags = tagRequests.Select(tr => tr.Name.ToLower()).Distinct().ToList();
-                var existingTags = await _tagRepository.GetAllAsync();
-                var existingTagNames = existingTags.Select(t => t.Name.ToLower()).ToList();
+                var tagNames = tagRequests.Select(tr => tr.Name.ToLower()).Distinct().ToList();
 
-                // Tags to add (those not already existing)
-                var tagsToAdd = newTags.Except(existingTagNames).ToList();
+                var addedTags = await _tagRepository.AddTagsAsync(tagNames, itemId.Value);
 
-                // Add new tags to the database
-                var addedTags = tagsToAdd.Select(tagName => new Tag { Name = tagName }).ToList();
-                await _tagRepository.AddRangeAsync(addedTags);
-                await _itemRepository.SaveChangesAsync();
-
-                // Associate all tags (both new and existing) with the item
-                var allTags = existingTags
-                    .Where(t => newTags.Contains(t.Name.ToLower()))
-                    .Concat(addedTags)
-                    .ToList();
-
-                foreach (var tag in allTags)
-                {
-                    var itemTag = new ItemTag
-                    {
-                        ItemId = itemId.Value,
-                        TagId = tag.Id
-                    };
-                    await _itemTagRepository.AddAsync(itemTag);
-                }
-
-                await _itemRepository.SaveChangesAsync();
                 return new OperationResult(true, "Tag(s) added and associated successfully.");
             }
             catch (Exception ex)
@@ -154,90 +129,20 @@ namespace PersonalCollectionManager.Infrastructure.Services
         {
             try
             {
-                // Convert the incoming tags to a list of lowercase names for comparison
                 var tagNames = tags?.Select(t => t.Name.ToLower()).Distinct().ToList() ?? new List<string>();
 
-                // Get current tags associated with the item
-                var currentItemTags = await _itemTagRepository.getTagsByItemAsync(itemId);
-
-                // If no tags are provided in the update, remove all existing tags
                 if (!tagNames.Any())
                 {
+                    var currentItemTags = await _tagRepository.GetByItemId(itemId);
                     if (currentItemTags.Any())
                     {
-                       await _itemTagRepository.RemoveRangeAsync(currentItemTags);
-                        await _itemTagRepository.SaveChangesAsync();
+                        await _tagRepository.UpdateTagsForItemAsync(itemId, new List<string>());
                     }
                     return new OperationResult(true, "All tags removed successfully.");
                 }
 
-                // Get all tags associated with the item
-                var allAssociateTags = await _tagRepository.GetByItemId(itemId);
+                await _tagRepository.UpdateTagsForItemAsync(itemId, tagNames);
 
-                // Handle tag removal for tags not in the updated list
-                var currentTagNames = allAssociateTags
-                    .Where(it => it?.Name != null)
-                    .Select(it => it.Name.ToLower())
-                    .ToList();
-
-                var tagsToRemove = allAssociateTags
-                    .Where(it => it != null && it.Name != null && !string.IsNullOrEmpty(it.Name))
-                    .Where(it => !tagNames.Contains(it.Name.ToLower()))
-                    .ToList();
-
-                if (tagsToRemove.Any())
-                {
-                    await _tagRepository.RemoveRangeAsync(tagsToRemove);
-                    await _tagRepository.SaveChangesAsync();
-                }
-
-                // Get all existing tags from the repository
-                var existingTags = await _tagRepository.GetAllAsync();
-                var existingTagDictionary = existingTags.ToDictionary(t => t.Name.ToLower(), t => t);
-
-                // Identify and add new tags to the database
-                var tagsToAdd = tagNames
-                    .Where(tn => !existingTagDictionary.ContainsKey(tn))
-                    .Select(tagName => new Tag { Name = tagName })
-                    .ToList();
-
-                if (tagsToAdd.Any())
-                {
-                    await _tagRepository.AddRangeAsync(tagsToAdd);
-                    await _tagRepository.SaveChangesAsync();
-
-                    // Update existingTagDictionary with newly added tags
-                    foreach (var newTag in tagsToAdd)
-                    {
-                        existingTagDictionary[newTag.Name.ToLower()] = newTag;
-                    }
-                }
-
-                // Associate the new or existing tags with the item
-                var newItemTags = tagNames
-                    .Where(tagName => !currentTagNames.Contains(tagName))
-                    .Select(tagName => new ItemTag
-                    {
-                        ItemId = itemId,
-                        TagId = existingTagDictionary[tagName].Id
-                    })
-                    .ToList();
-
-                // Avoid adding duplicates
-                var existingItemTags = currentItemTags
-                    .Select(it => (it.ItemId, it.TagId))
-                    .ToHashSet();
-
-                var uniqueNewItemTags = newItemTags
-                    .Where(it => !existingItemTags.Contains((it.ItemId, it.TagId)))
-                    .ToList();
-
-                if (uniqueNewItemTags.Any())
-                {
-                    await _itemTagRepository.AddRangeAsync(uniqueNewItemTags);
-                }
-
-                await _itemRepository.SaveChangesAsync();
                 return new OperationResult(true, "Tag(s) updated and associated successfully.");
             }
             catch (Exception ex)
@@ -246,6 +151,7 @@ namespace PersonalCollectionManager.Infrastructure.Services
                 return new OperationResult(false, "Error updating tag.");
             }
         }
+
 
         public async Task<IEnumerable<TagDto>> GetPopularTagsAsync()
         {
