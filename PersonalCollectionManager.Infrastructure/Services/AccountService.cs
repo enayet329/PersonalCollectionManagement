@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using PersonalCollectionManager.Application.DTOs;
 using PersonalCollectionManager.Application.DTOs.RequestDtos;
@@ -19,14 +20,22 @@ namespace PersonalCollectionManager.Infrastructure.Services
         private readonly IUserRepository _userRepository;
         private readonly IAuthRepository _authRepository;
         private readonly IJwtTokenService _jwtTokenService;
+        private readonly IConfiguration _configuration;
         private readonly IMapper _mapper;
         private readonly ILogger<AccountService> _logger;
 
-        public AccountService(IUserRepository userRepository, IAuthRepository authRepository, IJwtTokenService jwtTokenService, IMapper mapper, ILogger<AccountService> logger)
+        public AccountService(
+            IUserRepository userRepository, 
+            IAuthRepository authRepository, 
+            IJwtTokenService jwtTokenService, 
+            IConfiguration configuration,
+            IMapper mapper, 
+            ILogger<AccountService> logger)
         {
             _userRepository = userRepository;
             _authRepository = authRepository;
             _jwtTokenService = jwtTokenService;
+            _configuration = configuration;
             _mapper = mapper;
             _logger = logger;
         }
@@ -68,9 +77,14 @@ namespace PersonalCollectionManager.Infrastructure.Services
 
                 var user = await _userRepository.FirstOrDefaultAsync(u => u.Email == loginRequestDTO.Email);
 
-                if (user == null || !BCrypt.Net.BCrypt.Verify(loginRequestDTO.Password, user.PasswordHash))
+                if (user == null)
                 {
-                    return new OperationResult(false, "Invalid email or password.");
+                    return new OperationResult(false, "User doesn't exisit.");
+                }
+
+                if (!BCrypt.Net.BCrypt.Verify(loginRequestDTO.Password, user.PasswordHash))
+                {
+                    return new OperationResult(false, "Invalid Password.");
                 }
 
                 var refreshToken = await _authRepository.GetRefreshToken(user.Id);
@@ -78,13 +92,16 @@ namespace PersonalCollectionManager.Infrastructure.Services
 
                 if (refreshToken == null || refreshToken.IsExpired)
                 {
+                    await _authRepository.Remove(refreshToken!);
+
                     var newRefreshToken = _jwtTokenService.GenerateRefreshToken();
+                    var expiryTimeDays = _configuration.GetSection("JwtSettings:RefreshTokenExpiryDays").Value;
 
                     var refreshTokenEntity = new RefreshToken
                     {
                         Token = newRefreshToken,
                         UserId = user.Id,
-                        Expires = DateTime.UtcNow.AddDays(7),
+                        Expires = DateTime.UtcNow.AddDays(int.Parse(expiryTimeDays!)),
                         Created = DateTime.UtcNow,
                     };
 
@@ -106,10 +123,9 @@ namespace PersonalCollectionManager.Infrastructure.Services
                 return new OperationResult(false, "An error occurred during login.");
             }
         }
-    
 
 
-    public async Task<UserDto> GetUserByIdAsync(Guid id)
+        public async Task<UserDto> GetUserByIdAsync(Guid id)
         {
             try
             {
@@ -202,21 +218,22 @@ namespace PersonalCollectionManager.Infrastructure.Services
             {
                 var principal = _jwtTokenService.GetPrincipalFromToken(refreshToken.AccessToken);
                 var userId = principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-                var refreshTokenEntity = await _authRepository.GetRefreshToken(Guid.Parse(userId));
+                var refreshTokenEntity = await _authRepository.GetRefreshToken(Guid.Parse(userId!));
 
                 if (refreshTokenEntity == null || refreshTokenEntity.Token != refreshToken.RefreshToken || refreshTokenEntity.IsExpired)
                 {
                     return new OperationResult(false, "Invalid refresh token.");
                 }
 
-                var user = _mapper.Map<User>(await GetUserByIdAsync(Guid.Parse(userId)));
+                var user = _mapper.Map<User>(await GetUserByIdAsync(Guid.Parse(userId!)));
 
                 var accessToken = _jwtTokenService.GenerateToken(user);
                 var newRefreshToken = _jwtTokenService.GenerateRefreshToken();
 
+                var expiryTimeDays = _configuration.GetSection("JwtSettings:RefreshTokenExpiryDays").Value;
                 refreshTokenEntity.Token = newRefreshToken;
                 refreshTokenEntity.Created = DateTime.UtcNow;
-                refreshTokenEntity.Expires = DateTime.Now.AddDays(7);
+                refreshTokenEntity.Expires = DateTime.Now.AddDays(int.Parse(expiryTimeDays!));
 
                 var result = await _authRepository.Update(refreshTokenEntity);
 

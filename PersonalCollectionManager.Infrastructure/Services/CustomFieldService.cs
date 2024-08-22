@@ -144,12 +144,12 @@ namespace PersonalCollectionManager.Infrastructure.Services
                 throw;
             }
         }
-        public async Task<bool> UpdateCustomFieldsAsync(IEnumerable<CustomFieldUpdateDto> customFieldDtos)
+        public async Task<bool> UpdateCustomFieldsAsync(Guid collectionId,IEnumerable<CustomFieldUpdateDto> customFieldDtos)
         {
             try
             {
                 var customFields = _mapper.Map<IEnumerable<CustomField>>(customFieldDtos);
-                var existingCustomFields = await _customFieldRepository.GetAllAsync(); 
+                var existingCustomFields = await _customFieldRepository.FindAsync(cl => cl.CollectionId == collectionId);
 
                 var customFieldIdsToUpdate = customFields.Select(cf => cf.Id).ToList();
                 var existingCustomFieldIds = existingCustomFields.Select(cf => cf.Id).ToList();

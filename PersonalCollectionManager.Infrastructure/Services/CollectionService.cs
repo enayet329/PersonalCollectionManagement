@@ -1,5 +1,6 @@
 ﻿
 using AutoMapper;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using PersonalCollectionManager.Application.DTOs.RequestDtos;
 using PersonalCollectionManager.Application.DTOs.ResponseDtos;
@@ -13,11 +14,14 @@ namespace PersonalCollectionManager.Infrastructure.Services
     {
 
         private readonly ICollectionRepository _collectionRepository;
+        private readonly IConfiguration _configuration;
         private readonly IMapper _mapper;
         private readonly ILogger<Collection> _logger;
-        public CollectionService(ICollectionRepository collection,IMapper mapper, ILogger<Collection> loger)
+
+        public CollectionService(ICollectionRepository collection,IConfiguration configuration,IMapper mapper, ILogger<Collection> loger)
         {
             _collectionRepository = collection;
+            _configuration = configuration;
             _mapper = mapper;
             _logger = loger;
         }
@@ -116,7 +120,16 @@ namespace PersonalCollectionManager.Infrastructure.Services
         {
             try
             {
-                var collectios = await _collectionRepository.GetLargestCollectionsAsync(5);
+                var collectionCountStr = _configuration.GetSection("PaginationSettings:NumberOfColleciton").Value;
+                int collectionCount = 8;
+
+
+                if (!string.IsNullOrEmpty(collectionCountStr) && int.TryParse(collectionCountStr, out int parsedCount))
+                {
+                    collectionCount = parsedCount;
+                }
+
+                var collectios = await _collectionRepository.GetLargestCollectionsAsync(collectionCount);
                 var collectionDTOs = _mapper.Map<IEnumerable<CollectionDto>>(collectios);
                 return collectionDTOs;
             }
