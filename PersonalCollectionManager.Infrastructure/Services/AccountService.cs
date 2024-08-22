@@ -92,6 +92,8 @@ namespace PersonalCollectionManager.Infrastructure.Services
 
                 if (refreshToken == null || refreshToken.IsExpired)
                 {
+                    await _authRepository.Remove(refreshToken!);
+
                     var newRefreshToken = _jwtTokenService.GenerateRefreshToken();
                     var expiryTimeDays = _configuration.GetSection("JwtSettings:RefreshTokenExpiryDays").Value;
 
