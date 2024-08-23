@@ -12,7 +12,7 @@ using PersonalCollectionManager.Infrastructure.Data;
 namespace PersonalCollectionManager.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240805152422_test")]
+    [Migration("20240823055949_test")]
     partial class test
     {
         /// <inheritdoc />
@@ -24,6 +24,21 @@ namespace PersonalCollectionManager.Infrastructure.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("PersonalCollectionManager.Domain.Entities.Category", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("categories");
+                });
 
             modelBuilder.Entity("PersonalCollectionManager.Domain.Entities.Collection", b =>
                 {
@@ -58,17 +73,6 @@ namespace PersonalCollectionManager.Infrastructure.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Collections");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("22222222-2222-2222-2222-222222222222"),
-                            Description = "First collection",
-                            ImageUrl = "https://example.com/collection1.jpg",
-                            Name = "Collection 1",
-                            Topic = "General",
-                            UserId = new Guid("11111111-1111-1111-1111-111111111111")
-                        });
                 });
 
             modelBuilder.Entity("PersonalCollectionManager.Domain.Entities.Comment", b =>
@@ -100,16 +104,6 @@ namespace PersonalCollectionManager.Infrastructure.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Comments");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("55555555-5555-5555-5555-555555555555"),
-                            Content = "First comment",
-                            CreatedAt = new DateTime(2024, 8, 5, 15, 24, 21, 887, DateTimeKind.Utc).AddTicks(2566),
-                            ItemId = new Guid("33333333-3333-3333-3333-333333333333"),
-                            UserId = new Guid("11111111-1111-1111-1111-111111111111")
-                        });
                 });
 
             modelBuilder.Entity("PersonalCollectionManager.Domain.Entities.CustomField", b =>
@@ -139,15 +133,6 @@ namespace PersonalCollectionManager.Infrastructure.Migrations
                         .IsUnique();
 
                     b.ToTable("CustomFields");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("99999999-9999-9999-9999-999999999999"),
-                            CollectionId = new Guid("22222222-2222-2222-2222-222222222222"),
-                            FieldType = "Text",
-                            Name = "Custom Field 1"
-                        });
                 });
 
             modelBuilder.Entity("PersonalCollectionManager.Domain.Entities.CustomFieldValue", b =>
@@ -163,26 +148,15 @@ namespace PersonalCollectionManager.Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Value")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CustomFieldId")
-                        .IsUnique();
+                    b.HasIndex("CustomFieldId");
 
                     b.HasIndex("ItemId");
 
                     b.ToTable("CustomFieldValues");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
-                            CustomFieldId = new Guid("99999999-9999-9999-9999-999999999999"),
-                            ItemId = new Guid("33333333-3333-3333-3333-333333333333"),
-                            Value = "Custom Value 1"
-                        });
                 });
 
             modelBuilder.Entity("PersonalCollectionManager.Domain.Entities.Item", b =>
@@ -218,17 +192,6 @@ namespace PersonalCollectionManager.Infrastructure.Migrations
                         .IsUnique();
 
                     b.ToTable("Items");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("33333333-3333-3333-3333-333333333333"),
-                            CollectionId = new Guid("22222222-2222-2222-2222-222222222222"),
-                            DateAdded = new DateTime(2024, 8, 5, 15, 24, 21, 887, DateTimeKind.Utc).AddTicks(2332),
-                            Description = "First item",
-                            ImgUrl = "https://example.com/item1.jpg",
-                            Name = "Item 1"
-                        });
                 });
 
             modelBuilder.Entity("PersonalCollectionManager.Domain.Entities.ItemTag", b =>
@@ -244,13 +207,6 @@ namespace PersonalCollectionManager.Infrastructure.Migrations
                     b.HasIndex("TagId");
 
                     b.ToTable("ItemTags");
-
-                    b.HasData(
-                        new
-                        {
-                            ItemId = new Guid("33333333-3333-3333-3333-333333333333"),
-                            TagId = new Guid("44444444-4444-4444-4444-444444444444")
-                        });
                 });
 
             modelBuilder.Entity("PersonalCollectionManager.Domain.Entities.Like", b =>
@@ -273,14 +229,6 @@ namespace PersonalCollectionManager.Infrastructure.Migrations
                         .IsUnique();
 
                     b.ToTable("Likes");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("66666666-6666-6666-6666-666666666666"),
-                            ItemId = new Guid("33333333-3333-3333-3333-333333333333"),
-                            UserId = new Guid("11111111-1111-1111-1111-111111111111")
-                        });
                 });
 
             modelBuilder.Entity("PersonalCollectionManager.Domain.Entities.RefreshToken", b =>
@@ -310,24 +258,6 @@ namespace PersonalCollectionManager.Infrastructure.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("RefreshTokens");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("77777777-7777-7777-7777-777777777777"),
-                            Created = new DateTime(2024, 8, 5, 15, 24, 21, 887, DateTimeKind.Utc).AddTicks(3296),
-                            Expires = new DateTime(2024, 8, 12, 15, 24, 21, 887, DateTimeKind.Utc).AddTicks(3288),
-                            Token = "sampleRefreshToken1",
-                            UserId = new Guid("11111111-1111-1111-1111-111111111111")
-                        },
-                        new
-                        {
-                            Id = new Guid("88888888-8888-8888-8888-888888888888"),
-                            Created = new DateTime(2024, 8, 5, 15, 24, 21, 887, DateTimeKind.Utc).AddTicks(3303),
-                            Expires = new DateTime(2024, 8, 12, 15, 24, 21, 887, DateTimeKind.Utc).AddTicks(3302),
-                            Token = "sampleRefreshToken2",
-                            UserId = new Guid("d2c6e7b4-4a76-4b1e-8d8f-2b9f2f7e0e77")
-                        });
                 });
 
             modelBuilder.Entity("PersonalCollectionManager.Domain.Entities.Tag", b =>
@@ -343,17 +273,10 @@ namespace PersonalCollectionManager.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Id")
+                    b.HasIndex("Name")
                         .IsUnique();
 
                     b.ToTable("Tags");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("44444444-4444-4444-4444-444444444444"),
-                            Name = "Tag 1"
-                        });
                 });
 
             modelBuilder.Entity("PersonalCollectionManager.Domain.Entities.User", b =>
@@ -375,6 +298,9 @@ namespace PersonalCollectionManager.Infrastructure.Migrations
 
                     b.Property<bool>("IsBlocked")
                         .HasColumnType("bit");
+
+                    b.Property<DateTime>("JoinedAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()
@@ -398,35 +324,21 @@ namespace PersonalCollectionManager.Infrastructure.Migrations
                     b.HasIndex("Email")
                         .IsUnique();
 
-                    b.HasIndex("Username")
-                        .IsUnique();
-
                     b.ToTable("Users");
 
                     b.HasData(
                         new
                         {
                             Id = new Guid("d2c6e7b4-4a76-4b1e-8d8f-2b9f2f7e0e77"),
-                            Email = "admin@example.com",
+                            Email = "admin@gmail.com",
                             ImageURL = "https://example.com/admin.jpg",
                             IsAdmin = true,
                             IsBlocked = false,
-                            PasswordHash = "$2a$10$S6Yv3L0fM5DoHfqzACeXUuLmEm5FUdVEA36uRZ2P8z3HzEEUAEKoK",
+                            JoinedAt = new DateTime(2024, 8, 23, 5, 59, 48, 848, DateTimeKind.Utc).AddTicks(5054),
+                            PasswordHash = "$2a$11$X1St9PxXaMWl/EChgPuQe.LaKqk2cNkqVZGjTp2207nJ6j9yv18b6",
                             PreferredLanguage = "en",
                             PreferredThemeDark = false,
                             Username = "admin"
-                        },
-                        new
-                        {
-                            Id = new Guid("11111111-1111-1111-1111-111111111111"),
-                            Email = "user1@example.com",
-                            ImageURL = "https://example.com/user1.jpg",
-                            IsAdmin = false,
-                            IsBlocked = false,
-                            PasswordHash = "$2a$10$o.HSLeVqZRU1Zz2.IrhD5uv/iXJQESe.aqKkhrLSTShiCCx603022",
-                            PreferredLanguage = "en",
-                            PreferredThemeDark = false,
-                            Username = "user1"
                         });
                 });
 
