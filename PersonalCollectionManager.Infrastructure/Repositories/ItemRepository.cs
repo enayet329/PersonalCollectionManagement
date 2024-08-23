@@ -54,16 +54,6 @@ namespace PersonalCollectionManager.Data.Repositories
                 .Include(i => i.Collection)
                 .ToListAsync();
         }
-        public async Task AddItemWithTagsAsync(Item item, List<Guid> tagIds)
-        {
-            foreach (var tagId in tagIds)
-            {
-                item.ItemTags.Add(new ItemTag { ItemId = item.Id, TagId = tagId });
-            }
-
-            await _context.Items.AddAsync(item);
-            await _context.SaveChangesAsync();
-        }
         public async Task<IEnumerable<Item>> GetRecentItemsAsync()
         {
             return await _context.Set<Item>()
@@ -104,6 +94,37 @@ namespace PersonalCollectionManager.Data.Repositories
                 .SingleOrDefaultAsync();
         }
 
+        public async Task<AlgoliaItemDto?> GetItemByIdAsync(Guid id)
+        {
+            return await _context.Set<Item>()
+                .Include(i => i.Collection)
+                .Include(i => i.ItemTags)
+                    .ThenInclude(it => it.Tag)
+                .Include(i => i.Comments)
+                .Include(i => i.Likes)
+                .Include(i => i.CustomFieldValues)
+                    .ThenInclude(cf => cf.CustomField)
+                .Where(i => i.Id == id)
+                .Select(i => new AlgoliaItemDto
+                {
+                    Id = i.Id,
+                    Name = i.Name,
+                    ImgUrl = i.ImgUrl,
+                    Description = i.Description,
+                    DateAdded = i.DateAdded,
+                    CollectionId = i.CollectionId,
+                    CollectionName = i.Collection.Name,
+                    CotegorieName = i.Collection.Topic,
+                    CollectionDescription = i.Collection.Description,
+                    TagNames = i.ItemTags.Select(it => it.Tag.Name).ToList(),
+                    CustomFieldValues = i.CustomFieldValues.Select(cf => cf.Value).ToList(),
+                    Likes = i.Likes.Count,
+                    Comments = i.Comments.Select(c => c.Content).ToList()
+                })
+                .SingleOrDefaultAsync();
+        }
+
+
         public async Task<bool> DeleteItemAsync(Guid itemId)
         {
             try
@@ -134,7 +155,6 @@ namespace PersonalCollectionManager.Data.Repositories
                 return false;
             }
         }
-
 
     }
 }
