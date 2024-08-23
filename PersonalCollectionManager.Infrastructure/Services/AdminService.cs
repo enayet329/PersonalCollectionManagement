@@ -3,6 +3,7 @@ using AutoMapper;
 using Azure;
 using Microsoft.Extensions.Logging;
 using PersonalCollectionManager.Application.DTOs.ResponseDtos;
+using PersonalCollectionManager.Application.Interfaces.IAuthService;
 using PersonalCollectionManager.Application.Interfaces.IRepository;
 using PersonalCollectionManager.Application.Interfaces.Services;
 using PersonalCollectionManager.Domain.Entities;
@@ -13,11 +14,20 @@ namespace PersonalCollectionManager.Infrastructure.Services
     public class AdminService : IAdminServices
     {
         private readonly IUserRepository _userRepository;
+        private readonly IJwtTokenService _jwtTokenService;
+        private readonly IAuthRepository _authRepository;
         private readonly IMapper _mapper;
         private readonly ILogger<AdminService> _logger;
-        public AdminService(IUserRepository userRepository, IMapper mapper, ILogger<AdminService> logger)
+        public AdminService(
+            IUserRepository userRepository,
+            IJwtTokenService jwtTokenService,
+            IAuthRepository authRepository, 
+            IMapper mapper, 
+            ILogger<AdminService> logger)
         {
             _userRepository = userRepository;
+            _jwtTokenService = jwtTokenService;
+            _authRepository = authRepository;
             _mapper = mapper;
             _logger = logger;
         }

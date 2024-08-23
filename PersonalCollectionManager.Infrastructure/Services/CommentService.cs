@@ -11,11 +11,20 @@ namespace PersonalCollectionManager.Infrastructure.Services
     public class CommentService : ICommentService
     {
         private readonly ICommentRepository _commentRepository;
+        private readonly IItemRepository _itemRepository;
+        private readonly AlgoliaItemService _algoliaItemService;
         private readonly IMapper _mapper;
         private readonly ILogger _logger;
-        public CommentService(ICommentRepository commentRepository,IMapper mapper, ILogger<CommentService> logger)
+        public CommentService(
+            ICommentRepository commentRepository,
+            IItemRepository itemRepository,
+            AlgoliaItemService algoliaItem,
+            IMapper mapper, 
+            ILogger<CommentService> logger)
         {
             _commentRepository = commentRepository;
+            _itemRepository = itemRepository;
+            _algoliaItemService = algoliaItem;
             _mapper = mapper;
             _logger = logger;
         }
@@ -27,6 +36,14 @@ namespace PersonalCollectionManager.Infrastructure.Services
                 var entity = _mapper.Map<Comment>(comment);
                 entity.CreatedAt = DateTime.Now;
                 await _commentRepository.AddAsync(entity);
+
+                // Algolia indexing
+                var algoliaItem = await _itemRepository.GetItemByIdAsync(comment.ItemId);
+                if (algoliaItem == null)
+                {
+                    return new OperationResult(false, "Item not found for indexing.");
+                }
+                await _algoliaItemService.IndexItemAsync(algoliaItem, algoliaItem.Id.ToString());
 
                 return new OperationResult(true, "Comment added successfully.");
             }
@@ -47,7 +64,11 @@ namespace PersonalCollectionManager.Infrastructure.Services
                     await _commentRepository.Remove(comment);
                     return new OperationResult(true, "Comment deleted successfully.");
                 }
-                    return new OperationResult(false, "Comment not found.");
+
+                // Delete Algolia Index
+                 await _algoliaItemService.DeleteItemAsync(id.ToString());
+
+                 return new OperationResult(false, "Comment not found.");
             }
             catch (Exception ex)
             {

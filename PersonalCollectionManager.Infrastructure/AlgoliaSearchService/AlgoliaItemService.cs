@@ -3,18 +3,18 @@ using Algolia.Search.Models.Search;
 using AutoMapper;
 using Microsoft.Extensions.Configuration;
 using PersonalCollectionManager.Application.DTOs.ResponseDtos;
+using PersonalCollectionManager.Data.Repositories;
 using PersonalCollectionManager.Domain.Entities;
 
-public class AlgoliaService
+public class AlgoliaItemService
 {
     private readonly ISearchIndex _index;
     private readonly IMapper _mapper;
 
-    public AlgoliaService(IConfiguration configuration, IMapper mapper)
+    public AlgoliaItemService(IConfiguration configuration, IMapper mapper)
     {
         var client = new SearchClient(configuration["Algolia:ApplicationId"], configuration["Algolia:AdminApiKey"]);
-        _index = client.InitIndex(configuration["Algolia:IndexName"]);
-
+        _index = client.InitIndex(configuration["Algolia:IndexNameItems"]);
         _mapper = mapper;
     }
 
@@ -22,12 +22,12 @@ public class AlgoliaService
     {
         try
         {
-            var algoliaItem = _mapper.Map<ItemAlgoliaDto>(item);
+            var algoliaItem = _mapper.Map<AlgoliaItemDto>(item);
 
             algoliaItem.ObjectID = objectId;
 
 
-            var response = await _index.SaveObjectsAsync( new List<ItemAlgoliaDto> { algoliaItem });
+            var response = await _index.SaveObjectsAsync( new List<AlgoliaItemDto> { algoliaItem });
         }
         catch (Exception ex)
         {
@@ -35,11 +35,11 @@ public class AlgoliaService
         }
     }
 
-    public async Task<SearchResponse<T>> SearchAsync<T>(string query) where T : class
+    public async Task<SearchResponse<ItemDto>> SearchAsync<T>(string query) where T : class
     {
         try
         {
-            return await _index.SearchAsync<T>(new Query(query));
+            return await _index.SearchAsync<ItemDto>(new Query(query));
         }
         catch (Exception ex)
         { 
@@ -68,7 +68,6 @@ public class AlgoliaService
         }
         catch (Exception ex)
         {
-            // Handle the exception  
             Console.WriteLine($"Error deleting item: {ex.Message}");
         }
     }

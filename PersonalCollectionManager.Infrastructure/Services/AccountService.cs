@@ -81,6 +81,10 @@ namespace PersonalCollectionManager.Infrastructure.Services
                 {
                     return new OperationResult(false, "User doesn't exisit.");
                 }
+                else if (user.IsBlocked)
+                {
+                    return new OperationResult(false, "User is Blocked.");
+                }
 
                 if (!BCrypt.Net.BCrypt.Verify(loginRequestDTO.Password, user.PasswordHash))
                 {
@@ -90,9 +94,14 @@ namespace PersonalCollectionManager.Infrastructure.Services
                 var refreshToken = await _authRepository.GetRefreshToken(user.Id);
                 var accessToken = _jwtTokenService.GenerateToken(user);
 
-                if (refreshToken == null || refreshToken.IsExpired)
+                if(refreshToken != null && refreshToken.IsExpired)
                 {
-                    await _authRepository.Remove(refreshToken!);
+                    await _authRepository.Remove(refreshToken);
+                }
+
+                if (refreshToken == null )
+                {
+                    
 
                     var newRefreshToken = _jwtTokenService.GenerateRefreshToken();
                     var expiryTimeDays = _configuration.GetSection("JwtSettings:RefreshTokenExpiryDays").Value;

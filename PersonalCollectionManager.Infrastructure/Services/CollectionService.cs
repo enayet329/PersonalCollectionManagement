@@ -14,13 +14,23 @@ namespace PersonalCollectionManager.Infrastructure.Services
     {
 
         private readonly ICollectionRepository _collectionRepository;
+        private readonly IItemRepository _itemRepository;
+        private readonly AlgoliaItemService _algoliaItemService;
         private readonly IConfiguration _configuration;
         private readonly IMapper _mapper;
         private readonly ILogger<Collection> _logger;
 
-        public CollectionService(ICollectionRepository collection,IConfiguration configuration,IMapper mapper, ILogger<Collection> loger)
+        public CollectionService(
+            ICollectionRepository collection,
+            IItemRepository itemRepository,
+            AlgoliaItemService algoliaItemService,
+            IConfiguration configuration,
+            IMapper mapper, 
+            ILogger<Collection> loger)
         {
             _collectionRepository = collection;
+            _itemRepository = itemRepository;
+            _algoliaItemService = algoliaItemService;
             _configuration = configuration;
             _mapper = mapper;
             _logger = loger;
@@ -44,9 +54,17 @@ namespace PersonalCollectionManager.Infrastructure.Services
         public async Task<OperationResult> DeleteCollectionAsync(Guid id)
         {
             try
-            {
+            {    // Delete Associated Items from Algolia
+                var items = await _itemRepository.GetItemsByCollectionIdAsync(id);
+                foreach (var item in items)
+                {
+                    await _algoliaItemService.DeleteItemAsync(item.Id.ToString());
+                }
+
                 var collection = await _collectionRepository.GetByIdAsync(id);
                 await _collectionRepository.Remove(collection);
+
+
 
                 return  new OperationResult(true, "Collection Deleting successfully");
             }

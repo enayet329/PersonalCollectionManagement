@@ -16,21 +16,9 @@ namespace PersonalCollectionManager.API.Controllers
     public class ItemController : ControllerBase
     {
         private readonly IItemService _itemService;
-        private readonly AlgoliaService _algoliaService;
-        public ItemController(IItemService itemService, AlgoliaService algoliaService)
+        public ItemController(IItemService itemService)
         {
             _itemService = itemService;
-            _algoliaService = algoliaService;
-        }
-
-        [HttpGet("search/query")]
-        [AllowAnonymous]
-        public async Task<ActionResult<IEnumerable<ItemDto>>> SearchItemsAsync(string query)
-        {
-            var items = await _algoliaService.SearchAsync<ItemDto>(query);
-            
-            var result = items.Hits.ToList();
-            return Ok(result);
         }
 
 
@@ -89,8 +77,6 @@ namespace PersonalCollectionManager.API.Controllers
                 return NotFound(new { message = "Error adding item." });
             }
 
-            await _algoliaService.UpdateItemAsync(result, result.Id.ToString());
-
 
             return Ok(result);
         }
@@ -105,7 +91,6 @@ namespace PersonalCollectionManager.API.Controllers
                 return NotFound(new { message = "Item not found." });
             }
 
-            await _algoliaService.UpdateItemAsync(result, result.Id.ToString());
 
             return Ok(result);
         }
@@ -118,8 +103,6 @@ namespace PersonalCollectionManager.API.Controllers
             {
                 return NotFound(new { message = "Item not found." });
             }
-
-            await _algoliaService.DeleteItemAsync(id.ToString());
 
             return Ok(result);
         }

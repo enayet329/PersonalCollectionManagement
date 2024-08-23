@@ -3,6 +3,7 @@ using PersonalCollectionManager.Application.DTOs.RequestDtos;
 using PersonalCollectionManager.Application.DTOs.ResponseDtos;
 using PersonalCollectionManager.Domain.Entities;
 
+
 namespace PersonalCollectionManager.Shared.Helpers
 {
     public class AutoMapperProfile : Profile
@@ -31,7 +32,6 @@ namespace PersonalCollectionManager.Shared.Helpers
 
             CreateMap<Like, LikeDto>().ReverseMap();
             CreateMap<Tag, TagDto>().ReverseMap();
-            CreateMap<ItemAlgoliaDto, ItemDto>().ReverseMap();
 
             CreateMap<User, UserDto>()
                 .ForMember(dest => dest.PrefrredLanguage, opt => opt.MapFrom(src => src.PreferredLanguage)) // Fixed property name
@@ -104,6 +104,10 @@ namespace PersonalCollectionManager.Shared.Helpers
                 .ForMember(dest => dest.CustomField, opt => opt.Ignore())
                 .ForMember(dest => dest.Item, opt => opt.Ignore());
             CreateMap<CustomFieldValue, CustomFieldValueUpdateDto>();
+
+            //Algolia mappings
+            CreateMap<AlgoliaItemDto, AlgoliaItemDto>().ReverseMap();
+            CreateMap<ItemDto, AlgoliaItemDto>().ReverseMap();
         }
     }
 }

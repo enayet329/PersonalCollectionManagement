@@ -8,11 +8,11 @@ namespace PersonalCollectionManager.Application.Interfaces.IRepository
 {
     public interface IItemRepository : IRepository<Item>
     {
+        Task<AlgoliaItemDto?> GetItemByIdAsync(Guid id);
         Task<IEnumerable<Item>> GetAllItemsAsync();
         Task<IEnumerable<ItemDto>> GetItemsByCollectionIdAsync(Guid id);
         Task<IEnumerable<Item>> GetItemsByTagAsync(string tagName);
         Task<IEnumerable<Item>> GetRecentItemsAsync();
-        Task AddItemWithTagsAsync(Item item, List<Guid> tagIds);
         Task<ItemDto> GetItemsById(Guid itemId);
         Task<bool> DeleteItemAsync(Guid itemId);
     }
