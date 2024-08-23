@@ -16,25 +16,32 @@ namespace PersonalCollectionManager.Infrastructure.Services
     {
         private readonly IItemRepository _itemRepository;
         private readonly IItemTagRepository _itemTagRepository;
+        private readonly AlgoliaItemService _algoliaItem;
         private readonly IMapper _mapper;
         private readonly ILogger<ItemService> _logger;
-        public ItemService(IItemRepository itemRepository, IItemTagRepository itemTagRepository, IMapper mapper, ILogger<ItemService> logger)
+        public ItemService(
+            IItemRepository itemRepository, 
+            IItemTagRepository itemTagRepository, 
+            AlgoliaItemService algoliaItem,
+            IMapper mapper, 
+            ILogger<ItemService> logger)
         {
             _itemRepository = itemRepository;
             _itemTagRepository = itemTagRepository;
+            _algoliaItem = algoliaItem;
             _mapper = mapper;
             _logger = logger;
         }
 
-        public async Task<ItemDto> AddItemAsync(ItemRequestDto item)
+        public async Task<ItemDto> AddItemAsync(ItemRequestDto itemRequestDto)
         {
             try
             {
-                var items = _mapper.Map<Item>(item);
-                items.DateAdded = DateTime.Now;
-                await _itemRepository.AddAsync(items);
+                var item = _mapper.Map<Item>(itemRequestDto);
+                item.DateAdded = DateTime.Now;
 
-                var result = await _itemRepository.GetItemsById(items.Id);
+                var result = await _itemRepository.AddAsync(item);
+
                 return _mapper.Map<ItemDto>(result);
             }
             catch (Exception ex)
@@ -43,6 +50,7 @@ namespace PersonalCollectionManager.Infrastructure.Services
                 return null;
             }
         }
+
 
         public async Task<OperationResult> DeleteItemAsync(Guid id)
         {
@@ -53,6 +61,11 @@ namespace PersonalCollectionManager.Infrastructure.Services
                 {
                     return new OperationResult(false, "Error deleting item");
                 }
+
+                // Delete Algolia index
+                await _algoliaItem.DeleteItemAsync(id.ToString());
+
+
                 return new OperationResult(true, "Item deleted successfully");
             }
             catch (Exception ex)
@@ -94,8 +107,8 @@ namespace PersonalCollectionManager.Infrastructure.Services
         {
             try
             {
-                var user = await _itemRepository.GetItemsById(id);
-                return _mapper.Map<ItemDto>(user);
+                var item = await _itemRepository.GetItemsById(id);
+                return _mapper.Map<ItemDto>(item);
             }
             catch (Exception ex)
             {
@@ -138,9 +151,8 @@ namespace PersonalCollectionManager.Infrastructure.Services
             try
             {
                 var items = _mapper.Map<Item>(item);
-                await _itemRepository.Update(items);
+                var result = await _itemRepository.Update(items);
                 
-                var result = await _itemRepository.GetItemsById(items.Id);
                 return _mapper.Map<ItemDto>(result);
             }
             catch (Exception ex)

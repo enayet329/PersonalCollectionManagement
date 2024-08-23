@@ -17,12 +17,20 @@ namespace PersonalCollectionManager.Infrastructure.Services
         private readonly ITagRepository _tagRepository;
         private readonly IItemTagRepository _itemTagRepository;
         private readonly IItemRepository _itemRepository;
+        private readonly AlgoliaItemService _algoliaItemService;
         private readonly IMapper _mapper;
         private readonly ILogger _logger;
-        public TagService(ITagRepository tagRepository, IItemTagRepository itemTagRepository, IItemRepository itemRepository, IMapper mapper, ILogger<TagService> logger)
+        public TagService(
+            ITagRepository tagRepository, 
+            IItemTagRepository itemTagRepository, 
+            IItemRepository itemRepository, 
+            AlgoliaItemService algoliaItemService,
+            IMapper mapper, 
+            ILogger<TagService> logger)
         {
             _tagRepository = tagRepository;
             _itemTagRepository = itemTagRepository;
+            _algoliaItemService = algoliaItemService;
             _itemRepository = itemRepository;
             _mapper = mapper;
             _logger = logger;
@@ -113,7 +121,15 @@ namespace PersonalCollectionManager.Infrastructure.Services
 
                 var tagNames = tagRequests.Select(tr => tr.Name.ToLower()).Distinct().ToList();
 
-                var addedTags = await _tagRepository.AddTagsAsync(tagNames, itemId.Value);
+                await _tagRepository.AddTagsAsync(tagNames, itemId.Value);
+
+                // Algolia indexing
+                var algoliaItem = await _itemRepository.GetItemByIdAsync(itemId.Value);
+                if (algoliaItem == null)
+                {
+                    return new OperationResult(false, "Item not found for indexing.");
+                }
+                await _algoliaItemService.IndexItemAsync(algoliaItem, algoliaItem.Id.ToString());
 
                 return new OperationResult(true, "Tag(s) added and associated successfully.");
             }
@@ -142,6 +158,14 @@ namespace PersonalCollectionManager.Infrastructure.Services
                 }
 
                 await _tagRepository.UpdateTagsForItemAsync(itemId, tagNames);
+
+                // Algolia indexing
+                var algoliaItem = await _itemRepository.GetItemByIdAsync(itemId);
+                if (algoliaItem == null)
+                {
+                    return new OperationResult(false, "Item not found for indexing.");
+                }
+                await _algoliaItemService.IndexItemAsync(algoliaItem, algoliaItem.Id.ToString());
 
                 return new OperationResult(true, "Tag(s) updated and associated successfully.");
             }

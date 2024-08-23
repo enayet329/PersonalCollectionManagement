@@ -81,6 +81,10 @@ namespace PersonalCollectionManager.Infrastructure.Services
                 {
                     return new OperationResult(false, "User doesn't exisit.");
                 }
+                else if (user.IsBlocked)
+                {
+                    return new OperationResult(false, "User is Blocked.");
+                }
 
                 if (!BCrypt.Net.BCrypt.Verify(loginRequestDTO.Password, user.PasswordHash))
                 {
