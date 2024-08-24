@@ -25,12 +25,33 @@ namespace PersonalCollectionManager.Infrastructure.Repositories
             }
         }
 
-        public async Task UpdateRangeAsync(IEnumerable<CustomFieldValue> customFieldValues)
+        public async Task<bool> UpdateCustomFieldValueAsync(Guid itemId, IEnumerable<CustomFieldValue> customFieldValues)
         {
             try
             {
-                _context.Set<CustomFieldValue>().UpdateRange(customFieldValues);
+                var item = await _context.Set<Item>().FindAsync(itemId);
+                if (item == null)
+                {
+                    throw new ArgumentException("Item not found.");
+                }
+
+                var existingCustomFieldValues = await _context.Set<CustomFieldValue>()
+                    .Include(x => x.CustomField)
+                    .Where(x => x.ItemId == itemId)
+                    .ToListAsync();
+
+                var existingSet = new HashSet<CustomFieldValue>(existingCustomFieldValues);
+                var newSet = new HashSet<CustomFieldValue>(customFieldValues);
+
+                var deleteCustomFieldValues = existingSet.Except(newSet);
+                _context.Set<CustomFieldValue>().RemoveRange(deleteCustomFieldValues);
+
+                var addCustomFieldValues = newSet.Except(existingSet);
+                _context.Set<CustomFieldValue>().AddRange(addCustomFieldValues);
+
                 await _context.SaveChangesAsync();
+
+                return true;
             }
             catch (Exception ex)
             {
@@ -38,5 +59,6 @@ namespace PersonalCollectionManager.Infrastructure.Repositories
                 throw;
             }
         }
+
     }
 }

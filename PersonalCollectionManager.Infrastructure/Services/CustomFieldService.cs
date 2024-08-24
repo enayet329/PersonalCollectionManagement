@@ -185,13 +185,18 @@ namespace PersonalCollectionManager.Infrastructure.Services
         }
 
 
-        public async Task<bool> UpdateCustomFieldValueAsync(IEnumerable<CustomFieldValueUpdateDto> customFieldValueDtos)
+        public async Task<bool> UpdateCustomFieldValueAsync(Guid itemId, IEnumerable<CustomFieldValueUpdateDto> customFieldValueDtos)
         {
             try
             {
+                if (customFieldValueDtos == null || !customFieldValueDtos.Any())
+                {
+                    return false;
+                }
                 var customFieldValues = _mapper.Map<IEnumerable<CustomFieldValue>>(customFieldValueDtos);
-                await _customFieldValueRepository.UpdateRangeAsync(customFieldValues);
-                return true;
+                var result = await _customFieldValueRepository.UpdateCustomFieldValueAsync(itemId, customFieldValues);
+
+                return result;
             }
             catch (Exception ex)
             {

@@ -14,7 +14,7 @@ namespace PersonalCollectionManager.Application.Interfaces.IServices
 
         Task<IEnumerable<CustomFieldValueDto>> GetCustomFieldValuesByItemIdAsync(Guid itemId);
         Task<bool> AddCustomFieldValueAsync(IEnumerable<CustomFieldValueCreateDto> customFieldValue);
-        Task<bool> UpdateCustomFieldValueAsync(IEnumerable<CustomFieldValueUpdateDto> customFieldValue);
+        Task<bool> UpdateCustomFieldValueAsync(Guid itemId, IEnumerable<CustomFieldValueUpdateDto> customFieldValue);
         Task<bool> DeleteCustomFieldValueAsync(Guid id);
     }
 }
