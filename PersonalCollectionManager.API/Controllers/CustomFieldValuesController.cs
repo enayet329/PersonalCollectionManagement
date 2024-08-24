@@ -34,10 +34,10 @@ namespace PersonalCollectionManager.API.Controllers
             return Ok(result);
         }
 
-        [HttpPut("update")]
-        public async Task<IActionResult> UpdateCustomFieldValues( Guid itemId,[FromBody] IEnumerable<CustomFieldValueUpdateDto> customFieldValues)
+        [HttpPut("update/{itemId}")]
+        public async Task<IActionResult> UpdateCustomFieldValues([FromRoute] Guid itemId,[FromBody] IEnumerable<CustomFieldValueUpdateDto> customFieldValues)
         {
-            var result = await _customFieldService.UpdateCustomFieldValueAsync(customFieldValues);
+            var result = await _customFieldService.UpdateCustomFieldValueAsync(itemId,customFieldValues);
             return Ok(result);
         }
 

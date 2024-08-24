@@ -10,6 +10,6 @@ namespace PersonalCollectionManager.Application.Interfaces.IRepository
     public interface ICustomFieldValueRepository : IRepository<CustomFieldValue>
     {
         Task<IEnumerable<CustomFieldValue>> GetByItemIdAsync(Guid itemId);
-        //Task UpdateRangeAsync(IEnumerable<CustomFieldValue> customFieldValues);
+        Task<bool> UpdateCustomFieldValueAsync(Guid itemId, IEnumerable<CustomFieldValue> customFieldValues);
     }
 }
