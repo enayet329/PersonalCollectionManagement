@@ -1,4 +1,5 @@
-﻿using System.Linq.Expressions;
+﻿using PersonalCollectionManager.Domain.Entities;
+using System.Linq.Expressions;
 
 namespace PersonalCollectionManager.Application.Interfaces.IRepository
 {
@@ -15,5 +16,7 @@ namespace PersonalCollectionManager.Application.Interfaces.IRepository
         Task RemoveRangeAsync(IEnumerable<T> entity);
         Task<bool> UpdateRangeAsync(IEnumerable<T> entity);
         Task<int> SaveChangesAsync();
+        void Attach(T entity);
+        void Detach(T entity);
     }
 }

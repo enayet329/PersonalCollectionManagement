@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using PersonalCollectionManager.Application.Interfaces.IRepository;
+using PersonalCollectionManager.Domain.Entities;
 using PersonalCollectionManager.Infrastructure.Data;
 
 
@@ -164,5 +165,17 @@ namespace PersonalCollectionManager.Infrastructure.Repositories
                 throw;
             }
         }
+
+        public void Attach(T entity)
+        {
+            _context.Set<T>().Attach(entity);
+        }
+
+
+        public void Detach(T entity)
+        {
+            _context.Entry(entity).State = EntityState.Detached;
+        }
+
     }
 }
