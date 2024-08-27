@@ -144,28 +144,31 @@ namespace PersonalCollectionManager.Infrastructure.Services
                 throw;
             }
         }
-        public async Task<bool> UpdateCustomFieldsAsync(Guid collectionId,IEnumerable<CustomFieldUpdateDto> customFieldDtos)
+        public async Task<bool> UpdateCustomFieldsAsync(Guid collectionId, IEnumerable<CustomFieldUpdateDto> customFieldDtos)
         {
             try
             {
                 var customFields = _mapper.Map<IEnumerable<CustomField>>(customFieldDtos);
+
                 var existingCustomFields = await _customFieldRepository.FindAsync(cl => cl.CollectionId == collectionId);
+                var existingCustomFieldDict = existingCustomFields.ToDictionary(cf => cf.Id);
 
                 var customFieldIdsToUpdate = customFields.Select(cf => cf.Id).ToList();
-                var existingCustomFieldIds = existingCustomFields.Select(cf => cf.Id).ToList();
 
-      
-                var customFieldsToDelete = existingCustomFieldIds.Except(customFieldIdsToUpdate).ToList();
+                var customFieldsToDelete = existingCustomFieldDict.Keys.Except(customFieldIdsToUpdate).ToList();
                 foreach (var id in customFieldsToDelete)
                 {
                     await DeleteCustomFieldAsync(id);
                 }
 
-        
                 foreach (var customField in customFields)
                 {
-                    if (existingCustomFieldIds.Contains(customField.Id))
+                    if (existingCustomFieldDict.ContainsKey(customField.Id))
                     {
+                        var existingEntity = existingCustomFieldDict[customField.Id];
+                        _customFieldRepository.Detach(existingEntity);
+
+                        _customFieldRepository.Attach(customField);
                         await _customFieldRepository.Update(customField);
                     }
                     else
@@ -183,6 +186,7 @@ namespace PersonalCollectionManager.Infrastructure.Services
                 throw;
             }
         }
+
 
 
         public async Task<bool> UpdateCustomFieldValueAsync(Guid itemId, IEnumerable<CustomFieldValueUpdateDto> customFieldValueDtos)
